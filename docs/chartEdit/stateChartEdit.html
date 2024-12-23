@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>StateChart Data Editor</title>
+  <link rel="stylesheet" href="../styles.css" type="text/css">
+  <style>
+    .the-grid {
+      display: grid;
+      grid-template-columns: auto 6rem 1fr;
+      column-gap: 0.5rem;
+    }
+
+    .the-display,
+    .the-input {
+      border: solid thin silver;
+    }
+
+    button {
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+    <main>
+        <h2>StateChart Data Editor</h2>
+        <div class="the-grid">
+          <div>
+            <span class="label">Input</span>
+            <a href="https://sketch.systems/tutorials/five-minute-introduction/">Format docs</a>
+          </div>
+          <span class="label">Convert</span>
+          <span class="label">Output</span>
+          <div class="the-input">
+            <textarea rows="30" cols="60" spellcheck="false" autocomplete="off" autocorrect="off"></textarea>
+          </div>
+      
+          <div class="the-controls">
+            <button id="b0">Raw</button>
+            <button id="b1">DOT</button>
+            <button id="b2">DOT2</button>
+            <button id="b3">Bi-graph</button>
+            <!-- <button id="b4">XState</button> -->
+          </div>
+      
+          <div class="the-display">
+            <textarea rows="30" cols="60" spellcheck="false" autocomplete="off" autocorrect="off"></textarea>
+          </div>
+        </div>
+        To convert the DOT format to an image using GraphViz, try
+        <a href="https://edotor.net/">this site</a> or
+        <a href="https://stamm-wilbrandt.de/GraphvizFiddle/">this one</a>.
+        <!-- <a href="https://magjac.com/graphviz-visual-editor/">Displays graphs</a> -->
+    </main>
+</body>
+<script src="./stateChartEdit.js" type="module" ></script>
+</html>
+<!-- 
+TODO: enhance to allow nested nodes/sub-groups.
+Also handle the following:
+  NodeName* to indicate default state(s),
+  NodeName? to indicate transient states,
+  transitionName? to indicate pseudo-events for modelling important internal logic
+
+Powered*
+  power failed -> Unpowered
+  Green
+    tick -> Yellow
+  Yellow
+    tick -> Red
+  Red*
+    tick -> Green
+Unpowered
+  power restored -> Powered
+  Red On*
+    tick -> Red Off
+  Red Off
+    tick -> Red On
+
+Green
+  power failed -> Red On
+  tick -> Yellow
+Yellow
+  power failed -> Red On
+  tick -> Red
+Red
+  power failed -> Red On
+  tick -> Green
+Red On
+  power restored -> Red
+  tick -> Red Off
+Red Off
+  power restored -> Red
+  tick -> Red On    
+ -->
