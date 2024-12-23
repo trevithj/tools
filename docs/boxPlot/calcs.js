@@ -1,3 +1,4 @@
+// TODO: generalize this?
 function generateNumericScale({min, max}, count = 5) {
     const range = max - min;
     const step = Math.pow(10, Math.floor(Math.log10(range / (count - 1))));
