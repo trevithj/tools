@@ -1,0 +1,27 @@
+{
+  "name": "sims",
+  "version": "1.0.0",
+  "description": "Project for web-based simulation apps",
+  "main": "simpleServer.js",
+  "type": "module",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "mocha --recursive",
+    "test:watch": "mocha --node-option=watch --recursive"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trevithj/sims.git"
+  },
+  "author": "Trevedhek",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/trevithj/sims/issues"
+  },
+  "homepage": "https://github.com/trevithj/sims#readme",
+  "devDependencies": {
+    "mocha": "^11.0.1"
+  }
+}

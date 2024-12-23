@@ -1,0 +1,137 @@
+
+<html>
+
+  <head>
+    <!-- Inspired by https://www.peakconversion.com/2012/02/ab-split-test-graphical-calculator/#comment-27378 -->
+    <link rel="stylesheet" type="text/css" href="./abTest.css">
+    <link rel="stylesheet" type="text/css" href="../styles.css">
+    <style id="svg"></style>
+  
+  </head>
+  
+  <body>
+    <div>
+      <p>
+        This AB test tool was inspired by the one at: 
+        <a href="https://www.peakconversion.com/2012/02/ab-split-test-graphical-calculator">peakconversion.com</a>. See also the <a href="boxPlot.html">box-plot</a> version for an alternative visualisation of the same data.
+      </p>
+      <svg width="800" height="500">
+        <rect x="0" y="0" width="100%" height="100%" />
+        <g id="xMove">
+          <path class="grid" d=""></path>
+          <g id="plots">
+            <path class="a plot" d=""></path>
+            <path class="b plot" d=""></path>
+            <path class="c plot" d=""></path>
+            <path class="d plot" d=""></path>
+          </g>
+        </g>
+      </svg>
+      <div class="ctrl">
+        <button id="zoomIn">&plus;</button>
+        <button id="zoomOut">&minus;</button>
+        <button id="moveL">&lt;</button>
+        <button id="moveR">&gt;</button>
+        <button id="recalc">Recalc</button>
+      </div>
+      <div class="form">
+        <form id="params">
+          <div class="row">
+            <span class="head">&nbsp;</span>
+            <div class='fm-label'>Trials</div>
+            <div class='fm-label'>Wins</div>
+          </div>
+          <div class="row">
+            <span class="a">A</span>
+            <input type="number" name="n1" value="100" />
+            <input type="number" name="w1" value="60" />
+          </div>
+          <div class="row">
+            <span class="b">B</span>
+            <input type="number" name="n2" value="60" />
+            <input type="number" name="w2" value="30" />
+          </div>
+          <div class="row">
+            <span class="c">C</span>
+            <input type="number" name="n3" value="0" />
+            <input type="number" name="w3" value="0" />
+          </div>
+          <div class="row">
+            <span class="d">D</span>
+            <input type="number" name="n4" value="0" />
+            <input type="number" name="w4" value="0" />
+          </div>
+        </form>
+      </div>
+    </div>
+    <div id="footerText"></div>
+  </body>
+  <script>
+    const STATE = {
+      height: 500,
+      width: 800,
+      xScale: 1,
+      yScale: 1,
+      xOffset: 0,
+      zoomIn: document.querySelector('button#zoomIn'),
+      zoomOut: document.querySelector('button#zoomOut'),
+      moveL: document.querySelector('button#moveL'),
+      moveR: document.querySelector('button#moveR'),
+      recalc: document.querySelector('button#recalc'),
+      params: document.querySelector('form#params').elements,
+    }
+  
+    const colClass = ['a', 'b', 'c', 'd'];
+    const css = [
+      'rgba(0,0,255,0.5)',
+      'rgba(0,126,0,0.5)',
+      'rgba(255,0,0,0.5)',
+      'rgba(126,126,0,0.5)'
+    ].map((col, i) => {
+      const cc = colClass[i];
+      return `
+        path.${cc} { fill: ${col}; }
+        span.${cc} { background-color: ${col}; }
+      `;
+    });
+    document.querySelector('style#svg').innerHTML += css.join('\n');
+  </script>
+  <!-- <script src="./ver1.js"></script> -->
+  <script src="./ver2.js"></script>
+  
+  <script>
+    //Put this down here out of the way
+    document.querySelector('div#footerText').innerHTML=`
+    <hr />
+    <p>
+      The question this tool helps to answer is whether a difference between two or more small trials is significant.
+      Rather than use numerical methods, it simply draws the relevant distributions on the same display.
+      The less the distributions overlap, the more confident we can be that they are significantly different.
+      Small numbers of trials tend to be wide and chunky. Larger trials produce narrower, taller distributions.
+    </p><p>
+      This tool uses the Monte Carlo method to calculate distributions based on the given ratio of trials to wins.
+      There are better ways of doing this that create smoother curves, but my motivation was to keep the maths
+      within easy reach of those who (like myself) are not exactly fluent in statistical methods.
+      For the curious, I recommend checking out the link at the top of the page.
+    </p><p>
+      More specifically, the tool creates a distribution by picking random samples with replacement of the given ratios.
+      Imagine that the trials represent a number of red or green marbles in a jar, and the wins are the number of green marbles.
+      Imagine there are 20 marbles in the jar. If we select a marble at random 20 times, replacing the marble after each draw,
+      we might draw a different marble each time. Or we might draw the same one 20 times. Or somewhere in between.
+      In any case, the series of draws will give us a number of green marbles, somewhere between 0 and 20.
+      By repeating this series over many thousands of times, the tool can create a distribution showing the likelihood of
+      drawing a given number of greens ('wins').
+    </p><p>
+      Each distribution is scaled to fit across the full width of the plot.
+      The height of each plot is scaled down by the same amount, so that the area under each plot remains constant.
+      This allows us to look at the overlapping area of different distributions in a meaningful way. 
+    </p><p>
+      The tool can handle fairly large trials, but expect the calculation to be slow if much over 2000.
+      The exact values I used here are more a product of trial-and-error to compromise between speed and smooth distributions.
+      As it stands, recalculating using the same trial/win values will produce a different distribution each time.
+      But for crude comparison purposes, it does provide a useful relative measure.
+    </p><p>
+    </p>
+    `;
+  </script>
+  </html>

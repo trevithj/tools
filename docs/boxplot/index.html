@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <meta name="keywords" content="boxplot, javascript, statistics. percentiles">
+    </meta>
+    <link rel="stylesheet" type="text/css" href="./style.css">
+    <link rel="stylesheet" type="text/css" href="../styles.css">
+    <style id="svg">
+        body {
+            font-family: Verdana, Arial, Helvetica, sans-serif;
+        }
+    </style>
+
+</head>
+
+<body>
+    <main>
+        <div>
+            <p>
+                This Box and Whisker plot tool was inspired by the D3-based one at:
+                <a href="https://observablehq.com/@trevithj/comparative-horizontal-box-plots">ObservableHQ.com</a>
+            </p>
+            <div class="ctrl">
+                <button id="add" title="Add another plot row">&plus;</button>
+                <label>Width</label>
+                <input type="range" id="wid" min="300" max="1600" step="10" value="800"></input>
+                <button id="data"  title="Toggle data view">DATA</button>
+                <button id="reset" title="Reset to defaults">&#x21BA;</button>
+            </div>
+            <div class="data hidden">
+                <textarea></textarea>
+            </div>
+            <hr />
+            <form id="input-form">
+                <div class="inputs"> </div>
+            </form>
+            <div class="display"></div>
+        </div>
+        <input name="description" type="text" class="footnote"/>
+        <hr />
+        <div id="footerText"></div>
+    </main>
+</body>
+<script src="main.js" type="module"></script>
+
+<script>
+    //Put this down here out of the way
+    document.querySelector('div#footerText').innerHTML = `
+    <p>
+      The question this tool helps to answer is whether a difference between two or more small trials is significant.
+      Here, we compare multiple datasets on the same common x-axis, using box-and-whisker plots to show summary statistics of the datasets.
+      </p><p>
+        To populate, paste or enter a delimited* series of numbers into each textbox.
+        The plot expects a minimum of five values, and calculates max, min, median and quartile values. That is: the 0%, 25%, 50%, 75% and 100% percentile values.
+    </p><p>
+        The whiskers show up to 1.5 * the inter-quartile range (IQR), and the small diamond shapes depict any outliers.
+    </p><p>
+        *Note: any delimiter will work in the textareas except "." or "-".
+    </p><p>
+    </p><p>
+    </p>
+    `;
+</script>
+
+</html>
+<!-- <textarea class="input a" id="input1"></textarea>
+  <textarea class="input b" id="input2"></textarea>
+  <textarea class="input c" id="input3"></textarea>
+  <textarea class="input d" id="input4"></textarea> -->

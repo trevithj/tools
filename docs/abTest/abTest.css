@@ -1,0 +1,41 @@
+path.plot {
+    stroke: none;
+    /* opacity: 0.5; */
+}
+
+path.grid {
+    stroke: black;
+    stroke-width: 1px;
+    opacity: 0.4;
+}
+
+rect {
+    fill: #ccc;
+    opacity: 0.5;
+    stroke: black;
+    stroke-width: 1px;
+}
+
+div.ctrl {
+    border: solid 3px white;
+}
+div.row {
+    margin-bottom: 5px;
+}
+div.row span {
+    display: inline-block;
+    text-align: center;
+    width: 5vw;
+}
+
+div.fm-label {
+    display: inline-block;
+    width: 15vw;
+    text-align: center;
+    border: solid thin silver;
+    line-height: 1.4em;
+}
+#params input {
+    width: 15vw;
+    text-align: center;
+}

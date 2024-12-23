@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+  <style id="svg">
+    body {
+      font-family: Verdana, Arial, Helvetica, sans-serif;
+    }
+    div.row {
+/*      margin-bottom: 5px; */
+      line-height: 37px;
+      display: table-row;
+    }
+    div.row > span {
+      display: inline-block;
+      text-align: center;
+      width: 8vw;
+    }
+
+    div.row > input {
+      text-align: center;
+      width: 8vw;
+    }
+		.col {
+      display: table-cell;
+		}
+    .plot {
+      width: 50vw;
+      height: 35px;
+      border: solid 1px blue;
+    }
+
+    .plot > svg {
+    	width: 100%;
+    	height: 35px;
+    }
+
+    div.fm-label {
+      display: inline-block;
+      width: 8vw;
+      text-align: center;
+      border: solid thin silver;
+      line-height: 1.4em;
+    }
+
+  </style>
+
+</head>
+
+<body>
+  <div>
+    <p>
+    A comparitive box-plot tool.
+    </p>
+    <div class="form">
+      <form id="params">
+        <div class="row">
+          <span class="head">Outcomes:</span>
+          <div class='fm-label'>Total</div>
+          <div class='fm-label'>Desired</div>
+        </div>
+        <div id="form-rows"></div>
+      </form>
+    </div>
+    <button id="recalc">Recalculate</button>
+  </div>
+  <div id="footerText"></div>
+</body>
+<script>
+	const getEl = sel => document.querySelector(sel);
+  const STATE = {
+    recalc: getEl('button#recalc'),
+    form: getEl('form#params'),
+    params: getEl('form#params').elements,
+    formRows: getEl('div#form-rows'),
+  };
+  STATE.rows = [
+    { total:1000, desired: 500, name: 'Trial A' },
+    { total: 100, desired:  50, name: 'Trial B' },
+    { total:  10, desired:   5, name: 'Trial C' },
+    { total:  10, desired:   3, name: 'Trial D' },
+  ];
+
+</script>
+<!-- <script src="./ver1.js"></script> -->
+<script src="./boxPlot.js"></script>
+
+<script>
+  //Put this down here out of the way
+  document.querySelector('div#footerText').innerHTML=`
+  <hr />
+  <p>
+    The question this tool helps to answer is whether a difference between two or more small trials is significant.
+    Rather than use numerical methods, it simply draws the relevant distributions on the same scale.
+    The less the distributions overlap, the more confident we can be that they are significantly different.
+  </p><p>
+    This tool uses the Monte Carlo method to calculate distributions based on the given ratio of trials to wins.
+    It then plots the quartiles of the distributions, on a scale of 0 to 100 (%) to allow visual comparison.
+  </p><p>
+    As it stands, recalculating using the same trial/win values will produce a different distribution each time.
+    But for crude comparison purposes, it does provide a useful relative measure.
+  </p><p>
+    The tool can handle fairly large trials, but expect the calculation to be slow if much over 10,000.
+    Anyway, the plots will be very narrow for that many trials, so the visual comparison won't be as useful.
+  </p><p>
+  </p>
+  `;
+</script>
+</html>

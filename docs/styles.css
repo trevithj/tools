@@ -1,0 +1,10 @@
+body {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    background-color:azure;
+    max-width: 1024px;
+    margin: auto;
+}
+
+main > p {
+    padding-left: 1em;
+}
