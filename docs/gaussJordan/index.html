@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gauss-Jordan Calculator</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="../styles.css">
+
+</head>
+<body>
+    <main>
+        <h4>Input panel</h4>
+        <section id="input">
+            <label>
+                Columns: <input name="cols" type="number" min="3" max="20" value="4" />
+            </label>
+            <button class="topBtn" id="newRow">New Row</button>
+            <button class="topBtn" id="dupRow">Duplicate Row</button>
+        </section>
+        <h4>Rows</h4>
+        <section id="rows">
+            <div class="row"></div>
+        </section>
+        <h4>Message logs</h4>
+        <section id="logs">
+            <pre></pre>
+        </section>
+    </main>
+    <script src="./main.js" type="module"></script>
+</body>
+</html>
+
+<!-- 
+Notes: maybe instead of having a set of control buttons per row, we make each row selectable, so the controls know which row to act on. Hmm 
+-->
