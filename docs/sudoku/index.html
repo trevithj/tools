@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Sudoku Assister</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        div#display {
+            max-width: 840px;
+        }
+
+        .standard {
+            background-color: white;
+            opacity: 0.9;
+            font-size: 34pt;
+            text-align: center;
+            /* width:1.5em; */
+        }
+
+        .selected {
+            background-color: #ccf;
+        }
+
+        td.flag {
+            font-size: 12pt;
+            text-align: center;
+            /*width:1.5em;*/
+        }
+
+        td.flag-0 {
+            background-color: white;
+            color: silver;
+        }
+
+        td.flag-1 {
+            background-color: #fdd;
+            color: #fdd;
+        }
+
+        td.flag-2 {
+            background-color: #dfd;
+            color: black;
+        }
+
+        td.box {
+            padding: 0.1em;
+            background-color: silver;
+        }
+
+        td.box-2,
+        td.box-4,
+        td.box-6,
+        td.box-8 {
+            background-color: black;
+        }
+
+        table.cellTable {
+            width: 100%;
+        }
+
+        body {
+            font-size: 16pt;
+        }
+
+        @media screen and (max-width: 600px) {
+            body {
+                font: 8pt Helvetica, sans-serif;
+            }
+
+            td.flag {
+                font-size: 8pt;
+            }
+
+            .standard {
+                font-size: 20pt;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="../styles.css" type="text/css">
+</head>
+
+<body>
+    <main>
+        <div class="col-md-12" id="display">
+            Grid Display:
+            <button class="btn btn-primary" name="work">Working</button>
+            <button class="btn btn-primary" name="stnd">Standard</button>
+            <button class="btn btn-default" name="undo">Undo</button>
+            <table style="width:100%">
+                <tbody id="main"></tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="main.js" type="module"></script>
+</body>
+
+</html>
