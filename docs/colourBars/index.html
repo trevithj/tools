@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <!-- <meta name="keywords" content="boxplot, javascript, statistics. percentiles"></meta> -->
+    <title>Colour Bars</title>
+    <link rel="stylesheet" type="text/css" href="./style.css">
+    <link rel="stylesheet" type="text/css" href="../styles.css">
+</head>
+
+<body>
+    <main>
+        <div class="controls">
+            <div class="control">
+                <label for="bar-count">Number of bars:</label>
+                (<span class="count">-</span>)
+                <input type="range" max="60" min="6" name="bar-count" value="10"/>
+            </div>
+            <div class="control">
+                <label for="start-colr">Start Colour:</label>
+                <input type="color" name="start-colr" value="#ff0000" />
+            </div>
+            <div class="control">
+                <label for="end-colr">End Colour:</label>
+                <input type="color" name="end-colr" value="#0000ff"/>
+            </div>
+        </div>
+        <div class="output">
+
+        </div>
+    </main>
+</body>
+<script src="main.js" type="module"></script>
+
+</html>
