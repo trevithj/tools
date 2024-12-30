@@ -24,3 +24,10 @@
     padding: 0;
     overflow: hidden;
 }
+
+.color-bar {
+    width: 100%;
+    height: 600px;
+    border: solid thin black;
+  }
+}

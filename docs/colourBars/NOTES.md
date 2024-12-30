@@ -15,3 +15,13 @@ Extrapolation between colours, plus see how good we are at telling similar colou
 [x] 3. Write a test, then figure it out.
 [x] 4. Mock-up an index page with basic controls.
 
+## Tweaks and Issues:
+### The colour bars show an undesired gradient effect.
+Trials:
+1. Replacing divs with SVG elements.
+2. Trialled using linear-gradient with same colour start and end.
+3. Trialled one big div with stepped linear-gradients.
+
+Above resulted in the same effect.
+The solution seems to be to use one SVG element, with coloured rect elements.
+The single element doesn't seem to show the gradient effect, and gives the desired colour-bar range.
