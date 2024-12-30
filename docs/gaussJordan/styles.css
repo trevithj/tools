@@ -3,6 +3,10 @@ section {
     padding: 0.8em;
     margin: 0.2em;
 }
+section#input {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 2fr;
+}
 h4 { padding-left: 0.5rem; }
 .rows {
     font-size: 18px;
@@ -28,10 +32,11 @@ h4 { padding-left: 0.5rem; }
 }
 input {
     height: 1.5rem;
+    width: 90%;
 }
 button.topBtn {
     width: 8rem;
-    height: 1.5rem;
+    height: 2.5rem;
     border-radius: 0.6rem;
     box-shadow: 3px 2px 2px silver;
 }
