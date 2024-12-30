@@ -11,11 +11,13 @@
 
 <body>
     <main>
+        <h2>Colour Extrapolator</h2>
+        <p>For now, this uses simple RGB linear extrapolation. TODO: try alternatives using HSL instead.</p>
         <div class="controls">
             <div class="control">
                 <label for="bar-count">Number of bars:</label>
                 (<span class="count">-</span>)
-                <input type="range" max="60" min="6" name="bar-count" value="10"/>
+                <input type="range" max="128" min="4" name="bar-count" value="16"/>
             </div>
             <div class="control">
                 <label for="start-colr">Start Colour:</label>
@@ -27,15 +29,7 @@
             </div>
         </div>
         <div class="output">
-
         </div>
-        <div class="color-bar"></div>
-        <hr />
-        <svg viewBox="0 0 100 100">
-            <rect x="0" y="0" width="100" height="11" fill="#ff0000" />
-            <rect x="0" y="10" width="100" height="11" fill="#fd0000" />
-            <rect x="0" y="20" width="100" height="11" fill="#eb0000" />
-        </svg>
     </main>
 </body>
 <script src="main.js" type="module"></script>

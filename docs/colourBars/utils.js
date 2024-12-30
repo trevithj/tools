@@ -37,6 +37,18 @@ export function extrapolateRGB(rgb1, rgb2, factor = 0.5) {
         extrapolate(rgb1[2], rgb2[2], factor),
     ];
 }
+
+export function extrapolateColrCodes(colr1, colr2, barCount) {
+    const length = barCount -1;
+    const colrCodes = Array.from({ length}, (_, i) => {
+        const factor = i / length;
+        const rgb = extrapolateRGB(hex2RGB(colr1), hex2RGB(colr2), factor);
+        return RGB2Hex(rgb);
+    });
+    colrCodes.push(colr2.toLowerCase());
+    return colrCodes;
+}
+
 /*
 Notes: setting element style is a matter of using the right setter on the `element.style` property. Eg: `element.style.backgroundColor = "red"`.
 

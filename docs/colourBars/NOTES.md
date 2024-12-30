@@ -25,3 +25,12 @@ Trials:
 Above resulted in the same effect.
 The solution seems to be to use one SVG element, with coloured rect elements.
 The single element doesn't seem to show the gradient effect, and gives the desired colour-bar range.
+
+## Task list 2
+[x] Extract a function to calculate an array of colour-codes.
+[ ] Style up a fixed-height SVG to show the text (index, colour code)
+[x] Style up a matching SVG to show the colour bars on the same y-scale
+[ ] Align the 2 SVGs so index and code match the bars.
+
+Actually, after mocking up the SVG, I got the same effect. So earlier result was bogus.
+Either this is just due to my monitor/browser combination, or my eyes are lying to me!

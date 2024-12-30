@@ -92,3 +92,21 @@ it("extrapolateRGB fn should work", () => {
         })
     })
 })
+
+it("extrapolateColrCodes fn should work", () => {
+    const { extrapolateColrCodes } = Utils;
+    const results = [
+        extrapolateColrCodes("#000000", "#d0d0d0", 3),
+        extrapolateColrCodes("#FF00FF", "#00FF00", 3),
+    ];
+    const expecteds = [
+        ["#000000","#686868","#d0d0d0"],
+        ["#ff00ff","#808080","#00ff00"],
+    ]
+    expecteds.forEach((expected, i) => {
+        const result = results[i];
+        expected.forEach((v, j) => {
+            assert.equal(result[j], v);
+        })
+    });
+})
