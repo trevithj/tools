@@ -1,21 +1,6 @@
 import assert from "assert"; // built-in Node assertions
 import * as Utils from "../../docs/colourBars/utils.js";
 
-// it("hex2Decimal fn should work", () => {
-//     const { hex2Decimal } = Utils;
-//     const tests = [
-//         ["ff", 255],
-//         ["FF", 255],
-//         ["09", 9],
-//         ["0", 0],
-//         ["A", 10],
-//     ]
-//     tests.forEach(pair => {
-//         const [hex, expected] = pair;
-//         const result = hex2Decimal(hex);
-//         assert.equal(result, expected);
-//     })
-// });
 it("hex2RGB fn should work", () => {
     const { hex2RGB } = Utils;
     const tests = [
@@ -67,6 +52,7 @@ it("extrapolate fn should work with given factors", () => {
         [100, 0, 0.25, 75],
         [0, 100, 0.3333, 33],
         [0, 100, 1.0, 100],
+        [154, 0, 3/16, 125],
     ];
     tests.forEach(test => {
         const [n1, n2, factor, expected] = test;
