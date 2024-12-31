@@ -1,5 +1,5 @@
 import {getStore} from "./store.js";
-import {getEquation, getNumbers, getOperations} from "./operations.js";
+import {getNumbers, getOperations} from "./operations.js";
 
 const store = getStore();
 const { log, doMove, doScale, doAdd } = getOperations(store);
@@ -35,7 +35,7 @@ function getRowStyle(cols) {
 
 function renderRow(data) {
     const { index, values, cols } = data;
-    const equation = getEquation(values);
+    const equation = store.getEquation(index);
     const rowDiv = `<div class="row" data-index="${index}" style="${getRowStyle(cols)}" title="${equation}">`;
     const indexCell = `<div class="cell index">${index}</div>`;
     const info = `<span class="info" title=${equation}></span>`
@@ -105,3 +105,4 @@ function render() {
 }
 
 render();
+log("Ready");

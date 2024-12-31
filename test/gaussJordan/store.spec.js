@@ -5,7 +5,7 @@ describe("getStore fn", () => {
     it("should get a store", () => {
         const store = getStore();
         assert.equal(store.cols, 4);
-        assert.equal(store.rows[0].length, 4);
+        assert.equal(store.rows.row(0).length, 4);
         // checking that rowIndex check works
         assert.equal(store.isRowIndexOk(-1), false);
         assert.equal(store.isRowIndexOk(5), false);
@@ -13,7 +13,7 @@ describe("getStore fn", () => {
 
         // check that changing cols also changes rows
         store.cols = 6;
-        assert.equal(store.rows[0].length, 6);
+        assert.equal(store.rows.row(0).length, 6);
     });
 
     
@@ -22,10 +22,10 @@ describe("getStore fn", () => {
             return [1,2,3,4];
         }
         const store = getStore(makeRow);
-        assert.equal(JSON.stringify(store.rows[0]), "[1,2,3,4]");
+        assert.equal(JSON.stringify(store.rows.row(0)), "[1,2,3,4]");
         // check that scaling a row works
         store.scaleRow(0, 3);
-        assert.equal(JSON.stringify(store.rows[0]), "[3,6,9,12]");
+        assert.equal(JSON.stringify(store.rows.row(0)), "[3,6,9,12]");
     });
 
     it("should add rows as expected", () => {
@@ -33,12 +33,18 @@ describe("getStore fn", () => {
             return index === 0 ? [1,2,3,4] : [3,3,3,3];
         }
         const store = getStore(makeRow);
-        assert.equal(JSON.stringify(store.rows[0]), "[1,2,3,4]");
+        assert.equal(JSON.stringify(store.rows.row(0)), "[1,2,3,4]");
         // check that adding a row works
         store.addRows(0, 2);
-        assert.equal(JSON.stringify(store.rows[0]), "[4,5,6,7]");
+        assert.equal(JSON.stringify(store.rows.row(0)), "[4,5,6,7]");
     });
 
-
+    it("should render equations as expected", () => {
+        function makeRow(index) {
+            return index === 0 ? [1,2,-3,7] : [0,0,-4,8];
+        }
+        const store = getStore(makeRow);
+        assert.equal(store.getEquation(0), "a + 2b + -3c = 7");
+        assert.equal(store.getEquation(1), "-4c = 8");
+    });
 })
-

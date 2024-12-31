@@ -18,8 +18,11 @@ export function getNumbers(label, defaultValue) {
 export function getOperations(store) {
 
     function log(msg) {
-        store.logs.unshift(msg);
-        document.querySelector("#logs > pre").innerHTML = store.logs.join("\n");
+        // store.logs.unshift(msg);
+        const logs = document.querySelectorAll("#logs > pre");
+        // logs[0].innerHTML = store.logs.join("\n");
+        logs[0].innerHTML = `${msg}\n${logs[0].innerHTML}`;
+        logs[1].innerHTML = store.equations.join("\n");
     }
 
     function doMove(rowIndex) {
@@ -49,17 +52,4 @@ export function getOperations(store) {
         log, doMove, doScale, doAdd
     };
 
-}
-
-export function getEquation(vals) {
-    const variables = "abcdefghijklmnop".split("");
-    const cells = vals.map((n, i) => {
-        if (i+1 === vals.length) return ` = ${n}`;
-        const prefix = i === 0 ? "" : " + ";
-        if (n === 0) return "";
-        const vName = variables[i];
-        const coef = n === 1 ? "" : n;
-        return `${prefix}${coef}${vName}`;
-    });
-    return cells.join("");
 }
