@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Random Sequence Generator</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="../styles.css">
+
+</head>
+<body>
+    <main>
+        <header>
+            <h2>Random Sequence Generator Tool</h2>
+            <p>Given a seed value and a selected algorithm, this tool generates pseudo-random sequences. The idea is to make new passwords that are easier to remember. Only the seed and the algorithm are needed to re-create them as needed.</p>
+            <p>Of course, the seed+algorithm combo needs to be kept secure - but that should be easier to commit to memory.</p>
+        </header>
+        <h4>Input panel</h4>
+        <section id="input" class="grid grid-cols-3">
+            <label for="seed">
+                Enter a seed integer: <input name="seed" type="number" step="1" value="123" />
+            </label>
+            <label for="count">
+                Subsequence size: <input name="count" type="number" step="1" value="4" />
+            </label>
+            <label for="create">
+                Create the sequences: <input id="create" type="button" value="Generate" />
+            </label>
+        </section>
+        <h4>Sequences</h4>
+        <section id="sequences">
+            <div class="rows grid grid-cols-3"></div>
+        </section>
+        <h4>Output</h4>
+        <section id="output">
+            <input name="sequence" type="text" />
+            <input name="params" type="text" />
+        </section>
+    </main>
+    <script src="./main.js" type="module"></script>
+</body>
+</html>
+
+<!-- 
+Notes: maybe instead of having a set of control buttons per row, we make each row selectable, so the controls know which row to act on. Hmm 
+-->

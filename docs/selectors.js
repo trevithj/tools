@@ -11,7 +11,7 @@ export const selectAll = (selector, el = document) => el.querySelectorAll(select
 
 export const makeElement = (type, className) => {
     const el = document.createElement(type);
-    if (className) el.classList.add(className);
+    if (className) el.setAttribute("class", className);
     return el;
 }
 
