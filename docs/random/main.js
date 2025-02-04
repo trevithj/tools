@@ -7,8 +7,6 @@ const getSeed = () => Math.round(parseFloat(seedInput?.value || 0));
 const countInput = select("input[name='count']");
 const getCount = () => Math.round(parseFloat(countInput?.value || 0));
 
-const createBtn = select("#create");
-
 const vals = {
     get seed() {
         return getSeed();
@@ -51,8 +49,15 @@ function renderRow(parent, object) {
     parent.append(id, set, seq, add);
 }
 
+// Output
+const seqOutput = select("#output input[name='sequence']");
+const paramsOutput = select("#output input[name='params']");
+
+const createBtn = select("#create");
 createBtn.addEventListener("click", () => {
-    vals.random = createRandomGenerator(getSeed());
+    const seed = getSeed();
+    paramsOutput.value = `${seed} ${vals.count}`;
+    vals.random = createRandomGenerator(seed);
     const data = generate();
     console.log(data);
     const parent = select("#sequences div.rows");
@@ -62,7 +67,9 @@ createBtn.addEventListener("click", () => {
     });
     selectAll("button.append").forEach(btn => {
         btn.addEventListener("click", evt => {
-            console.log(evt.target.__data);
+            const {id, seq} = evt.target.__data;
+            seqOutput.value += seq;
+            paramsOutput.value += ` ${id}`;
         })
     })
 });

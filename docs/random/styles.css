@@ -9,6 +9,13 @@ section {
 .grid-cols-3 {
     grid-template-columns: 1fr 1fr 1fr;
 }
+.grid-cols-4 {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+.gap-2 {
+    row-gap: 0.5rem;
+    column-gap: 0.5rem;
+}
 section#logs {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -17,16 +24,11 @@ h4 { padding-left: 0.5rem; }
 .rows {
     font-size: 18px;
     font-family: system-ui; 
-    grid-template-columns: 1fr 1fr 1fr 1fr;
 }
 .row {
     height: 2rem;
     margin-bottom: 0.8rem;
     /* border-bottom: solid 2px silver; */
-}
-.cell {
-    /* text-align: left; */
-    /* align-content: center; */
 }
 .sequence {
     font-family: monospace;
@@ -43,6 +45,7 @@ h4 { padding-left: 0.5rem; }
 input {
     height: 1.5rem;
     width: 90%;
+    font-family: system-ui;
 }
 button.topBtn {
     width: 8rem;
