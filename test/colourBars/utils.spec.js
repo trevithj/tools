@@ -1,3 +1,4 @@
+import { it } from "vitest";
 import assert from "assert"; // built-in Node assertions
 import * as Utils from "../../docs/colourBars/utils.js";
 

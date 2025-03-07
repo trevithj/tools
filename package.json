@@ -8,8 +8,8 @@
     "doc": "docs"
   },
   "scripts": {
-    "test": "mocha --recursive",
-    "test:watch": "mocha --node-option=watch --recursive"
+    "test": "vitest",
+    "dev": "vite"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/trevithj/sims#readme",
   "devDependencies": {
-    "mocha": "^11.0.1"
+    "vite": "^6.2.1",
+    "vitest": "^3.0.8"
   }
 }

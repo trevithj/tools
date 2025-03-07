@@ -1,3 +1,4 @@
+import { describe, it } from "vitest";
 import assert from "assert"; // built-in Node assertions
 import {getRows} from "../../docs/gaussJordan/rows.js";
 

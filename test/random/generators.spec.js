@@ -1,5 +1,5 @@
+import { describe, it } from "vitest";
 import assert from "assert"; // built-in Node assertions
-import MockDoc from "../mockDocument.js";
 import { createRandomGenerator, generateRandomAscii, generateAsciiValues } from "../../docs/random/generators.js";
 
 describe("createRandomGenerator fn", () => {
