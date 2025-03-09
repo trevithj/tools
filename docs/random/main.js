@@ -40,13 +40,13 @@ function renderRow(parent, object) {
     const id = makeElement("div", "cell id");
     const set = makeElement("div", "cell set");
     const seq = makeElement("div", "cell sequence");
-    const add = makeElement("button", "cell append");
+    const add = makeElement("button", "ctrl append");
     id.innerHTML = object.id;
     set.innerHTML = object.key;
     seq.innerHTML = object.seq;
-    add.textContent = "Append";
+    add.textContent = `Append #${object.id}`;
     add.__data = object;
-    parent.append(id, set, seq, add);
+    parent.append(add, set, seq);
 }
 
 // Output
@@ -57,6 +57,7 @@ const createBtn = select("#create");
 createBtn.addEventListener("click", () => {
     const seed = getSeed();
     paramsOutput.value = `${seed} ${vals.count}`;
+    seqOutput.value = "";
     vals.random = createRandomGenerator(seed);
     const data = generate();
     console.log(data);

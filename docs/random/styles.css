@@ -16,6 +16,9 @@ section {
     row-gap: 0.5rem;
     column-gap: 0.5rem;
 }
+.span-2 {
+    grid-column: span 2;
+}
 section#logs {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -55,12 +58,12 @@ button.topBtn {
 }
 button.ctrl {
     padding: 0;
-    font-size: 1.2rem;
+    font-size: 1rem;
     width: 100%;
     height: 100%;
     background-repeat: no-repeat;
     background-position: center;
-    border-radius: 20%;
+    border-radius: 10px;
     box-shadow: 3px 2px 2px silver;
 }
 button.ctrl:disabled {

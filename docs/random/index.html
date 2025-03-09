@@ -3,6 +3,7 @@
 <head>
     <title>Random Sequence Generator</title>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="./styles.css">
     <link rel="stylesheet" href="../styles.css">
 
@@ -16,28 +17,32 @@
         </header>
         <h4>Input panel</h4>
         <section id="input" class="grid grid-cols-3">
-            <label for="seed">
-                Enter a seed integer: <input name="seed" type="number" step="1" value="123" />
+            <label>
+                Enter a seed integer:
             </label>
-            <label for="count">
-                Subsequence size: <input name="count" type="number" step="1" value="4" />
+            <label>
+                Subsequence size:</label>
+            <label>
+                Create the sequences:
             </label>
-            <label for="create">
-                Create the sequences: <input id="create" type="button" value="Generate" />
-            </label>
+            <input name="seed" type="number" step="1" value="123" />
+            <input name="count" type="number" step="1" value="4" />
+            <button id="create" class="ctrl generate">Generate</button> 
         </section>
         <h4>Sequences</h4>
         <section id="sequences">
-            <div class="rows grid grid-cols-4 gap-2"></div>
+            <div class="rows grid grid-cols-3 gap-2"></div>
         </section>
         <h4>Output</h4>
         <section id="output" class="grid grid-cols-3">
-            <label for="sequence">
-                The Sequence: <input name="sequence" type="text" />
+            <label for="sequence" class="span-2">
+                The Sequence:
             </label>
             <label for="params">
-                The Parameters: <input name="params" type="text" />
+                The Params:
             </label>
+            <input name="sequence" type="text" class="span-2"/>
+            <input name="params" type="text" />
         </section>
     </main>
     <script src="./main.js" type="module"></script>
