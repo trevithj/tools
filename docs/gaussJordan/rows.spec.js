@@ -1,6 +1,6 @@
 import { describe, it } from "vitest";
 import assert from "assert"; // built-in Node assertions
-import {getRows} from "../../docs/gaussJordan/rows.js";
+import {getRows} from "./rows.js";
 
 describe("getRows fn", () => {
     it("should get a Rows object", () => {
