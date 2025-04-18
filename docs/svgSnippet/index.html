@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>SVG Snippet Generator</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="../styles.css">
+
+</head>
+
+<body>
+    <main>
+        <header>
+            <h2>SVG Snippet Generator Tool</h2>
+            <p>Generate an SVG representing a formatted block of text.</p>
+            <p>Allow export.</p>
+        </header>
+        <div class="grid grid-cols-2">
+
+            <section id="input" class="xgrid xgrid-cols-3">
+                <h4>Input panel</h4>
+                <textarea>
+const x = 123.45;
+const y = "a big value";
+function f() {
+    print "hello";
+};
+</textarea>
+            </section>
+            <section id="output" class="xgrid xgrid-cols-3">
+                <h4>Output</h4>
+                <svg width="400" height="1000" viewbox="0 0 200 500">
+                    <style>
+                        text {
+                            font: 12px monospace;
+                        }
+                        .keyword {
+                            fill: blue;
+                        }
+                        .string {
+                            fill: green;
+                        }
+                    </style>
+                    <rect width="200" height="500" fill="none" stroke="blue" />
+                    <text x="10" y="15">
+                        <tspan class="keyword">const</tspan> x = 123.45;
+                    </text>
+                    <text x="10" y="30">
+                        <tspan class="keyword">const</tspan> y = <tspan class="string">"a big value"</tspan>;
+                    </text>
+                    <text x="10" y="45">
+                        <tspan class="keyword">function</tspan> f() {
+                    </text>
+                    <text x="20" y="60"> print <tspan class="string">"hello"</tspan>;</text>
+                    <text x="10" y="75">};</text>
+                </svg>
+            </section>
+        </div>
+    </main>
+    <script src="./main.js" type="module"></script>
+</body>
+
+</html>
