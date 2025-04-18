@@ -2,10 +2,11 @@
 <html>
 
 <head>
+    <title>BoxPlot 2</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <meta name="keywords" content="boxplot, javascript, statistics. percentiles">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="./style.css">
+    <link rel="stylesheet" type="text/css" href="../boxPlot/style.css">
     <link rel="stylesheet" type="text/css" href="../styles.css">
     <style id="svg">
         body {
@@ -26,7 +27,7 @@
                 <button id="add" title="Add another plot row">&plus;</button>
                 <label>Width</label>
                 <input type="range" id="wid" min="300" max="1600" step="10" value="800"></input>
-                <button id="data" title="Toggle data view">DATA</button>
+                <button id="data"  title="Toggle data view">DATA</button>
                 <button id="reset" title="Reset to defaults">&#x21BA;</button>
             </div>
             <div class="data hidden">
@@ -38,7 +39,7 @@
             </form>
             <div class="display"></div>
         </div>
-        <input name="description" type="text" class="footnote" />
+        <input name="description" type="text" class="footnote"/>
         <hr />
         <div id="footerText"></div>
     </main>
@@ -58,6 +59,7 @@
         The whiskers show up to 1.5 * the inter-quartile range (IQR), and the small diamond shapes depict any outliers.
     </p><p>
         *Note: any delimiter will work in the textareas except <code>.</code> or <code>-</code>.
+    </p><p>
     </p><p>
     </p>
     `;

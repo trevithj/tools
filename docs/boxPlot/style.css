@@ -70,4 +70,5 @@ input.footnote {
     line-height: 2rem;
     border: none;
 }
+code { padding: 0 0.4rem; background-color: #ddd }
 /* svg { transform: scaleY(0.8)} */
