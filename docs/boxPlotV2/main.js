@@ -71,20 +71,25 @@ views.dataText.addEventListener("change", (evt) => {
 })
 
 // Update the display as required
+function isDiffShallow(obj1, obj2, fields) {
+    return fields.some(fieldName => obj1[fieldName] !== obj2[fieldName]);
+}
+
 theStore.subscribe((state, oldState) => {
     if (state.showData === oldState.showData) return;
     console.log(views.dataDiv);
     views.dataDiv.classList.toggle("hidden");
 });
 
-theStore.subscribe((state, oldState) => {
-    if (state.values === oldState.values && state.labels === oldState.labels) return;
+theStore.subscribe((state, prev) => {
+    if (!isDiffShallow(state, prev, ["values", "labels"])) return;
     updateInputs(state.values, state.labels);
 });
 
 theStore.subscribe((state, prev) => {
     const {stats, percents, scale, width} = state;
-    if (stats === prev.stats && scale === prev.scale && width === prev.width) return;
+    // if (stats === prev.stats && scale === prev.scale && width === prev.width) return;
+    if (!isDiffShallow(state, prev, ["stats", "scale", "width"])) return;
     const scaleData = getScaleData(scale, width);
     const displayRow = makeDisplayRow(width, scaleData);
     const displayRows = percents.map((result, row) => {
@@ -96,44 +101,5 @@ theStore.subscribe((state, prev) => {
     // const toPercent = state.width / overview.range;
 });
 
-// theStore.subscribe(state => {
-//     const {stats, percents, scale, actionType} = state;
-//     switch(actionType) {
-//         case "DATA_TOGGLED": {
-//             console.log(views.dataDiv);
-//             views.dataDiv.classList.toggle("hidden");
-//             break;
-//         }
-//         case "ROW_ADDED":
-//         case "ROW_REMOVED":
-//         case "RESET":
-//             updateInputs(state.values, state.labels);
-//         default: {
-//             const scaleData = getScaleData(scale, state.width);
-//             const displayRow = makeDisplayRow(state.width, scaleData);
-//             const displayRows = percents.map((result, row) => {
-//                 const d = getPath(result, state.width);
-//                 return displayRow(stats[row], d, row);
-//             });
-//             displayDiv.innerHTML = displayRows.join("\n");
-//             views.dataText.value = stringify(state);
-//             // const toPercent = state.width / overview.range;
-//         }
-//     }
-// })
-
 // Initial plots
 actions.start();
-
-/*
-{
-   labels: [
-      "Set 1",
-      "SET BBB"
-   ],
-   values: [
-      [1,2,3,4,4,5,5,6,6,7,7,8],
-      [5,6,7,8,9]
-   ]
-}
-*/
