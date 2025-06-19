@@ -15,12 +15,16 @@ function updateRow(row, values) {
     return row;
 }
 
+function updateRows(coefficients, values) {
+    return coefficients.map(row => updateRow(row, values));
+}
+
 function makeCoefficients(state) {
     const { vCount, values } = state;
     const coefficients = Array.from({ length: vCount}, () => {
-        const row = Array.from({ length: vCount+1}, () => (1 + rand(20)));
-        return updateRow(row, values);
+        return Array.from({ length: vCount+1}, () => (1 + rand(20)));
     });
+    updateRows(coefficients, values);
     return coefficients;
 }
 
@@ -30,7 +34,7 @@ const INIT_STATE = {
     message: ""
 }
 
-const getStore = () => createStore((set) => ({
+export const getStore = () => createStore((set) => ({
     ...INIT_STATE,
     coefficients: makeCoefficients(INIT_STATE),
     setVCount: (v) => set(() => {
@@ -39,6 +43,15 @@ const getStore = () => createStore((set) => ({
         const values = Array.from({ length: vCount}, () => 1);
         const coefficients = makeCoefficients({values, vCount});
         return { values, vCount, message: "OK", coefficients };
+    }),
+    setValue: (index, newValue) => set(state => {
+        const { vCount } = state;
+        const values = [...state.values];
+        values[index] = newValue;
+        const coefficients = updateRows(state.coefficients, values);
+        // console.log(values, coefficients);
+        return { values, vCount, message: "OK", coefficients };
+
     })
     // status: "ok",
     // push: qty => set(state => {
@@ -56,5 +69,4 @@ const getStore = () => createStore((set) => ({
     // }),
 }));
 
-export default getStore;
 // const { getState, setState, subscribe, getInitialState } = store

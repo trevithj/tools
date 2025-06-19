@@ -18,6 +18,12 @@ section#logs {
     grid-template-columns: 1fr 1fr;
 }
 h4 { padding-left: 0.5rem; }
+.rangeRow {
+    display: grid;
+    gap: 5px;
+    grid-template-columns: 3em 3em 1fr;
+    margin: 0.8rem 0;
+}
 .rows {
     font-size: 18px;
     font-family: system-ui; 
@@ -43,7 +49,7 @@ h4 { padding-left: 0.5rem; }
 input {
     height: 2rem;
     width: 90%;
-    cursor: move;
+    cursor: ew-resize;
 }
 button.topBtn {
     width: 6rem;
