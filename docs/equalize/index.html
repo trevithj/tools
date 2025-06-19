@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Equalizer Game</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="../styles.css">
+
+</head>
+
+<body>
+    <main>
+        <h2>Linear Equations Equalizer Game</h2>
+        <p>This is more a tutorial/brain-workout game than a tool. Adjust the variables until the output values are
+            equal.</p>
+        <h4>Input panel</h4>
+        <section id="config">
+            <label>Number of variables</label>
+            <div class="cell value">2</div>
+            <input type="range" name="v-count" value="2" min="2" max="5"/>
+            <button class="topBtn">Reset</button>
+        </section>
+        <section id="input">
+            <span>x<sub>1</sub></span>
+            <div class="cell value">1</div>
+            <input name="x1" type="range" step="1" min="1" max="20" value="1" />
+            <span>x<sub>2</sub></span>
+            <div class="cell value">1</div>
+            <input name="x2" type="range" step="1" min="1" max="20" value="1" />
+        </section>
+        <h4>Rows</h4>
+        <section id="mockup-rows">
+            <div class="row" style="display:grid; gap:3px; grid-template-columns: repeat(5, 5em);">
+                <div class="cell value">1⋅x₁</div>
+                <div class="cell value">+</div>
+                <div class="cell value">3⋅x<sub>2</sub></div>
+                <div class="cell value">=</div>
+                <div class="cell value">4</div>
+            </div>
+            <div class="row" style="display:grid; gap:3px; grid-template-columns: repeat(5, 5em);">
+                <div class="cell value">3⋅x<sub>1</sub></div>
+                <div class="cell value">+</div>
+                <div class="cell value">5⋅x<sub>2</sub></div>
+                <div class="cell value">=</div>
+                <div class="cell value">8</div>
+            </div>
+        </section>
+
+        <section id="rows">
+            <div class="row"></div>
+        </section>
+        <h4>Message logs</h4>
+        <section id="logs">
+            <pre></pre>
+            <pre style="text-align: end;"></pre>
+        </section>
+    </main>
+    <script src="./main.js" type="module"></script>
+</body>
+
+</html>
+
+<!-- 
+Notes:  
+-->

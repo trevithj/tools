@@ -27,7 +27,7 @@ function deleteRow(rowIndex) {
 }
 
 function makeExampleRow() {
-    return Array.from({length: store.cols}, (_, i) => {
+    return Array.from({length: store.cols}, () => {
         return Math.round(Math.random() * 10);
     })
 }

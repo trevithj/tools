@@ -1,0 +1,79 @@
+section {
+    border: solid thin silver;
+    padding: 0.8em;
+    margin: 0.2em;
+}
+section#config {
+    display: grid;
+    gap: 5px;
+    grid-template-columns: 6em 2.5em 1fr 6em;
+}
+section#input {
+    display: grid;
+    gap: 5px;
+    grid-template-columns: 3em 3em 1fr;
+}
+section#logs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+h4 { padding-left: 0.5rem; }
+.rows {
+    font-size: 18px;
+    font-family: system-ui; 
+}
+.row {
+    height: 2rem;
+    margin-bottom: 0.8rem;
+    /* border-bottom: solid 2px silver; */
+}
+.cell {
+    text-align: center;
+    align-content: center;
+}
+.rhs {
+    background-color: #f9f9f9;
+}
+.value {
+    border: solid thin silver;
+    border-radius: 0.5em;
+    white-space: no-wrap;
+    overflow: hidden;
+}
+input {
+    height: 2rem;
+    width: 90%;
+    cursor: move;
+}
+button.topBtn {
+    width: 6rem;
+    height: 2.5rem;
+    border-radius: 0.6rem;
+    box-shadow: 3px 2px 2px silver;
+    cursor: pointer;
+}
+button.ctrl {
+    padding: 0;
+    font-size: 1.2rem;
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 20%;
+    box-shadow: 3px 2px 2px silver;
+}
+button.ctrl:disabled {
+    opacity: 0.4;
+}
+button.delete {
+    background-image: url(../icons/delete.svg);
+}
+button.move {
+    background-image: url(../icons/moveup.svg);
+}
+button.scale {
+    background-image: url(../icons/multiply.svg);
+}
+button.add {
+    background-image: url(../icons/add.svg);
+}
