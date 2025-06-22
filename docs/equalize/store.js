@@ -69,4 +69,9 @@ export const getStore = () => createStore((set) => ({
     // }),
 }));
 
+export const TheStore = getStore(); 
 // const { getState, setState, subscribe, getInitialState } = store
+
+export function isDiffShallow(obj1, obj2, fields = []) {
+    return fields.some(fieldName => obj1[fieldName] !== obj2[fieldName]);
+}
