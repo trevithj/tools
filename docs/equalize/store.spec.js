@@ -1,17 +1,30 @@
-import {describe, it, expect, vi} from "vitest";
+import {describe, it, expect, beforeEach} from "vitest";
 import { getStore, isDiffShallow } from "./store";
 
+function makeTestCoefficients(state) {
+    const {vCount} = state;
+    const coefficients = Array.from({length: vCount}, () => {
+        return Array.from({length: vCount}, () => 2);
+    });
+    return coefficients;
+}
+
 describe("getStore fn", () => {
-    vi.spyOn(Math, "random").mockImplementation(() => 1/20);
+    let store;
+    beforeEach(() => {
+        store = getStore(makeTestCoefficients);
+        const state = store.getState();
+        state.setVCount(2);
+    })
 
     it("should get a store", () => {
-        const store = getStore();
         let state = store.getState();
         expect(state.vCount).toBe(2);
         expect(state.values).toEqual([1, 1]);
         expect(state.coefficients.length).toEqual(2);
-        expect(state.coefficients[0].length).toEqual(3);
-        expect(state.coefficients[0]).toEqual([2, 2, 4]);
+        expect(state.coefficients[0].length).toEqual(2);
+        expect(state.coefficients[0]).toEqual([2, 2]);
+        expect(state.rhs[0]).toEqual(4);
 
         state.setVCount(4);
 
@@ -20,35 +33,38 @@ describe("getStore fn", () => {
         expect(state.values).toEqual([1, 1, 1, 1]);
         expect(state.message).toEqual("OK");
         expect(state.coefficients.length).toEqual(4);
-        expect(state.coefficients[0]).toEqual([2, 2, 2, 2, 8]);
+        expect(state.coefficients[0]).toEqual([2, 2, 2, 2]);
+        expect(state.rhs[0]).toEqual(8);
     });
 
     it("should update values", () => {
-        const store = getStore();
-        let state = store.getState();
+         let state = store.getState();
         expect(state.values).toEqual([1, 1]);
-        expect(state.coefficients[0]).toEqual([2, 2, 4]);
+        expect(state.coefficients[0]).toEqual([2, 2]);
+        expect(state.rhs[0]).toEqual(4);
 
         state.setValue(0, 5);
         state.setValue(1, 3);
 
         state = store.getState();
         expect(state.values).toEqual([5, 3]);
-        expect(state.coefficients[0]).toEqual([2, 2, 16]);
+        expect(state.coefficients[0]).toEqual([2, 2]);
+        expect(state.rhs[0]).toEqual(16);
     })
 
     it("should update values", () => {
-        const store = getStore();
         let state = store.getState();
         expect(state.values).toEqual([1, 1]);
-        expect(state.coefficients[0]).toEqual([2, 2, 4]);
-
+        expect(state.coefficients[0]).toEqual([2, 2]);
+        expect(state.rhs[0]).toEqual(4);
+        
         state.setValue(0, 5);
         state.setValue(1, 3);
-
+        
         state = store.getState();
         expect(state.values).toEqual([5, 3]);
-        expect(state.coefficients[0]).toEqual([2, 2, 16]);
+        expect(state.coefficients[0]).toEqual([2, 2]);
+        expect(state.rhs[0]).toEqual(16);
     })
 
 })

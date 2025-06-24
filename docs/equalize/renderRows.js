@@ -2,30 +2,42 @@ const rowsView = document.querySelector("section#rows");
 
 const gridStyle = "display:grid; gap:3px; grid-template-columns";
 
-// TODO: add coefficients
-function makeRow(coefficients, i) {
-    const cols = coefficients.length + 2;
-    return [
-        `<div class="row row-${i}" style="${gridStyle}: repeat(${cols}, 5em);">`,
-        `<div class="cell value">3⋅x<sub>1</sub></div>`,
-        `<div class="cell">+</div>`,
-        `<div class="cell value">5⋅x<sub>2</sub></div>`,
-        `<div class="cell">=</div>`,
-        `<div class="cell value">8</div>`,
-        '</div>'
-    ]
-};
-
-export function initRows(theStore) {
-    // TODO: listen to state change, display coefficients
+function makeCoeffCells(coefficients) {
+    return coefficients.map((coef, i) => {
+        const cell = `<div class="cell value">${coef}⋅x<sub>${i+1}</sub></div>`;
+        if(i===0) {
+            return cell;
+        }
+        return '<div class="cell">+</div>' + cell;
+    });
 }
 
-/*
-<div class="row" style="display:grid; gap:3px; grid-template-columns: repeat(5, 5em);">
-    <div class="cell value">3⋅x<sub>1</sub></div>
-    <div class="cell">+</div>
-    <div class="cell value">5⋅x<sub>2</sub></div>
-    <div class="cell">=</div>
-    <div class="cell value">8</div>
-</div>
-*/
+// Add coefficients and dynamic columns.
+function makeRow(coefficients, i) {
+    const cols = coefficients.length;
+    const cells = makeCoeffCells(coefficients);
+    return [
+        `<div class="row row-${i}" style="${gridStyle}: repeat(${cols}, 5rem 2rem) 5rem;">`,
+        ...cells,
+        `<div class="cell">=</div>`,
+        `<div class="cell value rhs-value">?</div>`,
+        '</div>'
+    ].join("\n");
+};
+
+let rhsCols = [];
+export function initRows(theStore) {
+    theStore.subscribe((state, prev) => {
+        console.log(state, prev);
+        if (state.coefficients !== prev.coefficients) {
+            const html = state.coefficients.map(makeRow).join("\n");
+            rowsView.innerHTML = html;
+            rhsCols = rowsView.querySelectorAll("div.rhs-value");
+        };
+        if (state.rhs !== prev.rhs) {
+            state.rhs.forEach((r,i) => {
+                rhsCols[i].innerText = r;
+            })
+        };
+    })
+}

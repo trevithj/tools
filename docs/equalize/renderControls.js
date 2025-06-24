@@ -15,14 +15,14 @@ function makeRow(v, i) {
 
 export function initControls(TheStore) {
     TheStore.subscribe((state, oldState) => {
-        console.log(state);
+        // console.log(state);
         if (state.vCount === oldState.vCount) return;
         const {values} = state;
         const html = values.flatMap(makeRow);
         controlView.innerHTML = html.join("");
         
         const ranges = document.querySelectorAll("div.rangeRow");
-        console.log(ranges, values);
+        // console.log(ranges, values);
     
         ranges.forEach((range, i) => {
             range.querySelector("input").addEventListener("input", e => {
