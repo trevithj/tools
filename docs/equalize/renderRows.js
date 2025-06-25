@@ -17,8 +17,10 @@ function makeRow(coefficients, i) {
     const cols = coefficients.length;
     const cells = makeCoeffCells(coefficients);
     return [
-        `<div class="row row-${i}" style="${gridStyle}: repeat(${cols}, 5rem 2rem) 5rem;">`,
+        `<div class="row row-${i}" style="${gridStyle}: repeat(${cols+1}, 5rem 2rem) 5rem;">`,
         ...cells,
+        `<div class="cell">-</div>`,
+        `<div class="cell value consts">?</div>`,
         `<div class="cell">=</div>`,
         `<div class="cell value rhs-value">?</div>`,
         '</div>'
@@ -26,6 +28,7 @@ function makeRow(coefficients, i) {
 };
 
 let rhsCols = [];
+let kCols = [];
 export function initRows(theStore) {
     theStore.subscribe((state, prev) => {
         console.log(state, prev);
@@ -33,6 +36,12 @@ export function initRows(theStore) {
             const html = state.coefficients.map(makeRow).join("\n");
             rowsView.innerHTML = html;
             rhsCols = rowsView.querySelectorAll("div.rhs-value");
+            kCols = rowsView.querySelectorAll("div.consts");
+        };
+        if (state.consts !== prev.consts) {
+            state.consts.forEach((k,i) => {
+                kCols[i].innerText = k;
+            })
         };
         if (state.rhs !== prev.rhs) {
             state.rhs.forEach((r,i) => {

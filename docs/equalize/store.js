@@ -13,8 +13,9 @@ function calcRow(row, values) {
 const INIT_STATE = {
     vCount: 0,
     values: [],
-    rhs: [],
     coefficients: [],
+    consts: [],
+    rhs: [],
     message: ""
 }
 
@@ -27,15 +28,17 @@ export const getStore = (makeCoefficients) => {
                 const vCount = Math.round(v);
                 const values = Array.from({length: vCount}, () => 1);
                 const coefficients = makeCoefficients({values, vCount});
-                const rhs = coefficients.map(coeff => calcRow(coeff, values));
-                return {values, vCount, message: "OK", coefficients, rhs};
+                const consts = makeConsts({coefficients, vCount});
+                const rhs = makeRHS({ coefficients, consts, values });
+                return {values, vCount, message: "OK", coefficients, consts, rhs};
             }),
             setValue: (index, newValue) => set(state => {
-                const {vCount} = state;
+                const {vCount, consts} = state;
                 const values = [...state.values];
                 values[index] = newValue;
                 const {coefficients} = state;
-                const rhs = coefficients.map(coeff => calcRow(coeff, values));
+                const rhs = makeRHS({ coefficients, consts, values });
+                // const rhs = coefficients.map(coeff => calcRow(coeff, values));
                 // console.log(values, coefficients);
                 return {values, vCount, message: "OK", coefficients, rhs};
             })
@@ -54,11 +57,50 @@ function rand(max) {
     return Math.floor(Math.random() * max);
 }
 
+export function determinant(matrix) {
+    const size = matrix.length;
+    if (size === 1) return matrix[0][0];
+    if (size === 2) {
+        return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
+    }
+    let det = 0;
+    for (let i = 0; i < size; i++) {
+        const minor = matrix.slice(1).map(row => row.filter((_, j) => j !== i));
+        det += (i % 2 === 0 ? 1 : -1) * matrix[0][i] * determinant(minor);
+    }
+    return det;
+}
+
 // export this so we can do dependency-injection for getStore - easier to test
 export function makeCoefficients(state) {
     const {vCount} = state;
     const coefficients = Array.from({length: vCount}, () => {
-        return Array.from({length: vCount}, () => (1 + rand(20)));
+        const sign = Math.random() > 0.5 ? 1 : -1;
+        return Array.from({length: vCount}, () => (sign * (1 + rand(20))));
     });
+    const d = determinant(coefficients);
+    console.log("D", d);
+    if (d === 0) return makeCoefficients(state);
     return coefficients;
+}
+
+export function getValues(state) {
+    const {vCount} = state;
+    const values = Array.from({length: vCount}, () => (2 + rand(19)));
+    return values;
+}
+
+function makeConsts(state) {
+    const {vCount, coefficients} = state;
+    const values = Array.from({length: vCount}, () => (2 + rand(19)));
+    const ka = coefficients.map(row =>{
+        return calcRow(row, values);
+    })
+    return ka;
+}
+
+function makeRHS(state) {
+    const { coefficients, consts, values } = state;
+    const rhs = coefficients.map(coeff => calcRow(coeff, values));
+    return rhs.map((v,i) => v - consts[i]);
 }
