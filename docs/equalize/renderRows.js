@@ -31,7 +31,7 @@ let rhsCols = [];
 let kCols = [];
 export function initRows(theStore) {
     theStore.subscribe((state, prev) => {
-        console.log(state, prev);
+        // console.log(state, prev);
         if (state.coefficients !== prev.coefficients) {
             const html = state.coefficients.map(makeRow).join("\n");
             rowsView.innerHTML = html;

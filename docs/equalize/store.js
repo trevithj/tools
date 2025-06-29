@@ -1,4 +1,4 @@
-import {createStore} from 'zustand/vanilla'
+import createStore from "../zustandVanilla.js";
 
 function calcRow(row, values) {
     // A.x1 + B.x2 + ... = C
@@ -29,7 +29,7 @@ export const getStore = (makeCoefficients) => {
                 const values = Array.from({length: vCount}, () => 1);
                 const coefficients = makeCoefficients({values, vCount});
                 const consts = makeConsts({coefficients, vCount});
-                const rhs = makeRHS({ coefficients, consts, values });
+                const rhs = makeRHS({coefficients, consts, values});
                 return {values, vCount, message: "OK", coefficients, consts, rhs};
             }),
             setValue: (index, newValue) => set(state => {
@@ -37,7 +37,7 @@ export const getStore = (makeCoefficients) => {
                 const values = [...state.values];
                 values[index] = newValue;
                 const {coefficients} = state;
-                const rhs = makeRHS({ coefficients, consts, values });
+                const rhs = makeRHS({coefficients, consts, values});
                 // const rhs = coefficients.map(coeff => calcRow(coeff, values));
                 // console.log(values, coefficients);
                 return {values, vCount, message: "OK", coefficients, rhs};
@@ -84,23 +84,18 @@ export function makeCoefficients(state) {
     return coefficients;
 }
 
-export function getValues(state) {
-    const {vCount} = state;
-    const values = Array.from({length: vCount}, () => (2 + rand(19)));
-    return values;
-}
-
 function makeConsts(state) {
     const {vCount, coefficients} = state;
     const values = Array.from({length: vCount}, () => (2 + rand(19)));
-    const ka = coefficients.map(row =>{
+    console.log("Target solution:", values);
+    const ka = coefficients.map(row => {
         return calcRow(row, values);
     })
     return ka;
 }
 
 function makeRHS(state) {
-    const { coefficients, consts, values } = state;
+    const {coefficients, consts, values} = state;
     const rhs = coefficients.map(coeff => calcRow(coeff, values));
-    return rhs.map((v,i) => v - consts[i]);
+    return rhs.map((v, i) => v - consts[i]);
 }

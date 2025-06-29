@@ -1,4 +1,4 @@
-import {createStore} from 'zustand/vanilla'
+import createStore from "../zustandVanilla.js";
 import {calcPercents, clearInputs, getInputLabels, getInputValues, getStats, setInputValues} from "../boxPlot/calcs.js";
 
 function getInitState(actionType) {
