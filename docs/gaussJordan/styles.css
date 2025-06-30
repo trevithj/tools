@@ -11,14 +11,14 @@ section#logs {
     display: grid;
     grid-template-columns: 1fr 1fr;
 }
-h4 { padding-left: 0.5rem; }
+h4 { padding-left: 0.5em; }
 .rows {
     font-size: 18px;
     font-family: system-ui; 
 }
 .row {
-    height: 2rem;
-    margin-bottom: 0.8rem;
+    height: 2em;
+    margin-bottom: 0.8em;
     /* border-bottom: solid 2px silver; */
 }
 .cell {
@@ -35,18 +35,18 @@ h4 { padding-left: 0.5rem; }
     overflow: hidden;
 }
 input {
-    height: 1.5rem;
+    height: 1.5em;
     width: 90%;
 }
 button.topBtn {
-    width: 8rem;
-    height: 2.5rem;
-    border-radius: 0.6rem;
+    width: 8em;
+    height: 2.5em;
+    border-radius: 0.6em;
     box-shadow: 3px 2px 2px silver;
 }
 button.ctrl {
     padding: 0;
-    font-size: 1.2rem;
+    font-size: 1.2em;
     width: 100%;
     height: 100%;
     background-repeat: no-repeat;

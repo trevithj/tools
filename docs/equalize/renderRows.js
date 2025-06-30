@@ -17,7 +17,7 @@ function makeRow(coefficients, i) {
     const cols = coefficients.length;
     const cells = makeCoeffCells(coefficients);
     return [
-        `<div class="row row-${i}" style="${gridStyle}: repeat(${cols+1}, 5rem 2rem) 5rem;">`,
+        `<div class="row row-${i}" style="${gridStyle}: repeat(${cols+1}, 5em 2em) 5em;">`,
         ...cells,
         `<div class="cell">-</div>`,
         `<div class="cell value consts">?</div>`,

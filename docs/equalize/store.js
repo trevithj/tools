@@ -30,6 +30,7 @@ export const getStore = (makeCoefficients) => {
                 const coefficients = makeCoefficients({values, vCount});
                 const consts = makeConsts({coefficients, vCount});
                 const rhs = makeRHS({coefficients, consts, values});
+                logRMS(rhs);
                 return {values, vCount, message: "OK", coefficients, consts, rhs};
             }),
             setValue: (index, newValue) => set(state => {
@@ -38,6 +39,7 @@ export const getStore = (makeCoefficients) => {
                 values[index] = newValue;
                 const {coefficients} = state;
                 const rhs = makeRHS({coefficients, consts, values});
+                logRMS(rhs);
                 // const rhs = coefficients.map(coeff => calcRow(coeff, values));
                 // console.log(values, coefficients);
                 return {values, vCount, message: "OK", coefficients, rhs};
@@ -98,4 +100,12 @@ function makeRHS(state) {
     const {coefficients, consts, values} = state;
     const rhs = coefficients.map(coeff => calcRow(coeff, values));
     return rhs.map((v, i) => v - consts[i]);
+}
+
+function logRMS(vals) {
+    const sumOfSquares = vals.reduce((s,v) => {
+        return s + (v*v);
+    }, 0);
+    const mean = sumOfSquares / vals.length;
+    console.log(Math.round(Math.sqrt(mean)*10)/10);
 }
