@@ -11,7 +11,7 @@ function calcRow(row, values) {
 }
 
 const INIT_STATE = {
-    vCount: 0,
+    vCount: 2,
     values: [],
     coefficients: [],
     consts: [],

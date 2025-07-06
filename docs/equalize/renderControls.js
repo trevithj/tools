@@ -8,29 +8,40 @@ function makeRow(v, i) {
         `<div class="rangeRow rangeRow-${i}">`,
         `<div class="cell index">x<sub>${index}</sub></div>`,
         `<div class="cell value">${v}</div>`,
-        `<input name="x${index}" type="range" step="1" min="1" max="20" value="1" />`,
+        // `<input name="x${index}" type="range" step="1" min="1" max="20" value="1" />`,
+        makeCell(v, i),
         '</div>'
     ];
 }
+function makeCell(v, i) {
+    const index = i + 1;
+    return `<input name="x${index}" type="number" step="1" min="1" max="20" value="${v}" />`;
+}
+
+function render(state) {
+    const {values} = state;
+    const html = values.flatMap(makeRow);
+    controlView.innerHTML = html.join("");
+
+    const ranges = document.querySelectorAll("div.rangeRow");
+    // console.log(ranges, values);
+
+    ranges.forEach((range, i) => {
+        range.querySelector("input").addEventListener("input", e => {
+            const value = +e.target.value;
+            state.setValue(i, value);
+            range.querySelector("div.value").innerText = value;
+        });
+    })
+
+}
 
 export function initControls(TheStore) {
+    render(TheStore.getState());
     TheStore.subscribe((state, oldState) => {
         // console.log(state);
         if (state.vCount === oldState.vCount) return;
-        const {values} = state;
-        const html = values.flatMap(makeRow);
-        controlView.innerHTML = html.join("");
-        
-        const ranges = document.querySelectorAll("div.rangeRow");
-        // console.log(ranges, values);
-    
-        ranges.forEach((range, i) => {
-            range.querySelector("input").addEventListener("input", e => {
-                const value = +e.target.value;
-                state.setValue(i, value);
-                range.querySelector("div.value").innerText = value;
-            });
-        })
+        render(state);
     });
 }
 
