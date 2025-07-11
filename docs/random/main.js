@@ -37,10 +37,10 @@ function generate() {
 }
 
 function renderRow(parent, object) {
-    const id = makeElement("div", "cell id");
-    const set = makeElement("div", "cell set");
-    const seq = makeElement("div", "cell sequence");
-    const add = makeElement("button", "ctrl append");
+    const id = makeElement("div", "class=cell id");
+    const set = makeElement("div", "class=cell set");
+    const seq = makeElement("div", "class=cell sequence");
+    const add = makeElement("button", "class=ctrl append");
     id.innerHTML = object.id;
     set.innerHTML = object.key;
     seq.innerHTML = object.seq;

@@ -12,7 +12,7 @@ function calcRow(row, values) {
 
 const INIT_STATE = {
     vCount: 2,
-    values: [],
+    values: [1, 1],
     coefficients: [],
     consts: [],
     rhs: [],

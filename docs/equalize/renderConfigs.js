@@ -7,20 +7,28 @@ const VALUES = [2, 3, 4, 5];
 function makeCell(vCount) {
     return (value) => {
         const selected = value === vCount;
-        return selected
-            ? `<div class="cell value selected">${value}</div>`
-            : `<div class="cell value">${value}</div>`;
+        const cls = selected ? "cell value selected" : "cell value";
+        return `<div id="v-${value}" class="${cls}">${value}</div>`;
     }
 }
 
+function updateVars(vCount, theVars) {
+    const selectedId = `v-${vCount}`;
+    theVars.forEach(el => {
+        el.classList.remove("selected");
+        console.log(el.id, selectedId);
+        if (el.getAttribute("id") === selectedId) {
+            el.classList.add("selected");
+        }
+    })
+}
 
 function handleClick(state, theVars) {
     return (evt) => {
-        console.log(evt);
+        // console.log(evt);
         const value = +evt.target.innerText;
         state.setVCount(value);
-        theVars.forEach(el => el.classList.remove("selected"));
-        evt.target.classList.add("selected");
+        updateVars(value, theVars);
     }
 }
 
@@ -34,6 +42,7 @@ export function initConfigs(TheStore) {
         theVars.forEach(el => {
             el.addEventListener("click", handleClick(state, theVars));
         });
+        updateVars(TheStore.getState().vCount, theVars);
     }, 0);
 }
 

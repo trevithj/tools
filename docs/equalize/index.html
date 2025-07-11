@@ -14,35 +14,21 @@
 <body>
     <main>
         <h2>Linear Equations Equalizer Game</h2>
-        <p>This is more a tutorial/brain-workout game than a tool. Adjust the variables until the right-hand output
-            values all
-            equal zero. That solves the system by finding values that fit all the equations.</p>
+        <p>This is more a tutorial/brain-workout game than a tool.
+            Adjust the variables until the right-hand output values all equal zero.
+            That solves the system by finding values that fit all the equations.</p>
         <h4>Input panel</h4>
         <section id="config">
             <label>Number of variables</label>
             <div class="row-5 vars">
-                <div class="cell value">2</div>
-                <div class="cell value">3</div>
-                <div class="cell value">4</div>
-                <div class="cell value">5</div>
             </div>
             <!-- <button class="topBtn">Reset</button> -->
             <!-- <input type="range" name="v-count" value="2" min="2" max="5" /> -->
         </section>
         <section id="controls">
         </section>
-        <!-- <section id="controls2">
-            <div class="row-5 vars">
-                <div class="cell value">x<sub>1</sub></div>
-                <div class="cell value">x<sub>2</sub></div>
-                <div class="cell value">x<sub>3</sub></div>
-            </div>
-            <div class="row-5 vars">
-                <input type="number" name="x1" />
-                <input type="number" name="x2" />
-                <input type="number" name="x3" />
-            </div>
-        </section> -->
+        <section id="controls2">
+        </section>
 
         <h4 class="desktop-only">Rows</h4>
 
@@ -55,11 +41,31 @@
             <pre style="text-align: end;"></pre>
         </section>
     </main>
+    <svg width="600" height="120" xmlns="http://www.w3.org/2000/svg">
+        <!-- People (simple circles for heads, rectangles for bodies) -->
+        <circle cx="100" cy="60" r="20" fill="#555" />
+        <rect x="90" y="80" width="20" height="40" fill="#888" />
+        <circle cx="250" cy="60" r="20" fill="#555" />
+        <rect x="240" y="80" width="20" height="40" fill="#888" />
+        <circle cx="400" cy="60" r="20" fill="#555" />
+        <rect x="390" y="80" width="20" height="40" fill="#888" />
+
+        <!-- Bucket 1 -->
+        <rect id="bucket" x="80" y="90" width="40" height="20" fill="#a52a2a" />
+        <animateMotion xlink:href="#bucket" path="M0,0 L150,0" begin="0s" dur="3s" repeatCount="indefinite" />
+        <!-- Bucket 2 -->
+        <rect id="bucket" x="80" y="90" width="40" height="20" fill="#a52a2a" />
+        <animateMotion xlink:href="#bucket" path="M150,0 L300,0" begin="0s" dur="3s" repeatCount="indefinite" />
+    </svg>
     <script src="./main.js" type="module"></script>
 </body>
 
 </html>
 
 <!-- 
-Notes:  
+Notes:
+
+
+
+
 -->

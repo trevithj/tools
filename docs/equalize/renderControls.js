@@ -1,39 +1,43 @@
 // import {TheStore} from "./store";
 
+import {makeElement} from "../selectors";
+
+function NumberCell(v, i) {
+    const view = makeElement("div", "style=display:grid;grid-template-columns:2em 3em 2em;");
+    const input = makeElement("input", "type=number", "min=1", "max=20", "step=1", `name=x${i+1}`);
+    input.value = v;
+    // input.setAttribute("style", "");
+    const btnInc = makeElement("button");
+    btnInc.innerText = "+";
+    btnInc.addEventListener("pointerdown", () => {
+        input.value = Math.min(20, +input.value + 1);
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+    const btnDec = makeElement("button");
+    btnDec.innerText = "-";
+    btnDec.addEventListener("pointerdown", () => {
+        input.value = Math.max(1, +input.value - 1);
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+    view.append(btnDec, input, btnInc);
+    return {
+        view,
+        subscribe: (type, fn) => input.addEventListener(type, () => fn(input.value))
+    };
+}
+
 const controlView = document.querySelector("section#controls");
 
-function makeRow(v, i) {
-    const index = i + 1;
-    return [
-        `<div class="rangeRow rangeRow-${i}">`,
-        `<div class="cell index">x<sub>${index}</sub></div>`,
-        `<div class="cell value">${v}</div>`,
-        // `<input name="x${index}" type="range" step="1" min="1" max="20" value="1" />`,
-        makeCell(v, i),
-        '</div>'
-    ];
-}
-function makeCell(v, i) {
-    const index = i + 1;
-    return `<input name="x${index}" type="number" step="1" min="1" max="20" value="${v}" />`;
-}
-
 function render(state) {
-    const {values} = state;
-    const html = values.flatMap(makeRow);
-    controlView.innerHTML = html.join("");
-
-    const ranges = document.querySelectorAll("div.rangeRow");
-    // console.log(ranges, values);
-
-    ranges.forEach((range, i) => {
-        range.querySelector("input").addEventListener("input", e => {
-            const value = +e.target.value;
-            state.setValue(i, value);
-            range.querySelector("div.value").innerText = value;
+    const {values, setValue} = state;
+    const numbers = values.flatMap(NumberCell);
+    console.log(numbers);
+    controlView.replaceChildren(...numbers.map(n => n.view));
+    numbers.forEach((n, i) => {
+        n.subscribe("change", value => {
+            setValue(i, value);
         });
-    })
-
+    });
 }
 
 export function initControls(TheStore) {

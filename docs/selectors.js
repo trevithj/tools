@@ -9,10 +9,20 @@ export const select = (selector, el = document) => el.querySelector(selector);
 
 export const selectAll = (selector, el = document) => el.querySelectorAll(selector);
 
-export const makeElement = (type, className) => {
-    const el = document.createElement(type);
-    if (className) el.setAttribute("class", className);
+function addAttributes(el, attributes) {
+    attributes.forEach(attrib => {
+        const [name, value] = attrib.split("=");
+        el.setAttribute(name, value);
+    });
     return el;
+}
+
+export const makeElement = (type, ...attributes) => {
+    const el = document.createElement(type);
+    // if (className) el.setAttribute("class", className);
+    // return el;
+    return addAttributes(el, attributes);
+
 }
 
 export const makeSVGElement = type => document.createElementNS(NS.SVG, type);
@@ -30,10 +40,6 @@ export function getSelectors(element) {
 export function makeNSElement(namespace) {
     return (type, ...attributes) => {
         const el = document.createElementNS(namespace, type);
-        attributes.forEach(attrib => {
-            const [name, value] = attrib.split("=");
-            el.setAttribute(name, value);
-        });
-        return el;
+        return addAttributes(el, attributes);
     }
 }
