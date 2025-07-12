@@ -4,7 +4,7 @@ const gridStyle = "display:grid; gap:3px; grid-template-columns";
 
 function makeCoeffCells(coefficients) {
     return coefficients.map((coef, i) => {
-        const cell = `<div class="cell value">${coef}⋅x<sub>${i+1}</sub></div>`;
+        const cell = `<div class="cell value">${coef}x<sub>${i+1}</sub></div>`;
         if(i===0) {
             return cell;
         }

@@ -34,7 +34,7 @@ describe("getStore fn", () => {
         state = store.getState();
         expect(state.vCount).toBe(4);
         expect(state.values).toEqual([1, 1, 1, 1]);
-        expect(state.message).toEqual("OK");
+        expect(state.message).toContain("OK");
         expect(state.coefficients.length).toEqual(4);
         expect(state.coefficients[0]).toEqual([2, 2, 2, 2]);
         expect(state.rhs[0]).toEqual(-16);

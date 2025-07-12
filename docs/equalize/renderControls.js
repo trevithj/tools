@@ -3,7 +3,9 @@
 import {makeElement} from "../selectors";
 
 function NumberCell(v, i) {
-    const view = makeElement("div", "style=display:grid;grid-template-columns:2em 3em 2em;");
+    const view = makeElement("div", "style=display:grid;grid-template-columns:3em 2em 3em 2em;");
+    const label = makeElement("span", "class=cell");
+    label.innerHTML = `x<sub>${i+1}</sub>:`;
     const input = makeElement("input", "type=number", "min=1", "max=20", "step=1", `name=x${i+1}`);
     input.value = v;
     // input.setAttribute("style", "");
@@ -19,7 +21,7 @@ function NumberCell(v, i) {
         input.value = Math.max(1, +input.value - 1);
         input.dispatchEvent(new Event('change', { bubbles: true }));
     });
-    view.append(btnDec, input, btnInc);
+    view.append(label, btnDec, input, btnInc);
     return {
         view,
         subscribe: (type, fn) => input.addEventListener(type, () => fn(input.value))

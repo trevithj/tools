@@ -30,8 +30,8 @@ export const getStore = (makeCoefficients) => {
                 const coefficients = makeCoefficients({values, vCount});
                 const consts = makeConsts({coefficients, vCount});
                 const rhs = makeRHS({coefficients, consts, values});
-                logRMS(rhs);
-                return {values, vCount, message: "OK", coefficients, consts, rhs};
+                const message = logRMS(rhs);
+                return {values, vCount, message, coefficients, consts, rhs};
             }),
             setValue: (index, newValue) => set(state => {
                 const {vCount, consts} = state;
@@ -39,17 +39,21 @@ export const getStore = (makeCoefficients) => {
                 values[index] = newValue;
                 const {coefficients} = state;
                 const rhs = makeRHS({coefficients, consts, values});
-                logRMS(rhs);
+                const message = logRMS(rhs);
                 // const rhs = coefficients.map(coeff => calcRow(coeff, values));
                 // console.log(values, coefficients);
-                return {values, vCount, message: "OK", coefficients, rhs};
+                return {values, vCount, message, coefficients, rhs};
             })
         }
     });
     return theStore;
 }
 
-export const TheStore = getStore();
+export const TheStore = getStore(makeCoefficients);
+
+// function setMessage(message) {
+//     TheStore.setState({ message });
+// }
 
 export function isDiffShallow(obj1, obj2, fields = []) {
     return fields.some(fieldName => obj1[fieldName] !== obj2[fieldName]);
@@ -107,5 +111,7 @@ function logRMS(vals) {
         return s + (v*v);
     }, 0);
     const mean = sumOfSquares / vals.length;
-    console.log(Math.round(Math.sqrt(mean)*10)/10);
+    const rmsError = Math.round(Math.sqrt(mean)*10)/10;
+    console.log(rmsError);
+    return `rms error: ${rmsError} - OK`;
 }
