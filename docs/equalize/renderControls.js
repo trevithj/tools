@@ -1,6 +1,4 @@
-// import {TheStore} from "./store";
-
-import {makeElement} from "../selectors";
+import {makeElement} from "../selectors.js";
 
 function NumberCell(v, i) {
     const view = makeElement("div", "style=display:grid;grid-template-columns:3em 2em 3em 2em;");
@@ -8,7 +6,7 @@ function NumberCell(v, i) {
     label.innerHTML = `x<sub>${i+1}</sub>:`;
     const input = makeElement("input", "type=number", "min=1", "max=20", "step=1", `name=x${i+1}`);
     input.value = v;
-    // input.setAttribute("style", "");
+
     const btnInc = makeElement("button");
     btnInc.innerText = "+";
     btnInc.addEventListener("pointerdown", () => {

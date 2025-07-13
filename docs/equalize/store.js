@@ -51,6 +51,29 @@ export const getStore = (makeCoefficients) => {
 
 export const TheStore = getStore(makeCoefficients);
 
+// Alternative form of helper functions - external to the state object
+export const Actions = {
+    setVCount: (v) => {
+        if (v < 2 || v > 5) return {message: "vCount out of range"};
+        const vCount = Math.round(v);
+        const values = Array.from({length: vCount}, () => 1);
+        const coefficients = makeCoefficients({values, vCount});
+        const consts = makeConsts({coefficients, vCount});
+        const rhs = makeRHS({coefficients, consts, values});
+        const message = logRMS(rhs);
+        TheStore.setState({values, vCount, message, coefficients, consts, rhs});
+    },
+    setValue: (index, newValue) => {
+        const state = TheStore.getState();
+        const {consts, coefficients} = state;
+        const values = [...state.values];
+        values[index] = newValue;
+        const rhs = makeRHS({coefficients, consts, values});
+        const message = logRMS(rhs);
+        TheStore.setState({values, message, rhs});
+    }
+}
+
 // function setMessage(message) {
 //     TheStore.setState({ message });
 // }
@@ -107,11 +130,11 @@ function makeRHS(state) {
 }
 
 function logRMS(vals) {
-    const sumOfSquares = vals.reduce((s,v) => {
-        return s + (v*v);
+    const sumOfSquares = vals.reduce((s, v) => {
+        return s + (v * v);
     }, 0);
     const mean = sumOfSquares / vals.length;
-    const rmsError = Math.round(Math.sqrt(mean)*10)/10;
+    const rmsError = Math.round(Math.sqrt(mean) * 10) / 10;
     console.log(rmsError);
     return `rms error: ${rmsError} - OK`;
 }
