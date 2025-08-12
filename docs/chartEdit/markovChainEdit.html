@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Markov Chain Data Editor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../styles.css" type="text/css">
+    <style>
+        .the-grid {
+            display: grid;
+            grid-template-columns: auto 6rem 1fr;
+            column-gap: 0.5rem;
+        }
+
+        .the-display,
+        .the-input {
+            border: solid thin silver;
+        }
+
+        button {
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <h2>Markov Chain Editor</h2>
+        <div class="the-grid">
+            <span class="label">Input</span>
+            <span class="label">Convert</span>
+            <span class="label">Output</span>
+            <div class="the-input">
+                <textarea rows="30" cols="60" spellcheck="false" autocomplete="off" autocorrect="off"></textarea>
+            </div>
+
+            <div class="the-controls">
+                <button id="b0">Raw</button>
+                <button id="b1">DOT</button>
+                <button id="b2">DOT2</button>
+                <button id="b3">Bi-graph</button>
+            </div>
+
+            <div class="the-display">
+                <textarea rows="30" cols="60" spellcheck="false" autocomplete="off" autocorrect="off"></textarea>
+            </div>
+        </div>
+        <div id="chart"></div>
+    </main>
+</body>
+<script src="./markovChainEdit.js" type="module"></script>
+
+</html>
+<!-- 
+Shares Go Up
+    0.3 -> Shares Go Up
+    0.5 -> Shares Steady
+    0.2 -> Shares Go Down
+Shares Steady
+    0.5 -> Shares Go Up
+    0.2 -> Shares Steady
+    0.3 -> Shares Go Down
+Shares Go Down
+    0.3 -> Shares Go Up
+    0.2 -> Shares Steady
+    0.5 -> Shares Go Down
+ -->
