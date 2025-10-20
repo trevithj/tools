@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Series Circuit Power Calculator</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom right, #f9fafb, #e2e8f0);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  .card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px 28px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    width: 480px;
+    max-width: 95%;
+  }
+  h1 {
+    text-align: center;
+    font-size: 1.4rem;
+    margin-bottom: 12px;
+  }
+  svg {
+    display: block;
+    margin: 0 auto 10px;
+  }
+  .results {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .result-box {
+    background: #f8fafc;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  }
+  .result-box h3 {
+    margin: 0 0 4px 0;
+    font-size: 0.9rem;
+  }
+  .result-box p {
+    margin: 0;
+    font-weight: bold;
+  }
+  .total-box {
+    grid-column: span 2;
+    text-align: center;
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+  }
+  label {
+    display: block;
+    margin: 8px 0 4px;
+    font-weight: bold;
+  }
+  input[type=range] {
+    width: 100%;
+  }
+  @keyframes flow {
+    0% { stroke-dashoffset: 40; }
+    100% { stroke-dashoffset: 0; }
+  }
+  .current-arrow {
+    stroke: #10b981;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-dasharray: 10 10;
+    animation: flow 1s linear infinite;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h1>Series Circuit Power Calculator</h1>
+
+  <svg width="420" height="160" viewBox="0 0 420 160">
+    <!-- Wires -->
+    <path d="M40 80 H130 M290 80 H380" stroke="#333" stroke-width="3" />
+    <!-- Battery -->
+    <line x1="40" y1="50" x2="40" y2="110" stroke="#333" stroke-width="3" />
+    <line x1="30" y1="50" x2="50" y2="50" stroke="red" stroke-width="3" />
+    <line x1="30" y1="110" x2="50" y2="110" stroke="black" stroke-width="3" />
+    <text x="10" y="45" font-size="14" fill="#111">+</text>
+    <text x="10" y="115" font-size="14" fill="#111">–</text>
+
+    <!-- R1 -->
+    <rect x="130" y="60" width="60" height="40" rx="8" fill="#fef3c7" stroke="#444" stroke-width="2"></rect>
+    <text x="160" y="85" text-anchor="middle" font-size="14" font-weight="bold">R₁</text>
+    <text id="r1Text" x="160" y="105" text-anchor="middle" font-size="12">100 Ω</text>
+
+    <!-- R2 -->
+    <rect x="230" y="60" width="60" height="40" rx="8" fill="#dbeafe" stroke="#444" stroke-width="2"></rect>
+    <text x="260" y="85" text-anchor="middle" font-size="14" font-weight="bold">R₂</text>
+    <text id="r2Text" x="260" y="105" text-anchor="middle" font-size="12">100 Ω</text>
+
+    <!-- Current arrow -->
+    <path class="current-arrow" d="M80 70 L80 90 L370 90" stroke-dashoffset="40"></path>
+  </svg>
+
+  <div>
+    <label for="r2">Adjust R₂ (Ω): <span id="r2Val">100</span></label>
+    <input type="range" id="r2" min="10" max="200" value="100" step="1">
+  </div>
+
+  <div class="results">
+    <div class="result-box">
+      <h3>Current (A)</h3>
+      <p id="current">—</p>
+    </div>
+    <div class="result-box">
+      <h3>Total Resistance (Ω)</h3>
+      <p id="rTotal">—</p>
+    </div>
+    <div class="result-box">
+      <h3>Power in R₁ (W)</h3>
+      <p id="p1">—</p>
+    </div>
+    <div class="result-box">
+      <h3>Power in R₂ (W)</h3>
+      <p id="p2">—</p>
+    </div>
+    <div class="result-box total-box">
+      <h3>Total Power (W)</h3>
+      <p id="pTotal" style="font-size:1.2rem"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const V = 12;     // Battery voltage (V)
+  const R1 = 100;   // Fixed resistor (Ω)
+  const r2Slider = document.getElementById('r2');
+  const r2Text = document.getElementById('r2Text');
+  const r2Val = document.getElementById('r2Val');
+  const currentEl = document.getElementById('current');
+  const rTotalEl = document.getElementById('rTotal');
+  const p1El = document.getElementById('p1');
+  const p2El = document.getElementById('p2');
+  const pTotalEl = document.getElementById('pTotal');
+
+  function updateValues() {
+    const R2 = parseFloat(r2Slider.value);
+    const R_total = R1 + R2;
+    const I = V / R_total;
+    const P1 = I * I * R1;
+    const P2 = I * I * R2;
+    const P_total = P1 + P2;
+
+    r2Text.textContent = R2.toFixed(0) + ' Ω';
+    r2Val.textContent = R2.toFixed(0);
+    currentEl.textContent = I.toFixed(3);
+    rTotalEl.textContent = R_total.toFixed(1);
+    p1El.textContent = P1.toFixed(2);
+    p2El.textContent = P2.toFixed(2);
+    pTotalEl.textContent = P_total.toFixed(2);
+  }
+
+  r2Slider.addEventListener('input', updateValues);
+  updateValues(); // initial render
+</script>
+
+</body>
+</html>

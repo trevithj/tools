@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SPC Chart Web Component</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 2rem;
+            background: #f9f9f9;
+        }
+    </style>
+    <script src="./spcChart.js"></script>
+</head>
+
+<body>
+    <h2>Statistical Process Control Chart</h2>
+    <h3>Default Label</h3>
+    <spc-chart points="5,6,7,8,9"></spc-chart>
+    <p>
+        For smaller or skewed distributions, this version shows 
+        control lines based on percentiles rather than standard deviations.
+        The Q1 and Q3 values represent the 25th and 75th percentiles respectively.
+        The lower and upper control limits (LCL, UCL) are 1.5 * the inter-quartile
+        range away from their respective quartiles.
+        This is the same as the "whisker" lengths in a box and whisker plot.
+    </p>
+
+</body>
+<script type="module">
+    function parseNumbers(str) {
+        return str ? str.split(",").map(v => parseFloat(v.trim())).filter(v => !isNaN(v)) : [];
+    }
+
+    function getPercentiles(vals) {
+        const sorted = [...vals].sort();
+        const n = sorted.length;
+        return p => {
+            if (n === 1) return sorted[0];
+            const idx = p * (n - 1);
+            const lower = Math.floor(idx);
+            const upper = Math.ceil(idx);
+            const weight = idx - lower;
+            return sorted[lower] + weight * (sorted[upper] - sorted[lower]);
+        }
+    }
+
+    const chart = document.querySelector("spc-chart");
+    const DefaultPoints = [12, 22, 14, 15, 11, 22, 14, 15, 11, 13, 18, 17, 16, 15, 19];
+ 
+    const params = new URLSearchParams(window.location.search);
+
+    const sPoints = params.get("points");
+    const points = sPoints ? parseNumbers(sPoints) : DefaultPoints;
+    const perc = getPercentiles(points);
+    const lq = perc(.25);
+    const uq = perc(0.75);
+    const whisker = (uq - lq) * 1.5;
+    const cValues = [
+        lq - whisker, lq, perc(0.5), uq, uq + whisker
+    ].map(v => v.toFixed(3));
+    const cLabels = "LCL, Q1, Median, Q3, UCL";
+    chart.setAttribute("points", points);
+    chart.setAttribute("lines", cValues);
+    chart.setAttribute("labels", cLabels);
+
+    const rawLabel = params.get("label") || "Default Label";
+    document.querySelector("h3").textContent = rawLabel;
+</script>
+
+</html>

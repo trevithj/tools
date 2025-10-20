@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SPC Chart Web Component</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 2rem;
+            background: #f9f9f9;
+        }
+    </style>
+    <script src="./spcChart.js"></script>
+</head>
+
+<body>
+    <h2>Statistical Process Control Chart</h2>
+    <h3>Default Label</h3>
+    <spc-chart points="5,6,7,8,9"></spc-chart>
+    <p>
+        This version assumes that the points follow a normal distribution,
+        and show the control lines up to &plusmn; 3 standard deviations from the mean.
+    </p>
+
+</body>
+<script type="module">
+    function parseNumbers(str) {
+        return str ? str.split(",").map(v => parseFloat(v.trim())).filter(v => !isNaN(v)) : [];
+    }
+
+    function calcMean(arr) {
+        return arr.reduce((a, b) => a + b, 0) / arr.length;
+    }
+
+    function calcStddev(arr, mean) {
+        const m = mean === undefined ? calcMean(arr) : mean;
+        const variance = arr.reduce((sum, x) => sum + ((x - m) ** 2), 0) / (arr.length - 1);
+        return Math.sqrt(variance);
+    }
+
+    function calcSigma(stdev, mean) {
+        return x => mean - (stdev * x); 
+    }
+
+    const chart = document.querySelector("spc-chart");
+    const DefaultPoints = [12,22,14,15,11,22,14,15,11,13,18,17,16,15,19];
+    const DefaultLines = "0,5,10,15,20,25,30";
+    const DefaultLabels = "-3σ,-2σ,-1σ,mean,+1σ,+2σ,+3σ";
+
+    const params = new URLSearchParams(window.location.search);
+
+    const sPoints = params.get("points");
+    const points = sPoints ? parseNumbers(sPoints) : DefaultPoints;
+    const mean = calcMean(points);
+    const sdev = calcStddev(points, mean);
+    const sigma = calcSigma(sdev, mean);
+    const cValues = [
+        sigma(-3), sigma(-2), sigma(-1), mean, sigma(1), sigma(2), sigma(3) 
+    ].map(v => v.toFixed(3));
+    const cLabels = "-3σ,-2σ,-1σ,mean,+1σ,+2σ,+3σ";
+    chart.setAttribute("points", points);
+    chart.setAttribute("lines", cValues);
+    chart.setAttribute("labels", cLabels);
+
+    const rawLabel = params.get("label") || "Default Label";
+    document.querySelector("h3").textContent = rawLabel;
+</script>
+
+</html>
