@@ -26,27 +26,25 @@ const vals = {
 
 function generate() {
     const { random, charSets, count } = vals;
-    return Object.keys(charSets).flatMap((key, index) => {
+    return Object.keys(charSets).map((key, index) => {
         const set = charSets[key];
         const gen = generateRandomAscii(random, set);
-        return [
-            {id: index, key, seq: gen(count)},
-            {id: index + 5, key, seq: gen(count)},
-        ]
+        return {id: index, key, seq: gen(count)};
+        // {id: index + 5, key, seq: gen(count)},
     }).sort((a,b) => a.id - b.id);
 }
 
 function renderRow(parent, object) {
-    const id = makeElement("div", "class=cell id");
+    const id = makeElement("div", "class=cell id center");
     const set = makeElement("div", "class=cell set");
-    const seq = makeElement("div", "class=cell sequence");
-    const add = makeElement("button", "class=ctrl append");
+    // const seq = makeElement("div", "class=cell sequence");
+    const add = makeElement("button", "class=ctrl append font-mono");
     id.innerHTML = object.id;
     set.innerHTML = object.key;
-    seq.innerHTML = object.seq;
-    add.textContent = `Append #${object.id}`;
+    // seq.innerHTML = object.seq;
+    add.textContent = object.seq;
     add.__data = object;
-    parent.append(add, set, seq);
+    parent.append(id, set, add);
 }
 
 // Output
