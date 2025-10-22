@@ -3,6 +3,8 @@ import {initControls} from "./renderControls.js";
 import {initRows} from "./renderRows.js";
 // import {getStore, makeCoefficients} from "./store.js";
 import {TheStore} from "./store.js";
+import "./components/numberCell.js";
+import "./components/testBox.js";
 
 // const theStore = window.STORE = getStore(makeCoefficients);
 const theStore = window.STORE = TheStore;

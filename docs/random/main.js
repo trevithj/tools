@@ -29,8 +29,14 @@ function generate() {
     return Object.keys(charSets).map((key, index) => {
         const set = charSets[key];
         const gen = generateRandomAscii(random, set);
-        return {id: index, key, seq: gen(count)};
-        // {id: index + 5, key, seq: gen(count)},
+        const seq = gen(count);
+        // create and ignore, to keep results compatible with older algorithm
+        gen(count);
+        return {id: index, key, seq};
+        // return [
+        //     {id: index, key, seq: gen(count)},
+        //     {id: index + 5, key, seq: gen(count)},
+        // ]
     }).sort((a,b) => a.id - b.id);
 }
 
