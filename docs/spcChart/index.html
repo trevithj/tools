@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>SPC Chart</title>
+  <style>
+    .the-grid {
+      display: grid;
+      grid-template-columns: auto 8rem 1fr;
+      column-gap: 0.5rem;
+    }
+
+    .the-display,
+    .the-input {
+      border: solid thin silver;
+    }
+
+    button {
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>SPC Charts</h2>
+  <div class="the-grid">
+    <div>
+        <span class="label">Input</span>
+        Format: <select id="format">
+            <option>Simple</option>
+            <option>Sketch</option>
+        </select>
+    </div>
+    <span class="label">Convert</span>
+    <span class="label">Output</span>
+    <div class="the-input">
+      <textarea rows="30" cols="80" spellcheck="false" autocomplete="off" autocorrect="off"></textarea>
+    </div>
+
+    <div class="the-controls">
+      <button id="b0">Raw</button>
+    </div>
+
+    <div class="the-display">
+      <textarea rows="30" cols="80" spellcheck="false" autocomplete="off" autocorrect="off"></textarea>
+    </div>
+  </div>
+  <p>
+    Allow user to enter an array of number values via a text field. Also to select the type of chart to show, from Standard-Deviations to Percentiles. And allow an editable label for the chart.
+    Finally, create a link with the values, type and label encoded in the URL, and use a stand-alone version of the chart to display the results. That makes a shareable link.
+  </p>
+  <p>
+    A third variation of the standard-deviation chart, that can take non-normal distributions.
+    It displays points representing a two or three point moving average, instead of the raw data. This guarantees a rough normal distribution.
+  </p>
+</body>
+<script>
+
+</script>
+
+</html>

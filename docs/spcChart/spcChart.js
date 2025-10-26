@@ -1,6 +1,4 @@
-function parseNumbers(str) {
-    return str ? str.split(",").map(v => parseFloat(v.trim())).filter(v => !isNaN(v)) : [];
-}
+import {strToArray} from "../_common/convert";
 
 function parseListAttribute(attr, delim = ",") {
   if (!attr) return [];
@@ -8,7 +6,7 @@ function parseListAttribute(attr, delim = ",") {
 }
 
 function buildControlLines(valuesTxt, labelsTxt, coloursTxt) {
-  const values = parseNumbers(valuesTxt);
+  const values = strToArray(valuesTxt || "");
   const labels = parseListAttribute(labelsTxt);
   const colours = parseListAttribute(coloursTxt);
 
@@ -54,10 +52,10 @@ const makeSvg = (width, height) =>`<svg viewBox="0 0 ${width} ${height}"\
  width="95%" style="background:white; border:1px solid #ccc; border-radius:8px;">`;
 
 function renderSVG(component) {
-    const values = parseNumbers(component.getAttribute("points")); 
-    const lineValues = component.getAttribute("lines"); 
-    const lineLabels = component.getAttribute("labels"); 
-    const lineColors = component.getAttribute("colors");
+    const values = strToArray(component.getAttribute("points")); 
+    const lineValues = component.getAttribute("lines") || ""; 
+    const lineLabels = component.getAttribute("labels") || "";
+    const lineColors = component.getAttribute("colors") || "";
 
     const controlLines = buildControlLines(lineValues, lineLabels, lineColors);
 
@@ -111,4 +109,4 @@ class SPCChart extends HTMLElement {
     }
 }
 
-customElements.define("spc-chart", SPCChart);
+ customElements.define("spc-chart", SPCChart);

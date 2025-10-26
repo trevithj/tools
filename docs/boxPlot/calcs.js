@@ -1,3 +1,6 @@
+import {makeQuantile} from "../_common/stats";
+export { strToArray } from "../_common/convert";
+
 // TODO: generalize this?
 function generateNumericScale({min, max}, count = 5) {
     const range = max - min;
@@ -11,37 +14,18 @@ function generateNumericScale({min, max}, count = 5) {
     return scale;
 }
 
-export function strToArray(str) {
-    //strip out any character that isn't a digit, period or minus, then split into numbers.
-    return str.replace(/[^\d.-]/g, '|')
-        .split('|')
-        .flatMap(v => {
-            const n = Number.parseFloat(v.trim());
-            return isNaN(n) ? [] : [n];
-        });
-}
 
 // Calculate the stats
-export function quantile(sorted, q) {
-    const pos = (sorted.length - 1) * q;
-    const base = Math.floor(pos);
-    const rest = pos - base;
-    if (sorted[base + 1] !== undefined) {
-        return sorted[base] + rest * (sorted[base + 1] - sorted[base]);
-    } else {
-        return sorted[base];
-    }
-};
-
 export function getStats(vals, index) {
     if (!vals.length) return null;
     vals.sort((a,b) => a - b);
+    const quantile = makeQuantile(vals);
     const last = vals.length - 1;
     const max = vals[last];
     const min = vals[0];
-    const med = quantile(vals, 0.5);
-    const lq = quantile(vals, 0.25);
-    const uq = quantile(vals, 0.75);
+    const med = quantile(0.5);
+    const lq = quantile(0.25);
+    const uq = quantile(0.75);
     const iqr = uq - lq;
     const ucl = uq + (1.5 * iqr);
     const lcl = lq - (1.5 * iqr);
