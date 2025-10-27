@@ -1,5 +1,5 @@
-import {makeQuantile} from "../_common/stats";
-export { strToArray } from "../_common/convert";
+import {makeQuantile} from "../_common/stats.js";
+export { strToArray } from "../_common/convert.js";
 
 // TODO: generalize this?
 function generateNumericScale({min, max}, count = 5) {

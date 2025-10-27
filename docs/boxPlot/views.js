@@ -1,4 +1,4 @@
-import "./components";
+import "./components.js";
 
 export function makeInput(value, i, label) {
     // For now, return an html string. TODO: create elements directly
