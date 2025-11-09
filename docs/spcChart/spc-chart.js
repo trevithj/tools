@@ -1,4 +1,4 @@
-import {strToArray} from "../_common/convert";
+import {strToNumberArray} from "../_common/convert";
 import {calcMean, calcSigma, calcStdDev} from "../_common/stats";
 
 const chart = document.querySelector("spc-chart");
@@ -6,7 +6,7 @@ const DefaultPoints = [12, 22, 14, 15, 11, 22, 14, 15, 11, 13, 18, 17, 16, 15, 1
 const params = new URLSearchParams(window.location.search);
 
 const sPoints = params.get("points");
-const points = sPoints ? strToArray(sPoints) : DefaultPoints;
+const points = sPoints ? strToNumberArray(sPoints) : DefaultPoints;
 const mean = calcMean(points);
 const sdev = calcStdDev(points, mean);
 const sigma = calcSigma(sdev, mean);

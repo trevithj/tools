@@ -1,4 +1,4 @@
-import {strToArray} from "../_common/convert";
+import {strToNumberArray} from "../_common/convert";
 import {getPercentiles} from "../_common/stats";
 
 const chart = document.querySelector("spc-chart");
@@ -7,7 +7,7 @@ const DefaultPoints = [12, 22, 14, 15, 11, 22, 14, 15, 11, 13, 18, 17, 16, 15, 1
 const params = new URLSearchParams(window.location.search);
 
 const sPoints = params.get("points");
-const points = sPoints ? strToArray(sPoints) : DefaultPoints;
+const points = sPoints ? strToNumberArray(sPoints) : DefaultPoints;
 const perc = getPercentiles(points);
 const lq = perc(.25);
 const uq = perc(0.75);

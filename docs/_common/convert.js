@@ -1,4 +1,4 @@
-export function strToArray(str = "") {
+export function strToNumberArray(str = "") {
     //strip out any character that isn't a digit, period or minus, then split into numbers.
     return str.replace(/[^\d.-]/g, '|')
         .split('|')

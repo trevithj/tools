@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SPC Control Chart</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+      background: #fafafa;
+    }
+    canvas {
+      max-width: 800px;
+      margin: 0 auto;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <h1>Statistical Process Control Chart</h1>
+  <canvas id="spcChart"></canvas>
+
+  <script>
+    // Helper: parse comma-separated values from URL
+    function getValuesFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      const raw = params.get("values");
+      if (!raw) return [];
+      return raw.split(",").map(v => parseFloat(v.trim())).filter(v => !isNaN(v));
+    }
+
+    // Compute mean
+    function mean(arr) {
+      return arr.reduce((a, b) => a + b, 0) / arr.length;
+    }
+
+    // Compute sample standard deviation
+    function stddev(arr) {
+      const avg = mean(arr);
+      const variance = arr.reduce((sum, x) => sum + Math.pow(x - avg, 2), 0) / (arr.length - 1);
+      return Math.sqrt(variance);
+    }
+
+    const values = getValuesFromURL();
+    if (values.length === 0) {
+      document.body.innerHTML += "<p>No data provided. Add ?values=10,11,12,... to the URL.</p>";
+    } else {
+      const avg = mean(values);
+      const sd = stddev(values);
+      const ucl = avg + 3 * sd;
+      const lcl = avg - 3 * sd;
+
+      // Make chart labels (point numbers)
+      const labels = values.map((_, i) => i + 1);
+
+      const ctx = document.getElementById("spcChart").getContext("2d");
+      new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: "Values",
+              data: values,
+              borderColor: "blue",
+              backgroundColor: "rgba(0,0,255,0.1)",
+              pointRadius: 4,
+              tension: 0.1
+            },
+            {
+              label: "UCL",
+              data: labels.map(() => ucl),
+              borderColor: "red",
+              borderDash: [5, 5],
+              fill: false
+            },
+            {
+              label: "CL (Mean)",
+              data: labels.map(() => avg),
+              borderColor: "green",
+              borderDash: [5, 5],
+              fill: false
+            },
+            {
+              label: "LCL",
+              data: labels.map(() => lcl),
+              borderColor: "red",
+              borderDash: [5, 5],
+              fill: false
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: { beginAtZero: false }
+          },
+          plugins: {
+            legend: { position: "top" },
+            title: {
+              display: true,
+              text: `Mean = ${avg.toFixed(2)}, SD = ${sd.toFixed(2)}`
+            }
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,21 +1,11 @@
-import {strToArray} from "./convert";
-
-function makeCircle(cx, cy, r=3, fill="black") {
-    return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}" />`;
-}
-function makeLine(x1, x2, y1, y2) {
-    return `<line x1="${x1}" x2="${x2}" y1="${y1}" y2="${y2}" stroke="black" />`;
-}
-
-function makeRect(x,y,width,height, fill = "lightGrey") {
-    return `<rect x="${x}" y="${y}" width="${width}" height="${height}" fill="${fill}" stroke="black" />`;
-}
+import {strToNumberArray} from "./convert";
+import { ComponentBase, makeCircle, makeLine, makeRect } from "./componentBase";
 
 function getRenderFn(element) {
     const parseListAttribute = (name) => {
         const attr = element.getAttribute(name);
         if (!attr) return [];
-        return strToArray(attr);
+        return strToNumberArray(attr);
     }
 
     const render = () => {
@@ -26,8 +16,8 @@ function getRenderFn(element) {
 
         const fill = element.getAttribute("fill") || "lightgray";
         const width = 400;
-        const height = 80;
-        const padding = 30;
+        const height = 50;
+        const padding = 5;
         const boxHeight = 20;
         const midY = height / 2;
 
@@ -41,9 +31,7 @@ function getRenderFn(element) {
         const minX = scale(min);
         const maxX = scale(max);
 
-        const pointsSVG = points.map(p => makeCircle(
-            scale(p), midY, 2.5, "blue"
-        )).join("");
+        const pointsSVG = points.map(p => makeCircle(scale(p), midY, 2.5, "blue")).join("");
 
         let svg = `<svg viewBox="0 0 ${width} ${height}" width="100%">`;
         // <!-- Whiskers -->
@@ -70,25 +58,14 @@ function getRenderFn(element) {
     return render;
 }
 
-class BoxPlot extends HTMLElement {
-    static get observedAttributes() {
-        return ["points", "data", "range", "fill"];
-    }
+class BoxPlot extends ComponentBase {
+    static observedAttributes = ["points", "data", "range", "fill"];
 
     constructor() {
         super();
-        this.attachShadow({mode: "open"});
         this.render = getRenderFn(this);
     }
 
-    connectedCallback() {
-        this.render();
-    }
-
-    attributeChangedCallback() {
-        this.render();
-    }
-
-}
+ }
 
 customElements.define("box-plot", BoxPlot);

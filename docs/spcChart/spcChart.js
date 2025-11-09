@@ -1,4 +1,4 @@
-import {strToArray} from "../_common/convert";
+import {strToNumberArray} from "../_common/convert";
 
 function parseListAttribute(attr, delim = ",") {
   if (!attr) return [];
@@ -6,7 +6,7 @@ function parseListAttribute(attr, delim = ",") {
 }
 
 function buildControlLines(valuesTxt, labelsTxt, coloursTxt) {
-  const values = strToArray(valuesTxt || "");
+  const values = strToNumberArray(valuesTxt || "");
   const labels = parseListAttribute(labelsTxt);
   const colours = parseListAttribute(coloursTxt);
 
@@ -52,7 +52,7 @@ const makeSvg = (width, height) =>`<svg viewBox="0 0 ${width} ${height}"\
  width="95%" style="background:white; border:1px solid #ccc; border-radius:8px;">`;
 
 function renderSVG(component) {
-    const values = strToArray(component.getAttribute("points")); 
+    const values = strToNumberArray(component.getAttribute("points")); 
     const lineValues = component.getAttribute("lines") || ""; 
     const lineLabels = component.getAttribute("labels") || "";
     const lineColors = component.getAttribute("colors") || "";
