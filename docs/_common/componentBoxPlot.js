@@ -1,5 +1,5 @@
-import {strToNumberArray} from "./convert";
-import { ComponentBase, makeCircle, makeLine, makeRect } from "./componentBase";
+import {strToNumberArray} from "./convert.js";
+import { ComponentBase, makeCircle, makeLine, makeRect } from "./componentBase.js";
 
 function getRenderFn(element) {
     const parseListAttribute = (name) => {

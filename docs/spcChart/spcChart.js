@@ -1,4 +1,4 @@
-import {strToNumberArray} from "../_common/convert";
+import {strToNumberArray} from "../_common/convert.js";
 
 function parseListAttribute(attr, delim = ",") {
   if (!attr) return [];

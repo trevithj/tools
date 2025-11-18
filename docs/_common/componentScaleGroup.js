@@ -1,7 +1,7 @@
 // Creates a <svg:g> element containing a horizontal scale display
 // Usage: for adding within an existing <svg> doc.
-import {ComponentBase, makeLine, makeText} from "./componentBase";
-import {strToNumberArray} from "./convert";
+import {ComponentBase, makeLine, makeText} from "./componentBase.js";
+import {strToNumberArray} from "./convert.js";
 
 function parseRange(range) {
     if (!range) return [0, 1];

@@ -1,5 +1,5 @@
-import {strToNumberArray} from "../_common/convert";
-import {calcMean, calcSigma, calcStdDev} from "../_common/stats";
+import {strToNumberArray} from "../_common/convert.js";
+import {calcMean, calcSigma, calcStdDev} from "../_common/stats.js";
 
 const chart = document.querySelector("spc-chart");
 const DefaultPoints = [12, 22, 14, 15, 11, 22, 14, 15, 11, 13, 18, 17, 16, 15, 19];
