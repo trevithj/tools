@@ -1,5 +1,3 @@
-// import {strToArray} from "./calcs";
-
 class Base extends HTMLElement {
 
     constructor() {

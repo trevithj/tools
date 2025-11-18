@@ -1,5 +1,5 @@
 import BASE from "../base.js";
-import {getInputLabels, getInputValues, strToArray} from "./calcs.js";
+import {getInputLabels, getInputValues, strToNumberArray} from "./calcs.js";
 import {reducer} from "./state.js";
 import {getPath, getScaleData, makeDisplayRow, makeInputs, stringify} from "./views.js";
 
@@ -44,7 +44,7 @@ views.statsDiv = select(".stats");
 
 views.inputForm.addEventListener("change", () => {
     const fm = views.inputForm;
-    const values = Array.from(selectAll("input.data", fm)).map(e => strToArray(e.value));
+    const values = Array.from(selectAll("input.data", fm)).map(e => strToNumberArray(e.value));
     const labels = Array.from(selectAll("input.label", fm)).map(e => e.value);
     dispatch("INPUTS_CHANGED", {values, labels});
 })
@@ -114,4 +114,15 @@ dispatch("START");
       [5,6,7,8,9]
    ]
 }
+*/
+
+/*
+No thanks. I would like to create a similar component, but this one is for displaying horizontal box-and-whisker plots. It would take these attributes:
+* points: a comma-separated array of numbers indicating points to display on the chart.
+* data: a comma-separated array of the five values to represent the whisker ends, the quartiles and the median.
+* range: a comma-separated pair of values indicating the width of the display. That is, it indicates the lowest and highest points the plot should allow for, so that multiple plots can be displayed beside each other on the same scale.
+
+
+
+
 */
