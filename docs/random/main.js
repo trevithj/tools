@@ -1,5 +1,6 @@
 import {makeElement, select, selectAll} from "../selectors.js";
 import {createRandomGenerator, generateRandomAscii} from "./generators.js";
+import { stringToIntHash } from "../_common/convert.js";
 
 const seedInput = select("input[name='seed']");
 const getSeed = () => Math.round(parseFloat(seedInput?.value || 0));
@@ -77,4 +78,13 @@ createBtn.addEventListener("click", () => {
             paramsOutput.value += ` ${id}`;
         })
     })
+});
+
+// extras
+const hashInput = select("input[name='hash-string']");
+const hashOutput = select("input[name='hash-int']");
+hashInput.addEventListener("blur", () => {
+    const str = hashInput.value;
+    const hash = stringToIntHash(str);
+    hashOutput.value = hash;
 });

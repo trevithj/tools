@@ -7,3 +7,12 @@ export function strToNumberArray(str = "") {
             return isNaN(n) ? [] : [n];
         });
 }
+
+export function stringToIntHash(str) {
+   const hash = str.split("").reduce((h, char) => {
+      h = (h << 5) - h + char.charCodeAt(0);
+      h |= 0;
+      return h;
+   }, 0);
+   return Math.abs(hash);
+}
