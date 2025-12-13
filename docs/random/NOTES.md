@@ -26,3 +26,6 @@ Probably we should generate more than one sub-sequence for each character set.
 Each sub-sequence has an Append button opposite it. When the user clicks this, the sequence gets copied/appended into the output field, allowing the user to build up a longer sequence.
 
 This way I only need note the seed, length, and indices of the sub-sequences used.
+
+## Version 3
+Plan is to add another field that allows the user to enter any arbitrary string. The app generates an integer hash, which gets used as the seed value.

@@ -1,4 +1,4 @@
-import {getInputLabels, getInputValues, strToArray} from "../boxPlot/calcs.js";
+import {getInputLabels, getInputValues, strToNumberArray} from "../boxPlot/calcs.js";
 import theStore from "./boxplotStore.js";
 import {getPath, getScaleData, makeDisplayRow, makeInputs, stringify} from "../boxPlot/views.js";
 import {select, selectAll} from "../selectors.js";
@@ -41,7 +41,7 @@ views.statsDiv = select(".stats");
 
 views.inputForm.addEventListener("change", () => {
     const fm = views.inputForm;
-    const values = Array.from(selectAll("input.data", fm)).map(e => strToArray(e.value));
+    const values = Array.from(selectAll("input.data", fm)).map(e => strToNumberArray(e.value));
     const labels = Array.from(selectAll("input.label", fm)).map(e => e.value);
     actions.update({values, labels});
 })

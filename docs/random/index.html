@@ -12,8 +12,9 @@
     <main>
         <header>
             <h2>Random Sequence Generator Tool</h2>
-            <p>Given a seed value and a selected algorithm, this tool generates pseudo-random sequences. The idea is to make new passwords that are easier to remember. Only the seed and the algorithm are needed to re-create them as needed.</p>
-            <p>Of course, the seed+algorithm combo needs to be kept secure - but that should be easier to commit to memory.</p>
+            <p>Given a seed value and a sequence size, this tool generates a list of pseudo-random sequences of characters. The idea is to assemble new passwords from the sub-sequences of characters. The aim is to make complex passwords that are easier to remember. Only the integer parameters (seed, size and indexes) are needed to re-create them when required.</p>
+            <p>Of course, each param combo needs to be kept secure - but it should be easier to commit to memory a sequence like "1234 5 1 2 0" that a character sequence like "subltIBMTW72738".</p>
+            <p>As an optional aid to memory, the Extras section allows a seed integer to be generated from any text or phrase. The idea is that a phrase is easier to remember than a random sequence of digits. I hope this is useful.</p>
         </header>
         <h4>Input panel</h4>
         <section id="input" class="grid grid-cols-3">
