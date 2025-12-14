@@ -24,25 +24,24 @@
 <body>
   <h2>SPC Charts</h2>
   <div class="the-grid">
-    <div>
-        <span class="label">Input</span>
-        Format: <select id="format">
-            <option>Simple</option>
-            <option>Sketch</option>
-        </select>
-    </div>
+    <span class="label">Input</span>
     <span class="label">Convert</span>
     <span class="label">Output</span>
     <div class="the-input">
-      <textarea rows="30" cols="80" spellcheck="false" autocomplete="off" autocorrect="off"></textarea>
+      <textarea rows="9" cols="60" spellcheck="false" autocomplete="off" autocorrect="off">12, 22, 14, 15, 11, 22, 14, 15, 11, 13, 18, 17, 16, 15, 19</textarea>
     </div>
 
     <div class="the-controls">
-      <button id="b0">Raw</button>
+      <button id="b-raw">Raw points</button>
+      <button id="b-sig">Sigmas</button>
+      <button disabled id="b-per">Percentiles</button>
+      <button disabled id="b-ma2">Moving average 2</button>
+      <button disabled id="b-ma3">Moving average 3</button>
+      <button disabled id="b-ma5">Moving average 5</button>
     </div>
 
     <div class="the-display">
-      <textarea rows="30" cols="80" spellcheck="false" autocomplete="off" autocorrect="off"></textarea>
+      <textarea rows="9" cols="90" spellcheck="false" autocomplete="off" autocorrect="off"></textarea>
     </div>
   </div>
   <p>
@@ -53,9 +52,8 @@
     A third variation of the standard-deviation chart, that can take non-normal distributions.
     It displays points representing a two or three point moving average, instead of the raw data. This guarantees a rough normal distribution.
   </p>
+  <spc-chart id="theViz" lines="12,14,25" points="10,11,30,19"></spc-chart>
 </body>
-<script>
-
-</script>
-
+<script type="module" src="components/spcChart.js"></script>
+<script type="module" src="main.js"></script>
 </html>

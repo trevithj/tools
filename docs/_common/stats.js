@@ -42,3 +42,11 @@ export function calcSigma(stdev, mean) {
     return x => mean - (stdev * x);
 }
 
+export function minMax(values) {
+    return values.reduce((range, val) => {
+        val = isNaN(val) ? 0 : val;
+        range[0] = Math.min(range[0], val);
+        range[1] = Math.max(range[1], val);
+        return range;
+    }, [Number.MAX_SAFE_INTEGER, Number.MIN_SAFE_INTEGER]);
+}

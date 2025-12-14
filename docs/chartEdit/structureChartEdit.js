@@ -18,17 +18,17 @@ input.addEventListener("blur", evt => {
 })
 
 // Raw format
-document.querySelector("button#b0").addEventListener("click", evt => {
+document.querySelector("button#b0").addEventListener("click", () => {
     display.value = stringify(parsed);
     theViz.setAttribute("json", JSON.stringify(parsed)); //"{"+display.value+"}");
 })
 
 // DOT format
-document.querySelector("button#b1").addEventListener("click", evt => {
+document.querySelector("button#b1").addEventListener("click", () => {
     display.value = digraph2Dot(parsed);
 })
 // DOT format, bipartite graph
-document.querySelector("button#b2").addEventListener("click", evt => {
+document.querySelector("button#b2").addEventListener("click", () => {
     const defaultVerb = document.querySelector("input[name='verb']").value;
     display.value = digraph2DotBipartite(parsed, defaultVerb);
 })

@@ -15,7 +15,7 @@ export function stateParser(txt) {
     const nameMap = {}; // map name -> node
     const links = [];
     lines.forEach(line => {
-        const {indent, type, ...data} = parseLine(line);
+        const {type, ...data} = parseLine(line);
         if (type === "node") {
             const node = processNode(data, nameMap);
             nodeMap[node.id] = node;
@@ -137,7 +137,7 @@ export function stringify(parsed) {
     })
     if (nodeMap) {
         value.push(
-            "nodeMap: {",
+            '"nodeMap": {',
             Object.entries(nodeMap).map(([k, v]) => {
                 return `  "${k}": ${JSON.stringify(v)}`;
             }).join(",\n"),
