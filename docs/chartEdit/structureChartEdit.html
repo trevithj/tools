@@ -69,19 +69,17 @@
         <span class="label">Convert</span>
         <span class="label">Output</span>
         <div class="the-input">
-            <textarea rows="30" cols="60" spellcheck="false" autocomplete="off" autocorrect="off"></textarea>
+            <textarea rows="16" cols="60" spellcheck="false" autocomplete="off" autocorrect="off"></textarea>
         </div>
 
         <div class="the-controls">
             <button id="b0">Raw</button>
             <button id="b1">DOT</button>
             <button id="b2">DOT2</button>
-            <!-- <button id="b3">Draw</button> -->
-            <!-- <button id="b4">XState</button> -->
         </div>
 
         <div class="the-display">
-            <textarea rows="30" cols="60" spellcheck="false" autocomplete="off" autocorrect="off"></textarea>
+            <textarea rows="16" cols="60" spellcheck="false" autocomplete="off" autocorrect="off"></textarea>
         </div>
     </div>
     <p><label>The DOT2 default verb: </label>
@@ -92,9 +90,11 @@
         <a href="https://edotor.net/">this site</a> or
         <a href="https://stamm-wilbrandt.de/GraphvizFiddle/">this one</a>.
         <!-- <a href="https://magjac.com/graphviz-visual-editor/">Displays graphs</a> -->
-
     </p>
+
+    <hierarchy-view id="theViz" json='{"nodes":[],"links":[]}'></hierarchy-view>
 </body>
+<script src="components/compHierarchyView.js"></script>
 <script src="./structureChartEdit.js" type="module"></script>
 
 </html>

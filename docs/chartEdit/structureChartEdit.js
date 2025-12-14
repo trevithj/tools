@@ -7,6 +7,7 @@ window.DATA = {};
 const SAMPLE_INPUT = `Grandmother\n  Mother\n    Daughter1\n    Daughter2\n      GrandDaughter`;
 const input = document.querySelector(".the-input > textarea");
 const display = document.querySelector(".the-display > textarea");
+const theViz = document.querySelector("#theViz");
 input.value = window.localStorage.getItem("INPUT_STRUCTURE") || SAMPLE_INPUT;
 
 let parsed = {};
@@ -19,6 +20,7 @@ input.addEventListener("blur", evt => {
 // Raw format
 document.querySelector("button#b0").addEventListener("click", evt => {
     display.value = stringify(parsed);
+    theViz.setAttribute("json", JSON.stringify(parsed)); //"{"+display.value+"}");
 })
 
 // DOT format
