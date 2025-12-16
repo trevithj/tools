@@ -1,10 +1,13 @@
 import {strToNumberArray} from "../_common/convert.js";
 import {calcMean, calcSigma, calcStdDev, minMax} from "../_common/stats.js";
 
-const inputElement = document.querySelector(".the-input > textarea");
-const outputElement = document.querySelector(".the-display > textarea");
-const controls = document.querySelector(".the-controls");
+const inputElement = document.querySelector("#inputSection");
+const outputElement = document.querySelector("#outputSection");
+const controls = document.querySelector(".control-panel");
 const viz = document.querySelector("#theViz");
+
+// set default values
+inputElement.value = "12, 22, 14, 15, 11, 22, 14, 15, 11, 13, 18, 17, 16, 15, 19";
 
 controls.querySelector("#b-raw").addEventListener("click", () => {
     const values = strToNumberArray(inputElement.value);

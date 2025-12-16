@@ -2,58 +2,49 @@
 <html>
 
 <head>
-  <title>SPC Chart</title>
-  <style>
-    .the-grid {
-      display: grid;
-      grid-template-columns: auto 8rem 1fr;
-      column-gap: 0.5rem;
-    }
+    <title>SPC Chart</title>
+    <style>
+        p {
+            padding: 15px 30px;
+        }
+    </style>
+    <link rel="stylesheet" href="./spcChart.css" type="text/css">
 
-    .the-display,
-    .the-input {
-      border: solid thin silver;
-    }
-
-    button {
-      width: 100%;
-    }
-  </style>
 </head>
 
 <body>
-  <h2>SPC Charts</h2>
-  <div class="the-grid">
-    <span class="label">Input</span>
-    <span class="label">Convert</span>
-    <span class="label">Output</span>
-    <div class="the-input">
-      <textarea rows="9" cols="60" spellcheck="false" autocomplete="off" autocorrect="off">12, 22, 14, 15, 11, 22, 14, 15, 11, 13, 18, 17, 16, 15, 19</textarea>
-    </div>
+    <div class="container">
+        <app-header title="SPC Charts" subtitle="Time-series points for statistical process control"></app-header>
 
-    <div class="the-controls">
-      <button id="b-raw">Raw points</button>
-      <button id="b-sig">Sigmas</button>
-      <button disabled id="b-per">Percentiles</button>
-      <button disabled id="b-ma2">Moving average 2</button>
-      <button disabled id="b-ma3">Moving average 3</button>
-      <button disabled id="b-ma5">Moving average 5</button>
-    </div>
+        <div class="content">
+            <text-input-section id="inputSection"></text-input-section>
 
-    <div class="the-display">
-      <textarea rows="9" cols="90" spellcheck="false" autocomplete="off" autocorrect="off"></textarea>
+            <div class="control-panel">
+                <button class="control-btn" id="b-raw">Raw points</button>
+                <button class="control-btn" id="b-sig">Sigmas</button>
+                <button class="control-btn" disabled id="b-per">Percentiles</button>
+                <button class="control-btn" disabled id="b-ma2">Moving average 2</button>
+                <button class="control-btn" disabled id="b-ma3">Moving average 3</button>
+                <button class="control-btn" disabled id="b-ma5">Moving average 5</button>
+            </div>
+
+            <text-output-section id="outputSection"></text-output-section>
+        </div>
+        <p>
+            Paste or enter a delimited series of numbers into the input textbox. Any delimiter will work in the
+            textareas except <code>.</code> or <code>-</code>. Non-numeric characters are ignored.
+        </p>
+        <!-- <p>
+            A third variation of the standard-deviation chart, that can take non-normal distributions.
+            It displays points representing a two or three point moving average, instead of the raw data. This
+            guarantees a
+            rough normal distribution.
+        </p> -->
+        <spc-chart id="theViz" lines="12,14,25" points="10,11,30,19"></spc-chart>
     </div>
-  </div>
-  <p>
-    Allow user to enter an array of number values via a text field. Also to select the type of chart to show, from Standard-Deviations to Percentiles. And allow an editable label for the chart.
-    Finally, create a link with the values, type and label encoded in the URL, and use a stand-alone version of the chart to display the results. That makes a shareable link.
-  </p>
-  <p>
-    A third variation of the standard-deviation chart, that can take non-normal distributions.
-    It displays points representing a two or three point moving average, instead of the raw data. This guarantees a rough normal distribution.
-  </p>
-  <spc-chart id="theViz" lines="12,14,25" points="10,11,30,19"></spc-chart>
 </body>
+<script type="module" src="components/textAreas.js"></script>
 <script type="module" src="components/spcChart.js"></script>
 <script type="module" src="main.js"></script>
+
 </html>
