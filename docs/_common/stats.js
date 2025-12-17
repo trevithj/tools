@@ -14,7 +14,7 @@ export function makeQuantile(sorted) {
 };
 
 export function getPercentiles(vals) {
-    const sorted = [...vals].sort();
+    const sorted = [...vals].sort((a, b) => a - b);
     const n = sorted.length;
     return p => {
         if (n === 1) return sorted[0];
@@ -49,4 +49,17 @@ export function minMax(values) {
         range[1] = Math.max(range[1], val);
         return range;
     }, [Number.MAX_SAFE_INTEGER, Number.MIN_SAFE_INTEGER]);
+}
+
+export function movingAverages(arr, n) {
+    if (arr.length < n || n <= 0) {
+        return [];
+    }
+
+    return arr.flatMap((_, i) => {
+        // Only calculate when we have enough elements for a complete window
+        if (i < n - 1) return [];
+        const window = arr.slice(i - n + 1, i + 1);
+        return window.reduce((sum, val) => sum + val, 0) / n;
+    });
 }
