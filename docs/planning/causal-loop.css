@@ -1,7 +1,69 @@
 /* @import url("https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Courier+Prime:wght@400;700&display=swap"); */
 
-:root {
+/* Slate and rose */
+/* :root {
+    --bg: #0f0f13;
+    --surface: #161620;
+    --surface2: #1c1c28;
+    --border: #252535;
+    --text: #ddd8e8;
+    --muted: #4a4860;
+    --amber: #e891b0;
+    --amber-dim: #a05878;
+    --amber-glow: rgba(232, 145, 176, 0.15);
+    --teal: #7eb8d4;
+    --teal-dim: #4a7a90;
+    --red: #e05c4a;
+} */
 
+/* Deep ocean */
+/* :root {
+    --bg: #0a0e14;
+    --surface: #0f1520;
+    --surface2: #141c2a;
+    --border: #1e2d42;
+    --text: #c8d8e8;
+    --muted: #3d5470;
+    --amber: #4fc3f7;
+    --amber-dim: #2a7fa8;
+    --amber-glow: rgba(79, 195, 247, 0.15);
+    --teal: #80cbc4;
+    --teal-dim: #4a8f8a;
+    --red: #ef5350;
+} */
+
+/* Botanical */
+/* :root {
+    --bg: #0e1a12;
+    --surface: #121f16;
+    --surface2: #172418;
+    --border: #1e3224;
+    --text: #d4e8cc;
+    --muted: #3d6045;
+    --amber: #c8b560;
+    --amber-dim: #8a7a35;
+    --amber-glow: rgba(200, 181, 96, 0.15);
+    --teal: #f4845f;
+    --teal-dim: #a85540;
+    --red: #e05c4a;
+}  */
+
+/* Manuscript */
+:root {
+    --bg: #1a1610;
+    --surface: #221d15;
+    --surface2: #2a2418;
+    --border: #36301f;
+    --text: #e8dfc0;
+    --muted: #6e6040;
+    --amber: #d4a855;
+    --amber-dim: #8a6c30;
+    --amber-glow: rgba(212, 168, 85, 0.15);
+    --teal: #7abfaa;
+    --teal-dim: #4a8570;
+    --red: #c8604a;
+}
+/* :root {
     --bg: #3a3c10;
     --surface: #111318;
     --border: #1e2330;
@@ -15,7 +77,7 @@
     --teal: #5ecfbe;
     --teal-dim: #3a8f82;
     --red: #e05c4a;
-}
+} */
 
 * {
     box-sizing: border-box;
@@ -43,6 +105,74 @@ body {
             transparent 50%
         );
 }
+
+/* Active button state */
+.btn-active {
+    filter: brightness(1.3);
+    box-shadow: 0 0 10px currentColor;
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+}
+
+/* Badge variants */
+.mode-link {
+    background: rgba(94, 207, 190, 0.12);
+    border-color: var(--teal-dim);
+    color: var(--teal);
+    animation: pulse-badge 1.2s ease-in-out infinite;
+}
+.mode-add {
+    background: rgba(168, 255, 120, 0.1);
+    border-color: #6abf50;
+    color: #a8ff78;
+}
+.mode-delete {
+    background: rgba(224, 92, 74, 0.12);
+    border-color: var(--red);
+    color: var(--red);
+    animation: pulse-badge 1.2s ease-in-out infinite;
+}
+
+/* Canvas cursor per mode */
+.canvas-normal {
+    cursor: grab;
+}
+.canvas-add {
+    cursor: crosshair;
+}
+.canvas-link {
+    cursor: cell;
+}
+.canvas-delete {
+    cursor: not-allowed;
+}
+.canvas-normal.dragging {
+    cursor: grabbing;
+}
+
+/* Delete mode hover tints — CSS only, no JS needed */
+.canvas-delete .text-node-group:hover .text-node-rect {
+    stroke: var(--red) !important;
+    stroke-width: 2;
+}
+.canvas-delete .gate-group:hover .gate-circle {
+    stroke: var(--red) !important;
+    stroke-width: 2.5;
+}
+.canvas-delete .text-node-group:hover .node-label {
+    fill: var(--red);
+}
+.canvas-delete .gate-group:hover .gate-label {
+    fill: var(--red);
+}
+.canvas-delete .edge-hit:hover + .edge-line,
+.canvas-delete .edge-line:hover {
+    stroke: var(--red) !important;
+}
+/* add these two alongside the existing delete hover rules */
+.canvas-delete .text-node-group { cursor: not-allowed; }
+.canvas-delete .gate-group      { cursor: not-allowed; }
+
 
 header {
     padding: 10px 18px;
@@ -160,6 +290,21 @@ input[type="text"]::placeholder {
     border-color: var(--amber-dim);
     color: var(--amber);
     filter: none;
+}
+.btn-red {
+    background: rgba(224, 92, 74, 0.10);
+    border-color: rgba(224, 92, 74, 0.4);
+    color: var(--red);
+}
+.btn-red:hover {
+    background: rgba(224, 92, 74, 0.2);
+}
+
+.btn-active {
+    filter: brightness(1.3);
+    box-shadow: 0 0 10px currentColor;
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
 }
 
 .sep {
@@ -309,10 +454,21 @@ main {
     flex: 1;
     position: relative;
     overflow: hidden;
+}
+#canvas-wrap.canvas-normal {
     cursor: grab;
 }
-#canvas-wrap.dragging {
+#canvas-wrap.canvas-normal.dragging {
     cursor: grabbing;
+}
+#canvas-wrap.canvas-add {
+    cursor: crosshair;
+}
+#canvas-wrap.canvas-link {
+    cursor: cell;
+}
+#canvas-wrap.canvas-delete {
+    cursor: not-allowed;
 }
 
 svg#graph {

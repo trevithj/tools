@@ -3,7 +3,10 @@ import {bipartiteAutoLayout} from "./graphLayout.js";
 // ── Constants ─────────────────────────────────────────────────────────────
 const TEXT_H = 36;
 const GATE_R = 12;   // radius of circular AND gate
-const TEXT_PAD = 18;   // horizontal padding inside text node
+const LINE_HEIGHT = 16;
+const TEXT_PAD_X = 18;
+const TEXT_PAD_Y = 10;
+const NL_CHAR = "|"; // character to indicate a new line/line break
 
 // ── DOM refs ──────────────────────────────────────────────────────────────
 const svg = document.getElementById('graph');
@@ -17,9 +20,9 @@ const nodeInput = document.getElementById('node-input');
 let nodes = [];  // { id, type:'text'|'gate', label, x, y }
 let edges = [];  // { id, from, to }
 let nextId = 1;
+let mode = 'normal'; // 'normal' | 'add' | 'link' | 'delete'
 
 let selected = null;
-let linkMode = false;
 let linkSource = null;
 
 let panX = 0, panY = 0;
@@ -30,8 +33,12 @@ let mousePos = {x: 0, y: 0};  // in viewport (SVG) space
 // ── Helpers ───────────────────────────────────────────────────────────────
 function uid() {return 'n' + (nextId++);}
 
-function textNodeWidth(label) {
-    return Math.max(110, label.length * 7.4 + TEXT_PAD * 2);
+function nodeSize(node) {
+    if (node.type === 'gate') return {w: GATE_R * 2, h: GATE_R * 2};
+    const lines = node.label.split(NL_CHAR);
+    const w = Math.max(110, Math.max(...lines.map(l => l.length)) * 7.4 + TEXT_PAD_X * 2);
+    const h = Math.max(TEXT_H, lines.length * LINE_HEIGHT + TEXT_PAD_Y * 2);
+    return {w, h};
 }
 
 /**
@@ -49,8 +56,8 @@ function boundaryPoint(n, tx, ty) {
         return {x: n.x + ux * GATE_R, y: n.y + uy * GATE_R};
     } else {
         // Axis-aligned rect intersection
-        const hw = textNodeWidth(n.label) / 2;
-        const hh = TEXT_H / 2;
+        const {w, h} = nodeSize(n);
+        const hw = w / 2, hh = h / 2;
         // parameterise ray: find smallest t > 0 that hits a wall
         let t = Infinity;
         if (Math.abs(ux) > 1e-9) {const tc = (ux > 0 ? hw : -hw) / ux; if (tc > 0) t = Math.min(t, tc);}
@@ -61,7 +68,7 @@ function boundaryPoint(n, tx, ty) {
 
 // ── Mutation helpers ──────────────────────────────────────────────────────
 function addTextNode() {
-    if (selected) return;   // editing an existing node, not creating
+    if (selected || mode !== 'normal') return;
     const label = nodeInput.value.trim();
     if (!label) return;
     nodeInput.value = '';
@@ -103,15 +110,33 @@ function deleteEdge(id) {
 }
 
 // ── Link mode ─────────────────────────────────────────────────────────────
-function toggleLinkMode() {
-    linkMode = !linkMode;
-    linkSource = null;
-    selected = null;
-    const badge = document.getElementById('mode-badge');
-    badge.className = linkMode ? 'mode-link' : 'mode-normal';
-    badge.textContent = linkMode ? 'LINK MODE' : 'NORMAL';
-    linkPreviewPath.style.display = 'none';
-    render();
+function doSetMode(m) {
+    return () => {
+        mode = m === mode ? 'normal' : m; // clicking active mode returns to normal
+        linkSource = null;
+        selected = null;
+        linkPreviewPath.style.display = 'none';
+
+        // Badge
+        const badge = document.getElementById('mode-badge');
+        const labels = {normal: 'NORMAL', add: 'ADD', link: 'LINK', delete: 'DELETE'};
+        badge.textContent = labels[mode];
+        badge.className = 'mode-' + mode;
+
+        // Canvas cursor + class
+        const wrap = document.getElementById('canvas-wrap');
+        wrap.className = 'canvas-' + mode;
+
+        // Button active states
+        ['btn-add', 'btn-link', 'btn-delete'].forEach(id => {
+            document.getElementById(id).classList.remove('btn-active');
+        });
+        if (mode !== 'normal') {
+            document.getElementById('btn-' + mode).classList.add('btn-active');
+        }
+
+        render();
+    }
 }
 
 function handleLinkClick(id) {
@@ -184,7 +209,14 @@ function renderEdges() {
         const hit = svgNS('path');
         hit.setAttribute('d', d);
         hit.setAttribute('class', 'edge-hit');
-        hit.addEventListener('dblclick', ev => {ev.stopPropagation(); deleteEdge(e.id);});
+        hit.addEventListener('click', ev => {
+            ev.stopPropagation();
+            if (mode === 'delete') deleteEdge(e.id);
+        });
+        hit.addEventListener('dblclick', ev => {
+            ev.stopPropagation();
+            if (mode !== 'delete') deleteEdge(e.id);
+        });
 
         g.appendChild(path);
         g.appendChild(hit);
@@ -192,9 +224,9 @@ function renderEdges() {
     });
 }
 
-function renderTextNode(g, node, isSource, isSelected) {
-    const w = textNodeWidth(node.label);
-    const h = TEXT_H;
+function renderTextNode(g, node) {
+    const lines = node.label.split('|');
+    const {w, h} = nodeSize(node);
     const rx = node.x - w / 2;
     const ry = node.y - h / 2;
 
@@ -204,22 +236,19 @@ function renderTextNode(g, node, isSource, isSelected) {
     rect.setAttribute('width', w); rect.setAttribute('height', h);
     rect.setAttribute('rx', 5); rect.setAttribute('ry', 5);
 
-    // left accent bar
-    const accent = svgNS('rect');
-    accent.setAttribute('x', rx + 1); accent.setAttribute('y', ry + 7);
-    accent.setAttribute('width', 3); accent.setAttribute('height', h - 14);
-    accent.setAttribute('rx', 1.5);
-    accent.setAttribute('fill', isSource || isSelected ? '#5ecfbe' : '#a07020');
-    accent.setAttribute('opacity', '0.7');
-    accent.setAttribute('pointer-events', 'none');
-
-    const text = svgNS('text');
-    text.setAttribute('class', 'node-label');
-    text.setAttribute('x', rx + TEXT_PAD);
-    text.setAttribute('y', node.y);
-    text.textContent = node.label;
-
-    g.appendChild(rect); g.appendChild(accent); g.appendChild(text);
+    const textEl = svgNS('text');
+    textEl.setAttribute('class', 'node-label');
+    textEl.setAttribute('pointer-events', 'none');
+    const totalTextH = lines.length * LINE_HEIGHT;
+    const startY = node.y - totalTextH / 2 + LINE_HEIGHT / 2 + 3;
+    lines.forEach((line, i) => {
+        const tspan = svgNS('tspan');
+        tspan.setAttribute('x', rx + TEXT_PAD_X);
+        tspan.setAttribute('y', startY + i * LINE_HEIGHT);
+        tspan.textContent = line;
+        textEl.appendChild(tspan);
+    });
+    g.appendChild(rect); g.appendChild(textEl);
 }
 
 function renderGateNode(g, node) {
@@ -254,7 +283,7 @@ function renderNodes() {
         g.setAttribute('class', classes);
 
         if (node.type === 'text') {
-            renderTextNode(g, node, isSource, isSelected);
+            renderTextNode(g, node);
         } else {
             renderGateNode(g, node);
         }
@@ -289,7 +318,7 @@ function renderSidebar() {
       <span class="task-name-sb" title="${node.label}">${node.label}</span>
       <span class="task-del" onclick="event.stopPropagation();deleteNode('${node.id}')">×</span>`;
         el.onclick = () => {
-            if (linkMode) handleLinkClick(node.id);
+            if (mode === "link") handleLinkClick(node.id);
             else {selected = selected === node.id ? null : node.id; render();}
         };
         document.getElementById(node.type === 'gate' ? 'gate-list' : 'text-list').appendChild(el);
@@ -297,7 +326,7 @@ function renderSidebar() {
 }
 
 function updateLinkPreview() {
-    if (!linkMode || !linkSource) {linkPreviewPath.style.display = 'none'; return;}
+    if (mode !== "link" || !linkSource) {linkPreviewPath.style.display = 'none'; return;}
     const src = nodes.find(n => n.id === linkSource);
     if (!src) {linkPreviewPath.style.display = 'none'; return;}
     const p1 = boundaryPoint(src, mousePos.x, mousePos.y);
@@ -316,6 +345,7 @@ function render() {
     document.getElementById('s-edges').textContent = edges.length;
     document.getElementById('empty-state').style.display = nodes.length ? 'none' : 'flex';
     updateLinkPreview();
+    console.log({nodes, edges});
 }
 
 function updateViewport() {
@@ -336,7 +366,7 @@ function autoLayout() {
 function clearAll() {
     if (!nodes.length || confirm('Clear everything?')) {
         nodes = []; edges = []; selected = null; linkSource = null;
-        if (linkMode) toggleLinkMode(); else render();
+        if (mode === "link") mode = "normal"; else render();
     }
 }
 
@@ -352,6 +382,17 @@ let mouseDownMoved = false;
 
 svg.addEventListener('mousedown', e => {
     if (e.button !== 0) return;
+    if (mode === 'add' && (e.target === svg || e.target === viewport)) {
+        const pt = toSVG(e.clientX, e.clientY);
+        const id = uid();
+        nodes.push({id, type: 'text', label: 'New node', x: pt.x, y: pt.y});
+        selected = id;
+        document.getElementById('node-input').value = 'New node';
+        document.getElementById('node-input').focus();
+        document.getElementById('node-input').select();
+        render();
+        return;
+    }
     if (!draggingNode) {
         isPanning = true;
         panStart = {x: e.clientX - panX, y: e.clientY - panY};
@@ -379,7 +420,7 @@ window.addEventListener('mousemove', e => {
         panY = e.clientY - panStart.y;
         updateViewport();
     }
-    if (linkMode && linkSource) updateLinkPreview();
+    if (mode === "link" && linkSource) updateLinkPreview();
 });
 
 window.addEventListener('mouseup', () => {
@@ -390,16 +431,19 @@ window.addEventListener('mouseup', () => {
         dragOffset = null;
         mouseDownMoved = false;
         // If barely moved → treat as click
+
         if (!moved) {
-            if (linkMode) handleLinkClick(id);
-            else {
+            if (mode === 'delete') {
+                deleteNode(id);
+            } else if (mode === 'link') {
+                handleLinkClick(id);
+            } else {
                 selected = selected === id ? null : id;
-                const inp = nodeInput;
                 if (selected === id) {
-                    inp.value = nodes.find(n => n.id === id).label;
-                    inp.focus();
+                    nodeInput.value = nodes.find(n => n.id === id).label;
+                    nodeInput.focus();
                 } else {
-                    inp.value = '';
+                    nodeInput.value = '';
                 }
                 render();
             }
@@ -413,42 +457,34 @@ window.addEventListener('mouseup', () => {
 
 svg.addEventListener('click', e => {
     if (e.target === svg || e.target === viewport) {
-        if (linkMode) {
+        if (mode === "link") {
             linkSource = null;
             linkPreviewPath.style.display = 'none';
         }
-        else {
-            selected = null;
-            nodeInput.value = '';
-        }
+        selected = null;
+        nodeInput.value = '';
         render();
     }
 });
 
+
 // ── Sample: thermostat feedback loop ─────────────────────────────────────
 function loadSample() {
     nodes = [
-        // Feedback loop: temperature regulation
-        {id: 'n1', type: 'text', label: 'Room Temp', x: 400, y: 120},
-        {id: 'n2', type: 'text', label: 'Setpoint', x: 160, y: 220},
-        {id: 'g1', type: 'gate', label: 'AND', x: 310, y: 220},
-        {id: 'n3', type: 'text', label: 'Error Signal', x: 460, y: 220},
-        {id: 'n4', type: 'text', label: 'Heater Output', x: 620, y: 330},
-        {id: 'g2', type: 'gate', label: 'AND', x: 460, y: 330},
-        {id: 'g3', type: 'gate', label: 'AND', x: 620, y: 220},
-        {id: 'n5', type: 'text', label: 'Fuel Supply', x: 300, y: 370},
-        // feedback edge: room temp feeds back into gate g1
+        {id: "n20", type: "text", label: "Bob's donuts are|fresher", x: 175, y: 227},
+        {id: "n21", type: "text", label: "Fresh donuts|sell faster", x: 277, y: 343},
+        {id: "n22", type: "text", label: "Faster-selling|donuts are|fresher", x: 534, y: 133},
+        {id: "n23", type: "text", label: "Bob's donuts sell|faster", x: 600, y: 236},
+        {id: "n24", type: "gate", label: "AND", x: 408, y: 287},
+        {id: "n28", type: "gate", label: "AND", x: 383, y: 169}
     ];
     edges = [
-        {id: 'e1', from: 'n1', to: 'g1'},   // room temp → gate
-        {id: 'e2', from: 'n2', to: 'g1'},   // setpoint  → gate
-        {id: 'e3', from: 'g1', to: 'n3'},   // gate → error signal
-        {id: 'e4', from: 'n3', to: 'g2'},   // error → gate2
-        {id: 'e5', from: 'n5', to: 'g2'},   // fuel   → gate2
-        {id: 'e6', from: 'g2', to: 'n4'},   // gate2 → heater output
-        // heater output → gate3 → room temp (FEEDBACK)
-        {id: 'e7', from: 'n4', to: 'g3'},
-        {id: 'e8', from: 'g3', to: 'n1'},
+        {id: "n25", from: "n20", to: "n24"},
+        {id: "n26", from: "n24", to: "n23"},
+        {id: "n27", from: "n21", to: "n24"},
+        {id: "n29", from: "n23", to: "n28"},
+        {id: "n30", from: "n28", to: "n20"},
+        {id: "n31", from: "n22", to: "n28"}
     ];
     nextId = 20;
     panX = 60; panY = 60;
@@ -459,23 +495,15 @@ function loadSample() {
 loadSample();
 
 const buttons = document.querySelectorAll("button.btn");
-buttons[0].addEventListener("click", addTextNode);
-buttons[1].addEventListener("click", toggleLinkMode);
-buttons[2].addEventListener("click", autoLayout);
-buttons[3].addEventListener("click", clearAll);
+buttons[0].addEventListener("click", doSetMode("normal"));
+buttons[1].addEventListener("click", doSetMode('add'));
+buttons[2].addEventListener("click", doSetMode('link'));
+buttons[3].addEventListener("click", doSetMode('delete'));
+buttons[4].addEventListener("click", autoLayout);
+buttons[5].addEventListener("click", clearAll);
 nodeInput.addEventListener('input', () => {
-  if (selected) {
-    const node = nodes.find(n => n.id === selected);
-    if (node) { node.label = nodeInput.value; render(); }
-  }
+    if (selected) {
+        const node = nodes.find(n => n.id === selected);
+        if (node) {node.label = nodeInput.value; render();}
+    }
 });
-// <button class="btn btn-amber" onclick="addTextNode()">+ NODE</button>
-// <div class="sep"></div>
-// <span id="mode-badge" class="mode-normal">NORMAL</span>
-// <button class="btn btn-teal" onclick="toggleLinkMode()">⇒ LINK</button>
-// <button class="btn btn-ghost" onclick="autoLayout()">⊞ LAYOUT</button>
-// <button class="btn btn-ghost" onclick="clearAll()">✕ CLEAR</button>
-/**
-selected = null;
-document.getElementById('node-input').value = '';
- * */
