@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Causality Graph</title>
+    <link rel="icon" href="../favicon.ico" />
+    <link rel="stylesheet" href="./causal-loop.css">
+</head>
+<body>
+
+<header>
+  <div class="logo">Causal<em>&amp;</em>Graph</div>
+  <div class="toolbar">
+    <input type="text" id="node-input" placeholder="New cause / effect...">
+    <button class="btn btn-amber" onclick="addTextNode()">+ NODE</button>
+    <div class="sep"></div>
+    <span id="mode-badge" class="mode-normal">NORMAL</span>
+    <button class="btn btn-teal">⇒ LINK</button>
+    <button class="btn btn-ghost">⊞ LAYOUT</button>
+    <button class="btn btn-ghost">✕ CLEAR</button>
+    <div class="hint">
+      <b>TEXT→TEXT</b> auto-creates AND gate &nbsp;·&nbsp;
+      <b>GATE↔GATE</b> ignored &nbsp;·&nbsp;
+      <b>dbl-click edge</b> deletes it &nbsp;·&nbsp;
+      <b>right-click node</b> deletes it
+    </div>
+  </div>
+</header>
+
+<main>
+  <div id="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-title">Text Nodes</div>
+      <div id="text-list"></div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-title">AND Gates</div>
+      <div id="gate-list"></div>
+    </div>
+  </div>
+
+  <div id="canvas-wrap">
+    <svg id="graph">
+      <defs>
+        <marker id="arrowhead" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+          <path d="M0,0.5 L0,6.5 L7,3.5 z" fill="#6b6050"/>
+        </marker>
+        <marker id="arrowhead-teal" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+          <path d="M0,0.5 L0,6.5 L7,3.5 z" fill="#5ecfbe" opacity="0.7"/>
+        </marker>
+      </defs>
+      <g id="viewport">
+        <g id="edges-layer"></g>
+        <g id="nodes-layer"></g>
+        <path id="link-preview-path" class="link-preview-path" d="" style="display:none"/>
+      </g>
+    </svg>
+    <div id="empty-state">
+      <div class="empty-symbol">∧</div>
+      <div class="empty-text">Add text nodes, then connect them with Link mode</div>
+      <div class="empty-text">TEXT → TEXT automatically inserts an AND gate</div>
+    </div>
+  </div>
+</main>
+
+<div class="status-bar">
+  <span><b id="s-text">0</b> text nodes</span>
+  <span><b id="s-gates">0</b> AND gates</span>
+  <span><b id="s-edges">0</b> connections</span>
+  <div class="legend">
+    <div class="legend-item"><div class="leg-rect"></div> Text Node</div>
+    <div class="legend-item"><div class="leg-circle">&amp;</div> AND Gate</div>
+  </div>
+</div>
+
+<script type="module" src="./causal-loop.js"></script>
+</body>
+</html>
