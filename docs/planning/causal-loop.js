@@ -1,8 +1,8 @@
-import {bipartiteAutoLayout} from "./graphLayout";
+import {bipartiteAutoLayout} from "./graphLayout.js";
 
 // ── Constants ─────────────────────────────────────────────────────────────
 const TEXT_H = 36;
-const GATE_R = 22;   // radius of circular AND gate
+const GATE_R = 12;   // radius of circular AND gate
 const TEXT_PAD = 18;   // horizontal padding inside text node
 
 // ── DOM refs ──────────────────────────────────────────────────────────────
@@ -11,6 +11,7 @@ const viewport = document.getElementById('viewport');
 const edgesLayer = document.getElementById('edges-layer');
 const nodesLayer = document.getElementById('nodes-layer');
 const linkPreviewPath = document.getElementById('link-preview-path');
+const nodeInput = document.getElementById('node-input');
 
 // ── State ─────────────────────────────────────────────────────────────────
 let nodes = [];  // { id, type:'text'|'gate', label, x, y }
@@ -60,19 +61,19 @@ function boundaryPoint(n, tx, ty) {
 
 // ── Mutation helpers ──────────────────────────────────────────────────────
 function addTextNode() {
-    const inp = document.getElementById('node-input');
-    const label = inp.value.trim();
+    if (selected) return;   // editing an existing node, not creating
+    const label = nodeInput.value.trim();
     if (!label) return;
-    inp.value = '';
+    nodeInput.value = '';
 
     const r = svg.getBoundingClientRect();
     const x = (r.width / 2 - panX) + (Math.random() - 0.5) * 120;
     const y = (r.height / 2 - panY) + (Math.random() - 0.5) * 80;
     nodes.push({id: uid(), type: 'text', label, x, y});
     render();
-    inp.focus();
+    nodeInput.focus();
 }
-document.getElementById('node-input').addEventListener('keydown', e => {
+nodeInput.addEventListener('keydown', e => {
     if (e.key === 'Enter') addTextNode();
 });
 
@@ -391,7 +392,17 @@ window.addEventListener('mouseup', () => {
         // If barely moved → treat as click
         if (!moved) {
             if (linkMode) handleLinkClick(id);
-            else {selected = selected === id ? null : id; render();}
+            else {
+                selected = selected === id ? null : id;
+                const inp = nodeInput;
+                if (selected === id) {
+                    inp.value = nodes.find(n => n.id === id).label;
+                    inp.focus();
+                } else {
+                    inp.value = '';
+                }
+                render();
+            }
         }
     }
     if (isPanning) {
@@ -402,8 +413,14 @@ window.addEventListener('mouseup', () => {
 
 svg.addEventListener('click', e => {
     if (e.target === svg || e.target === viewport) {
-        if (linkMode) {linkSource = null; linkPreviewPath.style.display = 'none';}
-        else selected = null;
+        if (linkMode) {
+            linkSource = null;
+            linkPreviewPath.style.display = 'none';
+        }
+        else {
+            selected = null;
+            nodeInput.value = '';
+        }
         render();
     }
 });
@@ -446,9 +463,19 @@ buttons[0].addEventListener("click", addTextNode);
 buttons[1].addEventListener("click", toggleLinkMode);
 buttons[2].addEventListener("click", autoLayout);
 buttons[3].addEventListener("click", clearAll);
+nodeInput.addEventListener('input', () => {
+  if (selected) {
+    const node = nodes.find(n => n.id === selected);
+    if (node) { node.label = nodeInput.value; render(); }
+  }
+});
 // <button class="btn btn-amber" onclick="addTextNode()">+ NODE</button>
 // <div class="sep"></div>
 // <span id="mode-badge" class="mode-normal">NORMAL</span>
 // <button class="btn btn-teal" onclick="toggleLinkMode()">⇒ LINK</button>
 // <button class="btn btn-ghost" onclick="autoLayout()">⊞ LAYOUT</button>
 // <button class="btn btn-ghost" onclick="clearAll()">✕ CLEAR</button>
+/**
+selected = null;
+document.getElementById('node-input').value = '';
+ * */
