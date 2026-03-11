@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <title>Bubble Flow</title>
+   <link
+      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500&display=swap"
+      rel="stylesheet" />
+   <link href="./bubble-flow.css" rel="stylesheet" />
+</head>
+
+<body>
+
+   <header>
+      <h1>bubble flow</h1>
+      <p>pop the matching shape</p>
+   </header>
+
+   <div id="target-box">
+      <span class="label">target</span>
+      <svg id="target-svg" width="36" height="36" viewBox="0 0 100 100"></svg>
+      <span id="target-name"></span>
+   </div>
+
+   <div id="controls">
+      <button id="btn-start">start</button>
+      <div id="speed-buttons">
+         <button class="speed-btn" data-i="0">slow</button>
+         <button class="speed-btn active" data-i="1">medium</button>
+         <button class="speed-btn" data-i="2">fast</button>
+      </div>
+   </div>
+
+   <div id="canvas-wrap">
+      <div id="idle-msg">press start</div>
+   </div>
+
+   <footer>click matching bubbles · breathe · focus</footer>
+
+   <script src="bubble-flow.js" type="module"></script>
+</body>
+
+</html>
