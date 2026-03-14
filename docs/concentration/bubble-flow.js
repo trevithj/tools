@@ -4,23 +4,25 @@ const COLORS = [
     {name: 'sky', fill: '#a8d4f9', stroke: '#5aaae0'},
     {name: 'sage', fill: '#a8f0cc', stroke: '#50c887'},
     {name: 'amber', fill: '#f9dfa8', stroke: '#e0b840'},
-    {name: 'lavender', fill: '#d4a8f9', stroke: '#a060e0'},
+    // {name: 'lavender', fill: '#d4a8f9', stroke: '#a060e0'},
 ];
-const SPEED_VALUES = [0.8, 1.6, 2.4];
-
-let running = false;
-let speedIdx = 1;
-let bubbles = [];
-let target = randomTarget();
-let lastSpawnTime = 0;
-let rafId = null;
-let lastTs = null;
+const SPEED_VALUES = [1.0, 2.0, 3.0];
+const state = {
+    running: false,
+    speedIdx: 1,
+    bubbles: [],
+    lastSpawnTime: 0,
+    rafId: null,
+    lastTs: null,
+    target: randomTarget()
+};
 
 const wrap = document.getElementById('canvas-wrap');
 const idleMsg = document.getElementById('idle-msg');
 const btnStart = document.getElementById('btn-start');
-const targetSvg = document.getElementById('target-svg');
-const targetName = document.getElementById('target-name');
+const targetBox = document.getElementById('target-box');
+const targetSvg = targetBox.querySelector('#target-svg');
+const targetName = targetBox.querySelector('#target-name');
 
 // ── helpers ────────────────────────────────────────────────────────────────
 
@@ -45,15 +47,26 @@ function shapeInnerSVG(shape, fill, stroke) {
 // ── target display ─────────────────────────────────────────────────────────
 
 function renderTarget() {
+    const { target } = state;
     targetSvg.innerHTML = shapeInnerSVG(target.shape, target.color.fill, target.color.stroke);
     targetName.textContent = `${target.color.name} ${target.shape}`;
 }
 renderTarget();
 
+function changeTarget() {
+    const newTarget = randomTarget();
+    if (newTarget.shape === state.target.shape) {
+        changeTarget();
+    } else {
+        state.target = newTarget;
+        renderTarget();
+    }
+}
+
 // ── bubble factory ─────────────────────────────────────────────────────────
 
 function spawnBubble() {
-    const speed = SPEED_VALUES[speedIdx];
+    const speed = SPEED_VALUES[state.speedIdx];
     const size = rand(44, 80);
     const shape = pick(SHAPES);
     const color = pick(COLORS);
@@ -66,7 +79,7 @@ function spawnBubble() {
     el.innerHTML = `<svg width="${size}" height="${size}" viewBox="0 0 100 100">${shapeInnerSVG(shape, color.fill, color.stroke)}</svg>`;
     wrap.appendChild(el);
 
-    bubbles.push({
+    state.bubbles.push({
         el, shape, color, size,
         xPct,
         yPx: wrap.offsetHeight + size,
@@ -77,41 +90,43 @@ function spawnBubble() {
 }
 
 // ── click handler ──────────────────────────────────────────────────────────
+targetBox.addEventListener("click", changeTarget);
 
-wrap.addEventListener('click', e => {
-    if (!running) return;
+wrap.addEventListener('mousedown', e => {
+    if (!state.running) return;
     const el = e.target.closest('.bubble');
     if (!el) return;
+    const { bubbles, target } = state;
     const b = bubbles.find(b => b.el === el);
     if (!b || b.state !== 'alive') return;
 
     const isMatch = b.shape === target.shape && b.color.name === target.color.name;
     b.state = isMatch ? 'popping' : 'miss';
 
-    if (isMatch && Math.random() < 0.35) {
-        setTimeout(() => {target = randomTarget(); renderTarget();}, 500);
-    }
+    // if (isMatch && Math.random() < 0.35) {
+    //     setTimeout(changeTarget, 500);
+    // }
 });
 
 // ── animation loop ─────────────────────────────────────────────────────────
 
 function frame(ts) {
-    if (!running) return;
-    if (lastTs === null) lastTs = ts;
-    const dt = Math.min((ts - lastTs) / 1000, 0.05);
-    lastTs = ts;
+    if (!state.running) return;
+    if (state.lastTs === null) state.lastTs = ts;
+    const dt = Math.min((ts - state.lastTs) / 1000, 0.05);
+    state.lastTs = ts;
 
-    const speed = SPEED_VALUES[speedIdx];
+    const speed = SPEED_VALUES[state.speedIdx];
     const spawnInterval = 1400 / speed;
 
-    if (ts - lastSpawnTime > spawnInterval) {
+    if (ts - state.lastSpawnTime > spawnInterval) {
         spawnBubble();
-        lastSpawnTime = ts;
+        state.lastSpawnTime = ts;
     }
 
     const W = wrap.offsetWidth;
 
-    bubbles = bubbles.filter(b => {
+    state.bubbles = state.bubbles.filter(b => {
         if (b.state === 'popping') {
             b.opacity -= 0.06;
             b.size *= 1.04;
@@ -124,6 +139,7 @@ function frame(ts) {
         }
 
         if (b.state === 'miss') {
+            // console.log("missed");
             b.opacity -= 0.045;
             b.el.style.opacity = b.opacity;
             b.el.style.filter = 'grayscale(0.7)';
@@ -145,26 +161,26 @@ function frame(ts) {
         return true;
     });
 
-    rafId = requestAnimationFrame(frame);
+    state.rafId = requestAnimationFrame(frame);
 }
 
 // ── start / pause ──────────────────────────────────────────────────────────
 
 btnStart.addEventListener('click', () => {
-    running = !running;
+    state.running = !state.running;
 
-    if (running) {
+    if (state.running) {
         idleMsg.style.display = 'none';
         btnStart.textContent = 'pause';
         btnStart.classList.remove('paused');
-        lastTs = null;
-        lastSpawnTime = 0;
-        rafId = requestAnimationFrame(frame);
+        state.lastTs = null;
+        state.lastSpawnTime = 0;
+        state.rafId = requestAnimationFrame(frame);
     } else {
         btnStart.textContent = 'start';
         btnStart.classList.add('paused');
-        cancelAnimationFrame(rafId);
-        lastTs = null;
+        cancelAnimationFrame(state.rafId);
+        state.lastTs = null;
     }
 });
 
@@ -172,7 +188,7 @@ btnStart.addEventListener('click', () => {
 
 document.querySelectorAll('.speed-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-        speedIdx = parseInt(btn.dataset.i);
+        state.speedIdx = parseInt(btn.dataset.i);
         document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
     });
