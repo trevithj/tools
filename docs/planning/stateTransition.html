@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>State Transition Diagram</title>
+  <link rel="stylesheet" href="stateTransition.css">
+</head>
+<body>
+
+<header>
+  <div class="logo">STATE<em>//</em>GRAPH</div>
+  <div class="toolbar">
+    <input type="text" id="node-input" placeholder="State or transition name...">
+    <button class="btn btn-primary" onclick="addStateNode()">+ STATE</button>
+    <button class="btn btn-secondary" onclick="addTransitionNode()">+ TRANSITION</button>
+    <div class="sep"></div>
+    <span id="mode-badge" class="mode-normal">NORMAL</span>
+    <button class="btn btn-mode" id="btn-add"    onclick="setMode('add')">ADD</button>
+    <button class="btn btn-mode" id="btn-link"   onclick="setMode('link')">LINK</button>
+    <button class="btn btn-mode" id="btn-delete" onclick="setMode('delete')">DELETE</button>
+    <div class="sep"></div>
+    <button class="btn btn-ghost" onclick="autoLayout()">⊞ LAYOUT</button>
+    <button class="btn btn-ghost" onclick="clearAll()">✕ CLEAR</button>
+  </div>
+</header>
+
+<div id="canvas-wrap" class="canvas-normal">
+  <svg id="graph">
+    <defs>
+      <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="7" refY="3.5" orient="auto">
+        <path d="M0,0.5 L0,6.5 L8,3.5 z" fill="#3d5470"/>
+      </marker>
+      <marker id="arrowhead-hover" markerWidth="8" markerHeight="8" refX="7" refY="3.5" orient="auto">
+        <path d="M0,0.5 L0,6.5 L8,3.5 z" fill="#4fc3f7"/>
+      </marker>
+    </defs>
+    <g id="viewport">
+      <g id="edges-layer"></g>
+      <g id="nodes-layer"></g>
+      <path id="link-preview-path" class="link-preview-path" d="" style="display:none"/>
+    </g>
+  </svg>
+  <div id="empty-state">
+    <div class="empty-symbol">◎</div>
+    <div class="empty-text">Click <strong>ADD</strong> mode then click the canvas to place states</div>
+    <div class="empty-text">Use <strong>LINK</strong> mode to connect them</div>
+    <div class="empty-text">State → State auto-inserts a transition node</div>
+  </div>
+</div>
+
+<div class="status-bar">
+  <span><b id="s-states">0</b> states</span>
+  <span><b id="s-transitions">0</b> transitions</span>
+  <span><b id="s-edges">0</b> connections</span>
+  <div class="legend">
+    <div class="legend-item">
+      <div class="leg-state"></div> State
+    </div>
+    <div class="legend-item">
+      <div class="leg-transition"></div> Transition
+    </div>
+  </div>
+</div>
+
+<script src="stateTransition.js"></script>
+</body>
+</html>
