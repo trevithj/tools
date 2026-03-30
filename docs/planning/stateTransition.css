@@ -43,22 +43,8 @@ header {
     display: flex;
     align-items: center;
     gap: 12px;
-    background: var(--surface);
+    /* background: var(--surface); */
     flex-shrink: 0;
-}
-
-.logo {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--primary);
-    letter-spacing: 3px;
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-.logo em {
-    font-style: normal;
-    color: var(--secondary);
-    opacity: 0.7;
 }
 
 .toolbar {
@@ -78,9 +64,6 @@ input[type="text"] {
     border-radius: 4px;
     outline: none;
     width: 200px;
-    transition:
-        border-color 0.15s,
-        box-shadow 0.15s;
 }
 input[type="text"]:focus {
     border-color: var(--primary-dim);
@@ -95,7 +78,7 @@ input[type="text"].input-editing {
 }
 
 /* ── Buttons ── */
-.btn {
+.toolbar > button {
     padding: 5px 11px;
     font-family: inherit;
     font-size: 11px;
@@ -107,63 +90,11 @@ input[type="text"].input-editing {
     letter-spacing: 0.8px;
     white-space: nowrap;
 }
-.btn:hover {
+.toolbar > button:hover {
     filter: brightness(1.15);
 }
-.btn:active {
+.toolbar > button:active {
     transform: scale(0.97);
-}
-
-.btn-primary {
-    background: rgba(79, 195, 247, 0.12);
-    border-color: var(--primary-dim);
-    color: var(--primary);
-}
-.btn-secondary {
-    background: rgba(128, 203, 196, 0.1);
-    border-color: var(--secondary-dim);
-    color: var(--secondary);
-}
-.btn-ghost {
-    background: transparent;
-    border-color: var(--border);
-    color: var(--muted);
-}
-.btn-ghost:hover {
-    border-color: var(--primary-dim);
-    color: var(--primary);
-    filter: none;
-}
-
-/* Mode buttons — neutral by default, coloured when active */
-.btn-mode {
-    background: transparent;
-    border-color: var(--border);
-    color: var(--muted);
-}
-.btn-mode:hover {
-    border-color: var(--primary-dim);
-    color: var(--primary);
-    filter: none;
-}
-
-#btn-add.btn-active {
-    background: rgba(102, 187, 106, 0.12);
-    border-color: var(--green);
-    color: var(--green);
-    box-shadow: 0 0 8px rgba(102, 187, 106, 0.2);
-}
-#btn-link.btn-active {
-    background: rgba(79, 195, 247, 0.12);
-    border-color: var(--primary);
-    color: var(--primary);
-    box-shadow: 0 0 8px rgba(79, 195, 247, 0.2);
-}
-#btn-delete.btn-active {
-    background: rgba(239, 83, 80, 0.12);
-    border-color: var(--red);
-    color: var(--red);
-    box-shadow: 0 0 8px rgba(239, 83, 80, 0.2);
 }
 
 .sep {
@@ -172,51 +103,6 @@ input[type="text"].input-editing {
     background: var(--border);
     margin: 0 2px;
     flex-shrink: 0;
-}
-
-/* ── Mode badge ── */
-#mode-badge {
-    padding: 3px 9px;
-    border-radius: 3px;
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    border: 1px solid;
-    flex-shrink: 0;
-}
-.mode-normal {
-    background: rgba(79, 195, 247, 0.06);
-    border-color: var(--border);
-    color: var(--muted);
-}
-.mode-add {
-    background: rgba(102, 187, 106, 0.1);
-    border-color: #4a8f4e;
-    color: var(--green);
-    animation: pulse-mode 1.4s ease-in-out infinite;
-}
-.mode-link {
-    background: rgba(79, 195, 247, 0.1);
-    border-color: var(--primary-dim);
-    color: var(--primary);
-    animation: pulse-mode 1.4s ease-in-out infinite;
-}
-.mode-delete {
-    background: rgba(239, 83, 80, 0.1);
-    border-color: #a03530;
-    color: var(--red);
-    animation: pulse-mode 1.4s ease-in-out infinite;
-}
-
-@keyframes pulse-mode {
-    0%,
-    100% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.6;
-    }
 }
 
 /* ── Canvas ── */
@@ -397,49 +283,4 @@ svg#graph {
 .empty-text strong {
     color: var(--primary);
     font-weight: 600;
-}
-
-/* ── Status bar ── */
-.status-bar {
-    padding: 4px 14px;
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-    font-size: 10px;
-    color: var(--muted);
-    display: flex;
-    gap: 16px;
-    flex-shrink: 0;
-    letter-spacing: 0.3px;
-}
-.status-bar b {
-    color: var(--primary-dim);
-    font-weight: 700;
-}
-
-.legend {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-left: auto;
-}
-.legend-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 10px;
-    color: var(--muted);
-}
-.leg-state {
-    width: 22px;
-    height: 12px;
-    border: 1.5px solid var(--state-stroke);
-    border-radius: 6px;
-    background: var(--state-fill);
-}
-.leg-transition {
-    width: 22px;
-    height: 12px;
-    border: 1.5px dashed var(--trans-stroke);
-    border-radius: 2px;
-    background: var(--trans-fill);
 }

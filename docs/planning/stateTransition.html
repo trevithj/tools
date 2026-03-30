@@ -9,21 +9,17 @@
 <body>
 
 <header>
-  <div class="logo">STATE<em>//</em>GRAPH</div>
+  <!-- <div class="logo">STATE<em>//</em>GRAPH</div> -->
   <div class="toolbar">
     <input type="text" id="node-input" placeholder="State or transition name...">
-    <button class="btn btn-primary" onclick="addStateNode()">+ STATE</button>
-    <button class="btn btn-secondary" onclick="addTransitionNode()">+ TRANSITION</button>
     <div class="sep"></div>
-    <span id="mode-badge" class="mode-normal">NORMAL</span>
-    <button class="btn btn-mode" id="btn-add"    onclick="setMode('add')">ADD</button>
-    <button class="btn btn-mode" id="btn-link"   onclick="setMode('link')">LINK</button>
-    <button class="btn btn-mode" id="btn-delete" onclick="setMode('delete')">DELETE</button>
+    <mode-toolbar options="add|edit|link|delete" value="edit"></mode-toolbar>
     <div class="sep"></div>
-    <button class="btn btn-ghost" onclick="autoLayout()">⊞ LAYOUT</button>
-    <button class="btn btn-ghost" onclick="clearAll()">✕ CLEAR</button>
+    <button id="btn-layout">⊞ LAYOUT</button>
+    <button id="btn-clear">✕ CLEAR</button>
   </div>
 </header>
+
 
 <div id="canvas-wrap" class="canvas-normal">
   <svg id="graph">
@@ -49,20 +45,7 @@
   </div>
 </div>
 
-<div class="status-bar">
-  <span><b id="s-states">0</b> states</span>
-  <span><b id="s-transitions">0</b> transitions</span>
-  <span><b id="s-edges">0</b> connections</span>
-  <div class="legend">
-    <div class="legend-item">
-      <div class="leg-state"></div> State
-    </div>
-    <div class="legend-item">
-      <div class="leg-transition"></div> Transition
-    </div>
-  </div>
-</div>
-
+<script src="../_common/componentModeToolbar.js"></script>
 <script src="stateTransition.js"></script>
 </body>
 </html>

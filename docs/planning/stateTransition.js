@@ -11,15 +11,15 @@ const state = {
     nodes: [], // { id, type: 'state'|'transition', label, x, y }
     edges: [], // { id, from, to }
     nextId: 1, 
-    mode: 'normal',
+    mode: 'edit',
+    selected: null,
+    linkSource: null,
+    panX: 0, panY: 0,
+    mousePos: { x: 0, y: 0 },
+    mouseDownMoved: false,
+    isPanning: false, panStart: null,
+    draggingNode: null, dragOffset: null
 }
-let selected    = null;
-let linkSource  = null;
-let panX = 0, panY = 0;
-let isPanning = false, panStart = null;
-let draggingNode = null, dragOffset = null;
-let mouseDownMoved = false;
-let mousePos = { x: 0, y: 0 };
 
 // ── DOM refs ──────────────────────────────────────────────────────────────
 const svg             = document.getElementById('graph');
@@ -28,6 +28,7 @@ const edgesLayer      = document.getElementById('edges-layer');
 const nodesLayer      = document.getElementById('nodes-layer');
 const linkPreviewPath = document.getElementById('link-preview-path');
 const nodeInput       = document.getElementById('node-input');
+const modeToolbar     = document.querySelector('mode-toolbar');
 
 // ── ID generator ──────────────────────────────────────────────────────────
 function uid() { return 'n' + (state.nextId++); }
@@ -69,18 +70,18 @@ function boundaryPoint(n, tx, ty) {
 // ── Coordinate helpers ────────────────────────────────────────────────────
 function toSVG(cx, cy) {
   const r = svg.getBoundingClientRect();
-  return { x: cx - r.left - panX, y: cy - r.top - panY };
+  return { x: cx - r.left - state.panX, y: cy - r.top - state.panY };
 }
 
 function updateViewport() {
-  viewport.setAttribute('transform', `translate(${panX},${panY})`);
+  viewport.setAttribute('transform', `translate(${state.panX},${state.panY})`);
 }
 
 // ── Mode management ───────────────────────────────────────────────────────
 function setMode(m) {
-  state.mode = (m === state.mode) ? 'normal' : m;
-  linkSource = null;
-  if (state.mode !== 'normal' && state.mode !== 'add') {
+  state.mode = (m === state.mode) ? 'edit' : m;
+  state.linkSource = null;
+  if (state.mode !== 'edit' && state.mode !== 'add') {
     // keep selection in normal; clear otherwise
   }
   linkPreviewPath.style.display = 'none';
@@ -99,12 +100,12 @@ function setMode(m) {
   ['btn-add', 'btn-link', 'btn-delete'].forEach(id => {
     document.getElementById(id).classList.remove('btn-active');
   });
-  if (state.mode !== 'normal') {
+  if (state.mode !== 'edit') {
     document.getElementById('btn-' + state.mode).classList.add('btn-active');
   }
 
   // Input hint
-  if (state.mode !== 'normal' && !selected) {
+  if (state.mode !== 'edit' && !state.selected) {
     nodeInput.value = '';
     nodeInput.classList.remove('input-editing');
   }
@@ -120,22 +121,22 @@ function createNode(type, x, y, label) {
 }
 
 function addStateNode() {
-  if (selected && state.mode === 'normal') return; // editing
+  if (state.selected && state.mode === 'edit') return; // editing
   const r = svg.getBoundingClientRect();
   const id = createNode('state',
-    r.width  / 2 - panX + (Math.random() - 0.5) * 100,
-    r.height / 2 - panY + (Math.random() - 0.5) * 80
+    r.width  / 2 - state.panX + (Math.random() - 0.5) * 100,
+    r.height / 2 - state.panY + (Math.random() - 0.5) * 80
   );
   selectNode(id);
   render();
 }
 
 function addTransitionNode() {
-  if (selected && state.mode === 'normal') return;
+  if (state.selected && state.mode === 'edit') return;
   const r = svg.getBoundingClientRect();
   const id = createNode('transition',
-    r.width  / 2 - panX + (Math.random() - 0.5) * 100,
-    r.height / 2 - panY + (Math.random() - 0.5) * 80
+    r.width  / 2 - state.panX + (Math.random() - 0.5) * 100,
+    r.height / 2 - state.panY + (Math.random() - 0.5) * 80
   );
   selectNode(id);
   render();
@@ -144,8 +145,8 @@ function addTransitionNode() {
 function deleteNode(id) {
   state.nodes = state.nodes.filter(n => n.id !== id);
   state.edges = state.edges.filter(e => e.from !== id && e.to !== id);
-  if (selected   === id) { selected = null; nodeInput.value = ''; nodeInput.classList.remove('input-editing'); }
-  if (linkSource === id) linkSource = null;
+  if (state.selected   === id) { state.selected = null; nodeInput.value = ''; nodeInput.classList.remove('input-editing'); }
+  if (state.linkSource === id) state.linkSource = null;
   render();
 }
 
@@ -162,7 +163,7 @@ function deleteEdge(id) {
 
 // ── Selection ─────────────────────────────────────────────────────────────
 function selectNode(id) {
-  selected = id;
+  state.selected = id;
   const node = state.nodes.find(n => n.id === id);
   if (node) {
     nodeInput.value = node.label;
@@ -173,27 +174,27 @@ function selectNode(id) {
 }
 
 function deselect() {
-  selected = null;
+  state.selected = null;
   nodeInput.value = '';
   nodeInput.classList.remove('input-editing');
 }
 
 // ── Link logic ────────────────────────────────────────────────────────────
 function handleLinkClick(id) {
-  if (!linkSource) {
-    linkSource = id;
+  if (!state.linkSource) {
+    state.linkSource = id;
     render();
     return;
   }
-  if (linkSource === id) { linkSource = null; render(); return; }
+  if (state.linkSource === id) { state.linkSource = null; render(); return; }
 
-  const src = state.nodes.find(n => n.id === linkSource);
+  const src = state.nodes.find(n => n.id === state.linkSource);
   const tgt = state.nodes.find(n => n.id === id);
-  if (!src || !tgt) { linkSource = null; render(); return; }
+  if (!src || !tgt) { state.linkSource = null; render(); return; }
 
   if (src.type === 'transition' && tgt.type === 'transition') {
     // transition → transition: not allowed
-    linkSource = null;
+    state.linkSource = null;
     flashBadge('T→T NOT ALLOWED');
     render();
     return;
@@ -201,17 +202,17 @@ function handleLinkClick(id) {
 
   if (src.type !== tgt.type) {
     // state↔transition: direct edge
-    addEdge(linkSource, id);
+    addEdge(state.linkSource, id);
   } else {
     // state→state: auto-insert transition node between them
     const gx = (src.x + tgt.x) / 2 + (Math.random() - 0.5) * 20;
     const gy = (src.y + tgt.y) / 2 + (Math.random() - 0.5) * 20;
     const tid = createNode('transition', gx, gy);
-    addEdge(linkSource, tid);
+    addEdge(state.linkSource, tid);
     addEdge(tid, id);
   }
 
-  linkSource = null;
+  state.linkSource = null;
   render();
 }
 
@@ -304,7 +305,7 @@ function autoLayout() {
     y: n.type === 'state' ? sYMap[n.id] : tYMap[n.id]
   }));
 
-  panX = 0; panY = 0;
+  state.panX = 0; state.panY = 0;
   updateViewport();
   render();
 }
@@ -312,10 +313,10 @@ function autoLayout() {
 function clearAll() {
   if (!state.nodes.length || confirm('Clear everything?')) {
     state.nodes = []; state.edges = [];
-    selected = null; linkSource = null;
+    state.selected = null; state.linkSource = null;
     nodeInput.value = '';
     nodeInput.classList.remove('input-editing');
-    setMode('normal');
+    setMode('edit');
   }
 }
 
@@ -364,8 +365,8 @@ function renderNodes() {
   nodesLayer.innerHTML = '';
 
   state.nodes.forEach(node => {
-    const isSelected = selected    === node.id;
-    const isSource   = linkSource  === node.id;
+    const isSelected = state.selected    === node.id;
+    const isSource   = state.linkSource  === node.id;
     const typeClass  = node.type === 'state' ? 'state-group' : 'trans-group';
 
     const g = svgEl('g');
@@ -407,10 +408,10 @@ function renderNodes() {
     // Drag
     g.addEventListener('mousedown', ev => {
       ev.stopPropagation();
-      mouseDownMoved = false;
-      draggingNode = node.id;
+      state.mouseDownMoved = false;
+      state.draggingNode = node.id;
       const pt = toSVG(ev.clientX, ev.clientY);
-      dragOffset = { x: pt.x - node.x, y: pt.y - node.y };
+      state.dragOffset = { x: pt.x - node.x, y: pt.y - node.y };
     });
 
     // Right-click delete
@@ -421,18 +422,19 @@ function renderNodes() {
 }
 
 function updateLinkPreview() {
-  if (state.mode !== 'link' || !linkSource) { linkPreviewPath.style.display = 'none'; return; }
-  const src = state.nodes.find(n => n.id === linkSource);
+  if (state.mode !== 'link' || !state.linkSource) { linkPreviewPath.style.display = 'none'; return; }
+  const src = state.nodes.find(n => n.id === state.linkSource);
   if (!src) { linkPreviewPath.style.display = 'none'; return; }
-  const p1 = boundaryPoint(src, mousePos.x, mousePos.y);
-  linkPreviewPath.setAttribute('d', makeEdgePath(p1, mousePos));
+  const p1 = boundaryPoint(src, state.mousePos.x, state.mousePos.y);
+  linkPreviewPath.setAttribute('d', makeEdgePath(p1, state.mousePos));
   linkPreviewPath.style.display = '';
 }
 
 function renderStats() {
-  document.getElementById('s-states').textContent      = state.nodes.filter(n => n.type === 'state').length;
-  document.getElementById('s-transitions').textContent = state.nodes.filter(n => n.type === 'transition').length;
-  document.getElementById('s-edges').textContent       = state.edges.length;
+    console.log(state.nodes, state.edges);
+//   document.getElementById('s-states').textContent      = state.nodes.filter(n => n.type === 'state').length;
+//   document.getElementById('s-transitions').textContent = state.nodes.filter(n => n.type === 'transition').length;
+//   document.getElementById('s-edges').textContent       = state.edges.length;
   document.getElementById('empty-state').style.display = state.nodes.length ? 'none' : 'flex';
 }
 
@@ -445,20 +447,20 @@ function render() {
 
 // ── Input: live edit ──────────────────────────────────────────────────────
 nodeInput.addEventListener('input', () => {
-  if (selected) {
-    const node = state.nodes.find(n => n.id === selected);
+  if (state.selected) {
+    const node = state.nodes.find(n => n.id === state.selected);
     if (node) { node.label = nodeInput.value; render(); }
   }
 });
 
 nodeInput.addEventListener('keydown', e => {
   if (e.key === 'Enter') {
-    if (selected) { deselect(); render(); }
-    else if (state.mode === 'normal') addStateNode();
+    if (state.selected) { deselect(); render(); }
+    else if (state.mode === 'edit') addStateNode();
   }
   if (e.key === 'Escape') {
-    if (selected) { deselect(); render(); }
-    else setMode('normal');
+    if (state.selected) { deselect(); render(); }
+    else setMode('edit');
   }
 });
 
@@ -469,43 +471,43 @@ svg.addEventListener('mousedown', e => {
     handleCanvasClick(e.clientX, e.clientY);
     return;
   }
-  if (!draggingNode) {
-    isPanning = true;
-    panStart = { x: e.clientX - panX, y: e.clientY - panY };
+  if (!state.draggingNode) {
+    state.isPanning = true;
+    state.panStart = { x: e.clientX - state.panX, y: e.clientY - state.panY };
     document.getElementById('canvas-wrap').classList.add('dragging');
   }
 });
 
 window.addEventListener('mousemove', e => {
   const r = svg.getBoundingClientRect();
-  mousePos = { x: e.clientX - r.left - panX, y: e.clientY - r.top - panY };
+  state.mousePos = { x: e.clientX - r.left - state.panX, y: e.clientY - r.top - state.panY };
 
-  if (draggingNode) {
-    mouseDownMoved = true;
-    const node = state.nodes.find(n => n.id === draggingNode);
+  if (state.draggingNode) {
+    state.mouseDownMoved = true;
+    const node = state.nodes.find(n => n.id === state.draggingNode);
     if (node) {
       const pt = toSVG(e.clientX, e.clientY);
-      node.x = pt.x - dragOffset.x;
-      node.y = pt.y - dragOffset.y;
+      node.x = pt.x - state.dragOffset.x;
+      node.y = pt.y - state.dragOffset.y;
       render();
     }
     return;
   }
-  if (isPanning) {
-    panX = e.clientX - panStart.x;
-    panY = e.clientY - panStart.y;
+  if (state.isPanning) {
+    state.panX = e.clientX - state.panStart.x;
+    state.panY = e.clientY - state.panStart.y;
     updateViewport();
   }
-  if (state.mode === 'link' && linkSource) updateLinkPreview();
+  if (state.mode === 'link' && state.linkSource) updateLinkPreview();
 });
 
 window.addEventListener('mouseup', () => {
-  if (draggingNode) {
-    const id    = draggingNode;
-    const moved = mouseDownMoved;
-    draggingNode   = null;
-    dragOffset     = null;
-    mouseDownMoved = false;
+  if (state.draggingNode) {
+    const id    = state.draggingNode;
+    const moved = state.mouseDownMoved;
+    state.draggingNode   = null;
+    state.dragOffset     = null;
+    state.mouseDownMoved = false;
 
     if (!moved) {
       if (state.mode === 'delete') {
@@ -514,28 +516,33 @@ window.addEventListener('mouseup', () => {
         handleLinkClick(id);
       } else {
         // normal or add: select/deselect
-        if (selected === id) { deselect(); render(); }
+        if (state.selected === id) { deselect(); render(); }
         else { selectNode(id); render(); }
       }
     }
   }
-  if (isPanning) {
-    isPanning = false;
+  if (state.isPanning) {
+    state.isPanning = false;
     document.getElementById('canvas-wrap').classList.remove('dragging');
   }
 });
 
 svg.addEventListener('click', e => {
   if (e.target === svg || e.target === viewport) {
-    if (state.mode === 'link') { linkSource = null; linkPreviewPath.style.display = 'none'; }
+    if (state.mode === 'link') { state.linkSource = null; linkPreviewPath.style.display = 'none'; }
     deselect();
     render();
   }
 });
 
+modeToolbar.addEventListener("change", e => {
+    this.setMode(e.detail.value);
+})
+
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') setMode('normal');
+  if (e.key === 'Escape') setMode('edit');
 });
+
 
 // ── Sample data ───────────────────────────────────────────────────────────
 function loadSample() {
@@ -543,12 +550,12 @@ function loadSample() {
     { id: 'n1', type: 'state',      label: 'Idle',       x: 160, y: 100 },
     { id: 'n2', type: 'state',      label: 'Running',    x: 160, y: 230 },
     { id: 'n3', type: 'state',      label: 'Paused',     x: 160, y: 360 },
-    { id: 'n4', type: 'state',      label: 'Stopped',    x: 160, y: 490 },
-    { id: 't1', type: 'transition', label: 'start',      x: 420, y: 165 },
-    { id: 't2', type: 'transition', label: 'pause',      x: 420, y: 295 },
-    { id: 't3', type: 'transition', label: 'resume',     x: 420, y: 295 },
-    { id: 't4', type: 'transition', label: 'stop',       x: 420, y: 425 },
-    { id: 't5', type: 'transition', label: 'reset',      x: 420, y: 100 },
+    { id: 'n4', type: 'state',      label: 'Stopped',    x: 450, y: 150 },
+    { id: 't1', type: 'transition', label: 'start',      x:  45, y: 160 },
+    { id: 't2', type: 'transition', label: 'pause',      x: 320, y: 295 },
+    { id: 't3', type: 'transition', label: 'resume',     x:  45, y: 295 },
+    { id: 't4', type: 'transition', label: 'stop',       x: 320, y: 200 },
+    { id: 't5', type: 'transition', label: 'reset',      x: 320, y: 100 },
   ];
   state.edges = [
     { id: 'e1', from: 'n1', to: 't1' },
@@ -563,7 +570,7 @@ function loadSample() {
     { id: 'e10', from: 't5', to: 'n1' },
   ];
   state.nextId = 20;
-  panX = 80; panY = 30;
+  state.panX = 80; state.panY = 30;
   updateViewport();
   render();
 }
