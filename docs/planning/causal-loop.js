@@ -306,22 +306,24 @@ function renderNodes() {
 }
 
 function renderSidebar() {
-    ['text-list', 'gate-list'].forEach(id => document.getElementById(id).innerHTML = '');
+    const textList = document.getElementById("text-list");
+    textList.innerHTML = '';
     nodes.forEach(node => {
+        if (node.type === 'gate') return;
         const el = document.createElement('div');
         el.className = 'task-item' +
-            (node.type === 'gate' ? ' gate-item' : '') +
             (selected === node.id ? ' selected' : '') +
             (linkSource === node.id ? ' link-source' : '');
         el.innerHTML = `
       <span class="task-icon">${node.type === 'gate' ? '◯' : '◈'}</span>
       <span class="task-name-sb" title="${node.label}">${node.label}</span>
-      <span class="task-del" onclick="event.stopPropagation();deleteNode('${node.id}')">×</span>`;
-        el.onclick = () => {
-            if (mode === "link") handleLinkClick(node.id);
-            else {selected = selected === node.id ? null : node.id; render();}
-        };
-        document.getElementById(node.type === 'gate' ? 'gate-list' : 'text-list').appendChild(el);
+      <span class="task-del">×</span>`;
+        el.querySelector(".task-del").addEventListener("click", (event) => {
+            event.stopPropagation();
+            deleteNode(node.id);
+        });
+        el.onclick = () => handleLinkClick(node.id);
+        textList.appendChild(el);
     });
 }
 
@@ -332,7 +334,7 @@ function updateLinkPreview() {
     const p1 = boundaryPoint(src, mousePos.x, mousePos.y);
     const dx = Math.abs(mousePos.x - p1.x) * 0.45;
     linkPreviewPath.setAttribute('d',
-        `M${p1.x},${p1.y} C${p1.x + dx},${p1.y} ${mousePos.x - dx},${mousePos.y} ${mousePos.x},${mousePos.y}`);
+        `M${p1.x},${p1.y} L${mousePos.x},${mousePos.y}`);
     linkPreviewPath.style.display = '';
 }
 
@@ -340,12 +342,8 @@ function render() {
     renderEdges();
     renderNodes();
     renderSidebar();
-    document.getElementById('s-text').textContent = nodes.filter(n => n.type === 'text').length;
-    document.getElementById('s-gates').textContent = nodes.filter(n => n.type === 'gate').length;
-    document.getElementById('s-edges').textContent = edges.length;
     document.getElementById('empty-state').style.display = nodes.length ? 'none' : 'flex';
     updateLinkPreview();
-    console.log({nodes, edges});
 }
 
 function updateViewport() {
@@ -368,6 +366,11 @@ function clearAll() {
         nodes = []; edges = []; selected = null; linkSource = null;
         if (mode === "link") mode = "normal"; else render();
     }
+}
+
+function doSave() {
+    // TODO: write to browser storage
+    console.log({ nodes, edges });
 }
 
 // ── Coordinate helpers ────────────────────────────────────────────────────
@@ -471,22 +474,22 @@ svg.addEventListener('click', e => {
 // ── Sample: thermostat feedback loop ─────────────────────────────────────
 function loadSample() {
     nodes = [
-        {id: "n20", type: "text", label: "Bob's donuts are|fresher", x: 175, y: 227},
-        {id: "n21", type: "text", label: "Fresh donuts|sell faster", x: 277, y: 343},
-        {id: "n22", type: "text", label: "Faster-selling|donuts are|fresher", x: 534, y: 133},
-        {id: "n23", type: "text", label: "Bob's donuts sell|faster", x: 600, y: 236},
-        {id: "n24", type: "gate", label: "AND", x: 408, y: 287},
-        {id: "n28", type: "gate", label: "AND", x: 383, y: 169}
+        {id: "n0", type: "text", label: "Bob's donuts are|fresher", x: 175, y: 227},
+        {id: "n1", type: "text", label: "Fresh donuts|sell faster", x: 277, y: 343},
+        {id: "n2", type: "text", label: "Faster-selling|donuts are|fresher", x: 534, y: 133},
+        {id: "n3", type: "text", label: "Bob's donuts sell|faster", x: 600, y: 236},
+        {id: "n4", type: "gate", label: "AND", x: 408, y: 287},
+        {id: "n5", type: "gate", label: "AND", x: 383, y: 169}
     ];
     edges = [
-        {id: "n25", from: "n20", to: "n24"},
-        {id: "n26", from: "n24", to: "n23"},
-        {id: "n27", from: "n21", to: "n24"},
-        {id: "n29", from: "n23", to: "n28"},
-        {id: "n30", from: "n28", to: "n20"},
-        {id: "n31", from: "n22", to: "n28"}
+        {id: "n6", from: "n0", to: "n4"},
+        {id: "n7", from: "n4", to: "n3"},
+        {id: "n8", from: "n1", to: "n4"},
+        {id: "n9", from: "n3", to: "n5"},
+        {id: "n10", from: "n5", to: "n0"},
+        {id: "n11", from: "n2", to: "n5"}
     ];
-    nextId = 20;
+    nextId = 12;
     panX = 60; panY = 60;
     updateViewport();
     render();
@@ -501,6 +504,7 @@ buttons[2].addEventListener("click", doSetMode('link'));
 buttons[3].addEventListener("click", doSetMode('delete'));
 buttons[4].addEventListener("click", autoLayout);
 buttons[5].addEventListener("click", clearAll);
+buttons[6].addEventListener("click", doSave);
 nodeInput.addEventListener('input', () => {
     if (selected) {
         const node = nodes.find(n => n.id === selected);

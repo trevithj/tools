@@ -26,12 +26,7 @@
 
       <button class="btn btn-ghost">⊞ LAYOUT</button>
       <button class="btn btn-ghost">✕ CLEAR</button>
-      <!-- <div class="hint">
-      <b>TEXT→TEXT</b> auto-creates AND gate &nbsp;·&nbsp;
-      <b>GATE↔GATE</b> ignored &nbsp;·&nbsp;
-      <b>dbl-click edge</b> deletes it &nbsp;·&nbsp;
-      <b>right-click node</b> deletes it
-    </div> -->
+      <button class="btn btn-ghost">⇓ SAVE</button>
     </div>
   </header>
 
@@ -40,10 +35,6 @@
       <div class="sidebar-section">
         <div class="sidebar-title">Text Nodes</div>
         <div id="text-list"></div>
-      </div>
-      <div class="sidebar-section">
-        <div class="sidebar-title">AND Gates</div>
-        <div id="gate-list"></div>
       </div>
     </div>
 
@@ -70,20 +61,6 @@
       </div>
     </div>
   </main>
-
-  <div class="status-bar">
-    <span><b id="s-text">0</b> text nodes</span>
-    <span><b id="s-gates">0</b> AND gates</span>
-    <span><b id="s-edges">0</b> connections</span>
-    <div class="legend">
-      <div class="legend-item">
-        <div class="leg-rect"></div> Text Node
-      </div>
-      <div class="legend-item">
-        <div class="leg-circle">&amp;</div> AND Gate
-      </div>
-    </div>
-  </div>
 
   <script type="module" src="./causal-loop.js"></script>
 </body>
