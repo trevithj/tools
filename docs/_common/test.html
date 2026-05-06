@@ -1,0 +1,52 @@
+<html>
+
+<head>
+    <title>Testing</title>
+    <style>
+        :root {
+            --node-text-color-bg: #ffeeff;
+            --node-text-color-fg: black;
+            --node-gate-color-bg: green;
+            --node-gate-color-fg: silver;
+            --edge-color: magenta;
+            --graph-color-bg: silver;
+        }
+        .frame {
+            width: 100%;
+            height: 80vh;
+            border: solid thin red;
+        }
+
+    </style>
+    <script type="module" src="componentBiGraph.js"></script>
+
+</head>
+
+<body>
+    <div class="frame">
+        <bi-graph id="test" viewbox="0,0,600,400"></bi-graph>
+    </div>
+    <div id="footerText">Bi-Graph test</div>
+</body>
+<script>
+    const el = document.querySelector("bi-graph");
+    el.nodes = [
+        {id: "n0", type: "text", lines: "Bob's donuts are|fresher".split("|"), x: 175, y: 227},
+        {id: "n1", type: "text", lines: "Fresh donuts|sell faster".split("|"), x: 277, y: 343},
+        {id: "n2", type: "text", lines: "Faster-selling|donuts are|fresher".split("|"), x: 534, y: 133},
+        {id: "n3", type: "text", lines: "Bob's donuts sell|faster".split("|"), x: 600, y: 236},
+        {id: "n4", type: "gate", lines: ["AND"], x: 408, y: 287},
+        {id: "n5", type: "gate", lines: ["AND"], x: 383, y: 169}
+    ];
+    el.edges = [
+        {id: "e6", from: "n0", to: "n4"},
+        {id: "e7", from: "n4", to: "n3"},
+        {id: "e8", from: "n1", to: "n4"},
+        {id: "e9", from: "n3", to: "n5"},
+        {id: "e10", from: "n5", to: "n0"},
+        {id: "e11", from: "n2", to: "n5"}
+    ];
+
+</script>
+
+</html>

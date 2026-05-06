@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>svg-rect demo</title>
+    <script src="../../_common/componentBaseSVG.js" defer type="module"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        h2 {
+            margin: 0 0 .25rem;
+            font-size: .85rem;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: #555;
+        }
+
+        /* Default — no override; shows lightblue */
+        .demo-default base-svg {
+            width: 400px;
+            height: 200px;
+            border: solid thin grey;
+            /* --graph-bg: coral; */
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="demo-default">
+        <h2>Default fill (lightblue) — size="400x200"</h2>
+        <base-svg width="400" height="200"></base-svg>
+    </div>
+    <label>Scale</label>
+    <input type="range" min="0.1" max="2" step="0.01" name="scale-input">
+ 
+</body>
+<!-- <script src="addTrialShapes.js" type="module"></script> -->
+<script type="module">
+    import { makeShapes} from "./addTrialShapes";
+    const shapes = makeShapes(400, 200);
+    const el = document.querySelector("base-svg");
+    el.append(...shapes);
+
+    const scaler = document.querySelector("input[name='scale-input']");
+    scaler.addEventListener("input", evt => {
+        const scale = parseFloat(evt.target.value) || 1;
+        el.zoom(scale);
+    })
+</script>
+</html>
