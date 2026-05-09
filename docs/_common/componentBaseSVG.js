@@ -49,10 +49,15 @@ function makeHTML(width, height) {
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden="true"
       >
-        <g class="pannable"></g>
+        <defs>
+          <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="7" refY="3.5" orient="auto">
+            <path d="M0,0.5 L0,6.5 L8,3.5 z" fill="#3d5470"/>
+          </marker>
+        </defs>
+        <g class="pannable" id="viewport"></g>
       </svg>
     `;
-}
+} // TODO: figure out how to control arrowhead color
 
 class BaseSvg extends HTMLElement {
     #state = {

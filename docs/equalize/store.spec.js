@@ -1,5 +1,5 @@
 import {describe, it, expect, beforeEach, vi} from "vitest";
-import { determinant, getStore, isDiffShallow } from "./store";
+import { determinant, getStore, isDiffShallow } from "./store.js";
 
 function makeTestCoefficients(state) {
     const {vCount} = state;

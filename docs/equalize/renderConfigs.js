@@ -1,4 +1,4 @@
-// import {TheStore} from "./store";
+// import {TheStore} from "./store.js";
 
 const configView = document.querySelector("section#config");
 

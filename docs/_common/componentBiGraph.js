@@ -1,5 +1,5 @@
 import {ComponentBase, makeCircle, makeLine, makeRect} from "./componentBase.js";
-import {makeNode} from "./makeSvgNode.js";
+import {makeNode, prepareNode} from "./makeSvgNode.js";
 
 function log(...args) {
     console.log(Date.now(), ...args);
@@ -132,8 +132,9 @@ function getRenderFn(element) {
             const edgeGroup = addEdge(e, element.nodes);
             edgesLayer.appendChild(edgeGroup);
         });
+        const prepare = prepareNode();
         element.nodes.forEach(n => {
-            const nodeGroup = makeNode(n);
+            const nodeGroup = makeNode(prepare(n));
             nodesLayer.appendChild(nodeGroup);
         })
         // svg.setAttribute("viewbox", element.getAttribute("viewbox"));
