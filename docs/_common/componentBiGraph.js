@@ -1,5 +1,5 @@
 import {ComponentBase, makeCircle, makeLine, makeRect} from "./componentBase.js";
-import {makeNode, prepareNode} from "./makeSvgNode.js";
+import {makeNode, prepareNode, svgEl} from "./makeSvgNode.js";
 
 function log(...args) {
     console.log(Date.now(), ...args);
@@ -31,10 +31,6 @@ const SVG = `<svg id="graph" style="width:100%; height:100%;">
 
 
 // ── Rendering ─────────────────────────────────────────────────────────────
-function svgNS(tag) {
-    return document.createElementNS('http://www.w3.org/2000/svg', tag);
-}
-
 
 function nodeLines(node) {
   return Array.isArray(node.lines) ? node.lines : [node.lines];
@@ -83,31 +79,17 @@ function addEdge(e, nodes, path) {
 
     // const dx = Math.abs(p2.x - p1.x) * 0.45;
     // const d = `M${p1.x},${p1.y} C${p1.x + dx},${p1.y} ${p2.x - dx},${p2.y} ${p2.x},${p2.y}`;
-    const d = `M${p1.x},${p1.y} L${p2.x},${p2.y}`;
+    // const d = `M${p1.x},${p1.y} L${p2.x},${p2.y}`;
 
-    const g = svgNS('g');
-    const line = svgNS('line');
-    line.setAttribute('x1', Math.round(p1.x));
-    line.setAttribute('y1', Math.round(p1.y));
-    line.setAttribute('x2', Math.round(p2.x));
-    line.setAttribute('y2', Math.round(p2.y));
+    const g = svgEl('g');
+    const line = svgEl('line', {
+        x1:Math.round(p1.x), x2: Math.round(p2.x),
+        y1:Math.round(p1.y), y2: Math.round(p2.y),
+    });
     line.style.stroke = "var(--edge-color, blue)";
     line.style.markerEnd = "url(#arrowhead)";
-    // const path = svgNS('path');
-    // path.setAttribute('d', d);
-    // path.style.stroke = "var(--edge-color, blue)";
-    // path.style.strokeWidth = "1.5";
-    // path.style.markerEnd = "url(#arrowhead)";
-
-    // const hit = svgNS('path');
-    // hit.setAttribute('d', d);
-    // hit.setAttribute('class', 'edge-hit');
-    // hit.addEventListener('click', ev => {
-    //     //todo: handle this
-    // });
 
     g.appendChild(line);
-    // g.appendChild(hit);
     return g;
 }
 
@@ -159,10 +141,10 @@ class BiGraph extends ComponentBase {
         this.render();
     }
     get nodes() {
-        return this.state.nodes;
+        return this.state.nodes || [];
     }
     get edges() {
-        return this.state.edges;
+        return this.state.edges || [];
     }
 
     constructor() {

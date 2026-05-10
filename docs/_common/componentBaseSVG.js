@@ -51,7 +51,7 @@ function makeHTML(width, height) {
       >
         <defs>
           <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="7" refY="3.5" orient="auto">
-            <path d="M0,0.5 L0,6.5 L8,3.5 z" fill="#3d5470"/>
+            <path d="M0,0.5 L0,6.5 L8,3.5 z" fill="black"/>
           </marker>
         </defs>
         <g class="pannable" id="viewport"></g>
