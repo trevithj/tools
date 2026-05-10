@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dependency Graph</title>
+    <link rel="icon" href="../favicon.ico" />
+    <link rel="stylesheet" href="./dependency.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>DEP//GRAPH</h1>
+        <div class="toolbar">
+            <input type="text" id="task-input" placeholder="Task name..." style="width:160px">
+            <button class="btn btn-primary" onclick="addTask()">+ ADD</button>
+            <div class="sep"></div>
+            <span id="mode-badge" class="mode-normal">NORMAL</span>
+            <button class="btn btn-ghost" id="link-btn" onclick="toggleLinkMode()">⇒ LINK MODE</button>
+            <button class="btn btn-ghost" onclick="autoLayout()">⊞ AUTO LAYOUT</button>
+            <button class="btn btn-ghost" onclick="clearAll()">✕ CLEAR</button>
+            <div class="hint"><span>Click</span> to select · <span>Link Mode</span>: click source then target ·
+                <span>Drag</span> to pan</div>
+        </div>
+    </header>
+
+    <main>
+        <div id="sidebar">
+            <div class="sidebar-title">Tasks</div>
+            <div id="task-list"></div>
+        </div>
+        <div id="canvas-wrap">
+            <svg id="graph">
+                <defs>
+                    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                        <path d="M0,0 L0,6 L8,3 z" fill="#4a5568" />
+                    </marker>
+                    <marker id="arrow-critical" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                        <path d="M0,0 L0,6 L8,3 z" fill="#ff4d6d" opacity="0.8" />
+                    </marker>
+                </defs>
+                <g id="viewport">
+                    <g id="edges-layer"></g>
+                    <g id="nodes-layer"></g>
+                </g>
+            </svg>
+            <div id="empty-state">
+                <div class="big">∅</div>
+                <p>Add tasks using the input above</p>
+                <p>Then use Link Mode to connect dependencies</p>
+            </div>
+        </div>
+    </main>
+
+    <div class="status-bar">
+        <span id="stat-tasks">0</span> tasks <span id="stat-deps">0</span> dependencies
+        <span id="stat-roots">0</span> roots <span id="stat-depth">0</span> max depth
+    </div>
+
+<script src="./dependency.js"></script>
+</body>
+
+</html>
