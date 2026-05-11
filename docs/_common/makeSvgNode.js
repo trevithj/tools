@@ -28,13 +28,15 @@ export function prepareNode(config = DEFAULT_CONFIG) {
     const {lineHeight, font, padX, padY} = {...DEFAULT_CONFIG, ...config};
 
     return node => {
+        const width = padX + padX + Math.max(...node.lines.map(l => measureTextWidth(l, font)));
+        const height = padY + padY + node.lines.length * lineHeight;
         const box = {
             cx: node.x, cy: node.y,
-            width: padX + padX + Math.max(...node.lines.map(l => measureTextWidth(l, font))),
-            height: padY + padY + node.lines.length * lineHeight,
+            width,
+            height,
+            get x() {return this.cx - (width / 2);},
+            get y() {return this.cy - (height / 2);}
         }
-        box.x = node.x - (box.width / 2);
-        box.y = node.y - (box.height / 2);
         const type = node.type.replaceAll(" ", "_");
         return {...node, type, box, config}
     }
@@ -43,14 +45,6 @@ export function prepareNode(config = DEFAULT_CONFIG) {
 export function makeNodes(nodes, config = DEFAULT_CONFIG) {
     const enhancedNodes = nodes.map(prepareNode(config));
     return enhancedNodes.map(makeNode);
-    // const root = svgEl('g', {class: "node-group"});
-
-    // for (const node of nodes) {
-    //     const g = makeNode(node, config);
-    //     root.appendChild(g);
-    // }
-
-    // return root;
 }
 
 export function makeNode(nodeData) {

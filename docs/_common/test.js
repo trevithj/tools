@@ -1,4 +1,5 @@
 import * as SVG from "./makeSvgNode";
+import {makeDragHandlers} from "./makeDragHandler";
 
 const graph = {};
 graph.nodes = [
@@ -26,27 +27,54 @@ function renderBigraph(graph) {
 }
 
 function midWay(b1, b2) {
-    const lengthX = (b2.cx - b1.cx)/2;
-    const lengthY = (b2.cy - b1.cy)/2;
+    const lengthX = (b2.cx - b1.cx) / 2;
+    const lengthY = (b2.cy - b1.cy) / 2;
     return {cx: b1.cx + lengthX, cy: b1.cy + lengthY};
+}
+
+function getPoints(src, tgt) {
+    if (!src || !tgt) return;
+    const bs = src.box;
+    const bt = tgt.box;
+    const bm = midWay(bs, bt);
+    return `${bs.cx},${bs.cy} ${bm.cx},${bm.cy} ${bt.cx},${bt.cy}`;
 }
 
 const makeEdge = nodes => e => {
     const src = nodes.find(n => n.id === e.from);
     const tgt = nodes.find(n => n.id === e.to);
-    if (!src || !tgt) return;
-    const bs = src.box;
-    const bt = tgt.box;
-    const bm = midWay(bs, bt);
-    const points = `${bs.cx},${bs.cy} ${bm.cx},${bm.cy} ${bt.cx},${bt.cy}`;
+    const points = getPoints(src, tgt);
+    if (!points) return;
     const line = SVG.svgEl('polyline', {
         points, fill: "none"
     });
     line.style.stroke = "var(--edge-color, blue)";
     line.style.markerMid = "url(#arrowhead)";
+    line.__data = {src, tgt};
     return line;
 }
 
+function updateEdge(e) {
+    const {src, tgt} = e.__data;
+    const points = getPoints(src, tgt);
+    if (!points) return;
+    e.setAttribute("points", points);
+}
+function updateNode(n) {
+    const {box} = n.__data;
+    const txfm = `translate(${box.x}, ${box.y})`;
+    n.setAttribute("transform", txfm);
+}
+
+function getPanBy(el, edges) {
+    const nodeData = el.__data;
+    return (dx, dy) => {
+        nodeData.box.cx += dx;
+        nodeData.box.cy += dy;
+        updateNode(el);
+        edges.forEach(updateEdge);
+    }
+}
 
 function renderBaseSVG(graph) {
     const view = document.querySelector("base-svg");
@@ -58,6 +86,19 @@ function renderBaseSVG(graph) {
     const edgeElements = graph.edges.map(makeEdge(enhancedNodes));
     edgeGroup.append(...edgeElements);
     view.append(edgeGroup, nodeGroup);
+
+    nodeElements.forEach(nodeEl => {
+        const panBy = getPanBy(nodeEl, edgeElements)
+        makeDragHandlers(nodeEl, panBy);       
+    })
+    
+    const zoomBtns = document.querySelectorAll("button.zoom");
+    zoomBtns[0].addEventListener("click", () => {
+        view.zoom = view.zoom * 1.2;
+    })
+    zoomBtns[1].addEventListener("click", () => {
+        view.zoom = view.zoom / 1.2;
+    })
 }
 
 renderBigraph(graph);

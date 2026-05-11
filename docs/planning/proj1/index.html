@@ -53,7 +53,7 @@
     const scaler = document.querySelector("input[name='scale-input']");
     scaler.addEventListener("input", evt => {
         const scale = parseFloat(evt.target.value) || 1;
-        el.zoom(scale);
+        el.zoom = scale;
     })
 </script>
 </html>

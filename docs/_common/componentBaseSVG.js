@@ -61,6 +61,7 @@ function makeHTML(width, height) {
 
 class BaseSvg extends HTMLElement {
     #state = {
+        scale: 1,
         elements: {},
         txfm: {x: 0, y: 0, scale: 1}
     };
@@ -80,9 +81,13 @@ class BaseSvg extends HTMLElement {
         const {x, y} = this.#state.txfm;
         this.#setTransform({x: x + dx, y: y + dy});
     }
-    zoom(scale) {
+    set zoom(scale) {
+        this.#state.scale = scale;
         const txfm = transformAroundCenter(this.size, this.#state.txfm, scale);
         this.#setTransform(txfm);
+    }
+    get zoom() {
+        return this.#state.scale;
     }
     get transform() {
         return this.#state.txfm;
