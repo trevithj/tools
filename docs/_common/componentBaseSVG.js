@@ -50,8 +50,8 @@ function makeHTML(width, height) {
         aria-hidden="true"
       >
         <defs>
-          <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="7" refY="3.5" orient="auto">
-            <path d="M0,0.5 L0,6.5 L8,3.5 z" fill="black"/>
+          <marker id="arrowhead" markerWidth="12" markerHeight="12" refX="0" refY="6" orient="auto">
+            <path d="M0,1 L0,11 L12,6 z" fill="black"/>
           </marker>
         </defs>
         <g class="pannable" id="viewport"></g>
