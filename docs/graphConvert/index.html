@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Graph Data Editor</title>
+  <style>
+    .the-grid {
+      display: grid;
+      grid-template-columns: auto 8rem 1fr;
+      column-gap: 0.5rem;
+    }
+
+    .the-display,
+    .the-input {
+      border: solid thin silver;
+    }
+
+    button {
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>Graph Data Editor</h2>
+  <div class="the-grid">
+    <div>
+        <span class="label">Input</span>
+        Format: <select id="format">
+            <option>Simple</option>
+            <option>Sketch</option>
+        </select>
+    </div>
+    <span class="label">Convert</span>
+    <span class="label">Output</span>
+    <div class="the-input">
+      <textarea rows="30" cols="80" spellcheck="false" autocomplete="off" autocorrect="off"></textarea>
+    </div>
+
+    <div class="the-controls">
+      <button id="b0">Raw</button>
+      <button id="b1">DOT</button>
+      <button id="b2">DOT2</button>
+      <button id="b3">Sketch</button>
+      <button id="b4">XState</button>
+    </div>
+
+    <div class="the-display">
+      <textarea rows="30" cols="80" spellcheck="false" autocomplete="off" autocorrect="off"></textarea>
+    </div>
+  </div>
+  <a href="./svgEdit.html">Simple SVG editor</a>
+</body>
+<script>
+  {
+    // Initial view. TODO: persist in localStorage?
+    const input = document.querySelector(".the-input > textarea");
+    const display = document.querySelector(".the-display > textarea");
+    input.value = `1 Node one\n2 Node two\n# this marks start of edges\n1 2 go forward\n2 1 go back`;
+
+  function toArray(txt = "") {
+      return txt.split("\n").flatMap(line => {
+        line = line.trimEnd();
+        return line.length === 0 ? [] : line;
+      });
+    }
+
+    function parser(txt) {
+      const pairs = txt.split(/#[^\n]*\n/);
+      if (pairs.length !== 2) return { err: "no edge divider found" };
+      const nodes = toArray(pairs[0])
+        .map(line => line.split(/\s+/))
+        .map(cells => {
+          const [id, ...rest] = cells;
+          const name = rest.join(" ");
+          return {id, name};
+        });
+      const links = toArray(pairs[1])
+        .map(line => line.split(/\s+/))
+        .map(cells => {
+          const [src, tgt, ...rest] = cells;
+          const label = rest.join(" ");
+          return {src, tgt, label};
+        });
+      const nodeMap = Object.fromEntries(nodes.map(n => [n.id, n]));
+      return { nodes, links, nodeMap };
+    }
+
+    let parsed = {};
+
+    // function parse() {
+    //   const txt = input.value;
+    //   return parser(txt);
+    // }
+
+    input.addEventListener("blur", evt => {
+      parsed = parser(evt.target.value);
+    })
+
+    // Raw format
+    document.querySelector("button#b0").addEventListener("click", evt => {
+      display.value = JSON.stringify(parsed, null, 3);
+    })
+    
+    // DOT format
+    document.querySelector("button#b1").addEventListener("click", evt => {
+      const { nodes, links, nodeMap } = parsed;
+      if (!nodes) return;
+      const output = ["digraph {",
+        ...nodes.map(n => `  ${n.id} [label="${n.name}"]`),
+        ...links.map(l => `  ${l.src} -> ${l.tgt} [label="${l.label}"]`),
+        "}"
+      ];
+      display.value = output.join("\n");
+    })
+    // DOT format, bipartite graph
+    document.querySelector("button#b2").addEventListener("click", evt => {
+      const { nodes, links, nodeMap } = parsed;
+      if (!nodes) return;
+      const output = ["digraph {",
+        "  node [color=blue shape=box]",
+        ...nodes.map(n => `  ${n.id} [label="${n.name}"]`),
+        '  node [color="#dddddd" shape=oval fontsize="10pt"]',
+        ...links.map(l => `  ${l.src}_${l.tgt} ${l.label}`),
+        ...links.map(l => `  ${l.src} -> ${l.src}_${l.tgt}`),
+        ...links.map(l => `  ${l.src}_${l.tgt} -> ${l.tgt}`),
+        "}"
+      ];
+      display.value = output.join("\n");
+    })
+
+    // Sketch systems format
+    document.querySelector("button#b3").addEventListener("click", evt => {
+      // modify to match Sketch systems' format
+      const output = ["Auto-generated Sketch"];
+      const { nodes, links, nodeMap } = parsed;
+      if (!nodes) return;
+      nodes.forEach(node => {
+        const {id, name} = node;
+        output.push(`  ${name}`);
+        const fedbys = links.filter(link => link.src === id);
+        fedbys.forEach(link => {
+          const tgt = nodeMap[link.tgt];
+          output.push(`    ${link.label} -> ${tgt.name}`);
+        });
+      })
+      display.value = output.join("\n");
+    })
+
+    input.focus();
+
+  }
+</script>
+
+</html>

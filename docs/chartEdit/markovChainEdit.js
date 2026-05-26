@@ -1,6 +1,9 @@
 import { stateParser as parser, stringify } from "./chartEdit.js";
-import {forceDirectedLayout, generateSVG} from "./fdg.js";
-import { digraph2DotBipartite} from "./formatters.js";
+// import {forceDirectedLayout, generateSVG} from "./fdg.js";
+import {linksToMatrix, toTheNthPower } from "./matrix.js";
+// import { digraph2DotBipartite} from "./formatters.js";
+import { svgEl, makeNodes } from "../_common/makeSvgNode.js";
+
 // Initial view.
 const SAMPLE_INPUT = `Shares Go Up
     0.3 -> Shares Go Up
@@ -12,11 +15,21 @@ Shares Steady
     0.3 -> Shares Go Down
 Shares Go Down
     0.3 -> Shares Go Up
-    0.2 -> Shares Steady
-    0.5 -> Shares Go Down
+    0.3 -> Shares Steady
+    0.4 -> Shares Go Down
 `;
 const input = document.querySelector(".the-input > textarea");
 const display = document.querySelector(".the-display > textarea");
+const chart = document.querySelector("base-svg");
+const linkGroup = svgEl("g", {class: "link-group"});
+const nodeGroup = svgEl("g", {class: "node-group"});
+chart.append(linkGroup, nodeGroup);
+const scaler = document.querySelector("range-slider");
+scaler.addEventListener("input", evt => {
+    const scale = parseFloat(evt.target.value) || 1;
+    chart.zoom = scale;
+})
+
 input.value = window.localStorage.getItem("MARKOV_CHAIN") || SAMPLE_INPUT;
 
 let parsed = {};
@@ -32,49 +45,72 @@ document.querySelector("button#b0").addEventListener("click", () => {
     display.value = stringify(parsed);
 })
 
-// DOT format
-document.querySelector("button#b1").addEventListener("click", () => {
-    const links = parsed.links.map(l => {
-        const { src:source, tgt:target } = l;
-        return { source, target };
-    });
-    const nodes = forceDirectedLayout(parsed.nodeMap, links);
-    display.value = JSON.stringify(nodes);
-    const svgHTML = generateSVG(nodes, links, parsed.nodeMap);
-    document.querySelector("#chart").innerHTML = svgHTML;
-})
+// Chart render
+// document.querySelector("button#b1").addEventListener("click", () => {
+//     const links = parsed.links.map(l => {
+//         const { src:source, tgt:target } = l;
+//         return { source, target };
+//     });
+//     display.value = JSON.stringify(links);
 
-// DOT format, bipartite graph
+//     // const nodes = forceDirectedLayout(parsed.nodeMap, links);
+//     // const svgHTML = generateSVG(nodes, links, parsed.nodeMap);
+//     // document.querySelector("#chart").innerHTML = svgHTML;
+// })
+
+// Matrix
 document.querySelector("button#b2").addEventListener("click", () => {
-    display.value = digraph2DotBipartite(parsed);
+    const links = parsed.links.map(link => {
+        const wgt = Number.parseFloat(link.label);
+        return { ... link, wgt };
+    });
+    const matrix = linksToMatrix(parsed.nodes, links);
+    display.value = matrix.map(row => {
+        return JSON.stringify(row);
+    }).join("\n");
+    //checkRows
 })
 
-// Bi-graph systems format
+// A^100
 document.querySelector("button#b3").addEventListener("click", () => {
-    const {nodes, links} = parsed;
-    if (!nodes) return;
-    const output = {stateNodes: nodes};
-    const linkSet = new Set();
-    const txnNodes = Object.fromEntries(links.map(lnk => {
-        const {src, tgt, label: name} = lnk;
-        const id = `${name}_${tgt}`;
-        linkSet.add(`${src}:${id}`);
-        linkSet.add(`${id}:${tgt}`);
-        return [id, {id, name}];
-    }));
-    output.txnNodes = Object.values(txnNodes);
-    output.links = [...linkSet].map(line => {
-        const [src, tgt] = line.split(":");
-        return {src, tgt};
+    const links = parsed.links.map(link => {
+        const wgt = Number.parseFloat(link.label);
+        return { ... link, wgt };
     });
-    console.dir(output);
-    // const stringified = {
-    //     stateNodes: output.stateNodes.map(node => `${node.id}:${node.name}`),
-    //     transNodes: output.txnNodes.map(node => `${node.id}:${node.name}`),
-    //     links: output.links.map(link => `${link.src} --> ${link.tgt}`)
-    // }
-    // display.value = JSON.stringify(stringified, null, 3);
-    display.value = stringify(output);
+    const matrix = linksToMatrix(parsed.nodes, links);
+    const m2 = toTheNthPower(matrix, 30);
+    display.value = m2.map(row => {
+        return JSON.stringify(row);
+    }).join("\n");
+    //checkRows
+})
+
+// Bi-graph and Render
+document.querySelector("button#b4").addEventListener("click", () => {
+    const stateNodes = parsed.nodes.map(n => {
+        const {name, id} = n;
+        const y = Math.random() * 400;
+        return { lines:[name], id, type:"state", x: 200, y };
+    });
+    const txtnNodes = [];
+    const links = [];
+    let index = 0;
+    parsed.links.forEach(link => {
+        const { src, tgt, label } = link;
+        const id = "t"+index++;
+        const y = Math.random() * 400;
+        const tNode = { id, lines:[label], type: 'txtn', x:600, y };
+        txtnNodes.push(tNode);
+        links.push({ src, tgt:id });
+        links.push({ src:id, tgt });
+    })
+    const net = {stateNodes, txtnNodes, links};
+    display.value = stringify(net);
+    const nodeEls = makeNodes([...stateNodes, ...txtnNodes]);
+    nodeGroup.innerHTML = "";
+    nodeEls.forEach(node => {
+        nodeGroup.append(node);
+    })
 })
 
 input.focus();

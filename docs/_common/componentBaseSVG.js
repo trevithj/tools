@@ -105,8 +105,8 @@ class BaseSvg extends HTMLElement {
     }
 
     // Pass responsibility to external code to control the content rendering
-    append(...nodes) {
-        return this.pannable.append(...nodes);
+    append(...svgEls) {
+        return this.pannable.append(...svgEls);
     }
     connectedCallback() {
         if (!this.shadowRoot) {

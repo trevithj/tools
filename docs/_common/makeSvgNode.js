@@ -31,7 +31,7 @@ export function prepareNode(config = DEFAULT_CONFIG) {
         const width = padX + padX + Math.max(...node.lines.map(l => measureTextWidth(l, font)));
         const height = padY + padY + node.lines.length * lineHeight;
         const box = {
-            cx: node.x, cy: node.y,
+            cx: node.x || 0, cy: node.y || 0,
             width,
             height,
             get x() {return this.cx - (width / 2);},
