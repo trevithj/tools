@@ -355,7 +355,8 @@ function autoLayout() {
     const textNodes = nodes.filter(n => n.type === "text");
     const gateNodes = nodes.filter(n => n.type === "gate");
     const r = svg.getBoundingClientRect();
-    nodes = bipartiteAutoLayout(textNodes, gateNodes, edges, r.width, r.height);
+    const opts = { viewWidth: r.width, viewHeight: r.height, type1: "text", type2: "gate" };
+    nodes = bipartiteAutoLayout(textNodes, gateNodes, edges, opts);
     panX = 20; panY = 20;
     updateViewport();
     render();

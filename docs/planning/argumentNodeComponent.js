@@ -51,8 +51,10 @@ class ArgumentNode extends HTMLElement {
     }
 
     connectedCallback() {
-        this.style.left = this.getAttribute("x") || "0px"
-        this.style.top = this.getAttribute("y") || "0px";
+        const x = this.getAttribute("x") || "0"
+        const y = this.getAttribute("y") || "0";
+        this.style.left = x + "px";
+        this.style.top = y + "px";
         this.box.textContent = this.getAttribute("text") || "Argument";
     }
 

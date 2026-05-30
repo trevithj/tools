@@ -1,8 +1,9 @@
-import { stateParser as parser, stringify } from "./chartEdit.js";
+import {stateParser as parser, stringify} from "./chartEdit.js";
 // import {forceDirectedLayout, generateSVG} from "./fdg.js";
-import {linksToMatrix, toTheNthPower } from "./matrix.js";
+import {linksToMatrix, toTheNthPower} from "./matrix.js";
 // import { digraph2DotBipartite} from "./formatters.js";
-import { svgEl, makeNodes } from "../_common/makeSvgNode.js";
+import {svgEl, makeNodes} from "../_common/makeSvgNode.js";
+import {bipartiteAutoLayout} from "../planning/graphLayout.js";
 
 // Initial view.
 const SAMPLE_INPUT = `Shares Go Up
@@ -37,7 +38,7 @@ let parsed = {};
 input.addEventListener("blur", evt => {
     parsed = parser(evt.target.value);
     window.localStorage.setItem("MARKOV_CHAIN", evt.target.value);
-    console.log({ parsed })
+    console.log({parsed})
 })
 
 // Raw format
@@ -62,7 +63,7 @@ document.querySelector("button#b0").addEventListener("click", () => {
 document.querySelector("button#b2").addEventListener("click", () => {
     const links = parsed.links.map(link => {
         const wgt = Number.parseFloat(link.label);
-        return { ... link, wgt };
+        return {...link, wgt};
     });
     const matrix = linksToMatrix(parsed.nodes, links);
     display.value = matrix.map(row => {
@@ -75,7 +76,7 @@ document.querySelector("button#b2").addEventListener("click", () => {
 document.querySelector("button#b3").addEventListener("click", () => {
     const links = parsed.links.map(link => {
         const wgt = Number.parseFloat(link.label);
-        return { ... link, wgt };
+        return {...link, wgt};
     });
     const matrix = linksToMatrix(parsed.nodes, links);
     const m2 = toTheNthPower(matrix, 30);
@@ -89,24 +90,25 @@ document.querySelector("button#b3").addEventListener("click", () => {
 document.querySelector("button#b4").addEventListener("click", () => {
     const stateNodes = parsed.nodes.map(n => {
         const {name, id} = n;
-        const y = Math.random() * 400;
-        return { lines:[name], id, type:"state", x: 200, y };
+        return {lines: [name], id, type: "state", x: 0, y: 0};
     });
     const txtnNodes = [];
     const links = [];
     let index = 0;
     parsed.links.forEach(link => {
-        const { src, tgt, label } = link;
-        const id = "t"+index++;
-        const y = Math.random() * 400;
-        const tNode = { id, lines:[label], type: 'txtn', x:600, y };
+        const {src, tgt, label} = link;
+        const id = "t" + index++;
+        const tNode = {id, lines: [label], type: 'txtn', x: 0, y: 0};
         txtnNodes.push(tNode);
-        links.push({ src, tgt:id });
-        links.push({ src:id, tgt });
+        links.push({src, tgt: id});
+        links.push({src: id, tgt});
     })
-    const net = {stateNodes, txtnNodes, links};
+    const opts = {viewWidth: 600, viewHeight: 400, type1: "state", type2: "txtn"};
+    const nodes = bipartiteAutoLayout(stateNodes, txtnNodes, links, opts);
+    const net = {nodes, links};
     display.value = stringify(net);
-    const nodeEls = makeNodes([...stateNodes, ...txtnNodes]);
+    const nodeEls = makeNodes(nodes);
+    // display.value = stringify(nodes);
     nodeGroup.innerHTML = "";
     nodeEls.forEach(node => {
         nodeGroup.append(node);

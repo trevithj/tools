@@ -34,8 +34,9 @@ function getAssignY(PAD_TOP, PAD_BOT, MIN_VERT_GAP) {
  * @param {*} viewHeight pixels
  * @returns array of all nodes with updated x,y values.
  */
-export function bipartiteAutoLayout(col1Nodes, col2Nodes, edges, viewWidth, viewHeight) {
-    const COL_X = {text: viewWidth * 0.3, gate: viewWidth * 0.7};
+export function bipartiteAutoLayout(col1Nodes, col2Nodes, edges, options) {
+    const { viewWidth, viewHeight, type1, type2 } = options;
+    const COL_X = {[type1]: viewWidth * 0.3, [type2]: viewWidth * 0.7};
     const assignY = getAssignY(60, 60, 55);
     const PASSES = 5;
     const nodes = [...col1Nodes, ...col2Nodes];
@@ -51,27 +52,27 @@ export function bipartiteAutoLayout(col1Nodes, col2Nodes, edges, viewWidth, view
     const sortKey = arr =>
         [...arr].sort((a, b) => a.y - b.y);
 
-    let textOrder = sortKey(col1Nodes);
-    let gateOrder = sortKey(col2Nodes);
+    let col1Order = sortKey(col1Nodes);
+    let col2Order = sortKey(col2Nodes);
 
     // Iterate
     for (let pass = 0; pass < PASSES; pass++) {
-        const gateYMap = assignY(gateOrder, viewHeight);
-        textOrder = barySort(textOrder, gateYMap, neighbours);
+        const col2YMap = assignY(col2Order, viewHeight);
+        col1Order = barySort(col1Order, col2YMap, neighbours);
 
-        const textYMap = assignY(textOrder, viewHeight);
-        gateOrder = barySort(gateOrder, textYMap, neighbours);
+        const col1YMap = assignY(col1Order, viewHeight);
+        col2Order = barySort(col2Order, col1YMap, neighbours);
     }
 
     // Build final Y maps
-    const textYMap = assignY(textOrder, viewHeight);
-    const gateYMap = assignY(gateOrder, viewHeight);
+    const col1YMap = assignY(col1Order, viewHeight);
+    const col2YMap = assignY(col2Order, viewHeight);
 
     // Return updated nodes (pure — original objects untouched)
     return nodes.map(n => ({
         ...n,
         x: COL_X[n.type],
-        y: n.type === 'text' ? textYMap[n.id] : gateYMap[n.id]
+        y: n.type === type1 ? col1YMap[n.id] : col2YMap[n.id]
     }));
 }
 
