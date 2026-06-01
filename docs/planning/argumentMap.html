@@ -4,6 +4,26 @@
 <head>
     <meta charset="UTF-8">
     <title>Argument Map</title>
+    <style>
+        :root {
+            --node-bg: #fcc;
+            --node-min-width: 120px;
+            --node-min-height: 3rem;
+            .sub {
+                --node-bg: #ccf;
+                --node-border: 4px dotted red;
+                --node-padding: 0.4rem;
+                --node-radius: 3rem;
+                --node-min-height: 1rem;
+                --node-min-width: 1rem;
+            }
+        }
+        argument-node#a1 {
+            --node-colour: #339;
+            --node-font: Arial;
+            --node-radius: 0px;
+        }
+    </style>
 </head>
 
 <body>
@@ -11,9 +31,9 @@
         <argument-node id="a1" text="Main Claim X" x="300" y="0"></argument-node>
         <argument-node id="a2" text="Supporting Reason A" x="100" y="100"></argument-node>
         <argument-node id="a3" text="Opposing Reason B" x="500" y="100"></argument-node>
-        <argument-node id="a4" text="Sub Claim" x="300" y="200"></argument-node>
-        <argument-node id="a5" text="Sub Reason1" x="100" y="300"></argument-node>
-        <argument-node id="a6" text="Sub Reason2" x="500" y="300"></argument-node>
+        <argument-node id="a4" text="Sub Claim" x="300" y="200" class="sub"></argument-node>
+        <argument-node id="a5" text="Sub Reason1" x="100" y="300" class="sub"></argument-node>
+        <argument-node id="a6" text="Sub Reason2" x="500" y="300" class="sub"></argument-node>
     </argument-map>
     <div style="bottom:0px; position:absolute;">
         <input-numbers></input-numbers>

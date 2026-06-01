@@ -3,16 +3,17 @@ const BASE_HTML = `
     :host {
       position: absolute;
       display: inline-block;
-      background: #fff;
-      border: 2px solid #555;
-      border-radius: 0.5rem;
-      padding: 0.5rem 0.75rem;
-      min-width: 120px;
-      min-height: 40px;
+      background: var(--node-bg, #fff);
+      color: var(--node-colour, #000);
+      border: var(--node-border, 2px solid #555);
+      border-radius: var(--node-radius, 0.5rem);
+      padding: var(--node-padding, 0.5rem 0.75rem);
+      min-width: var(--node-min-width, 5rem);
+      min-height: var(--node-min-height, 1rem);
       box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
       user-select: none;
       cursor: move;
-      font-family: sans-serif;
+      font-family: var(--node-font, sans-serif);
     }
     div[contenteditable] {
       outline: none;

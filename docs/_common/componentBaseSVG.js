@@ -41,23 +41,20 @@ svg {
 }
 </style>`;
 
-function makeHTML(width, height) {
-    return `
-      ${BASE_STYLE}
-      <svg
-        viewBox="0 0 ${width} ${height}"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden="true"
-      >
-        <defs>
-          <marker id="arrowhead" markerWidth="12" markerHeight="12" refX="0" refY="6" orient="auto">
-            <path d="M0,1 L0,11 L12,6 z" fill="black"/>
-          </marker>
-        </defs>
-        <g class="pannable" id="viewport"></g>
-      </svg>
-    `;
-} // TODO: figure out how to control arrowhead color
+const HTML = `
+${BASE_STYLE}
+<svg
+xmlns="http://www.w3.org/2000/svg"
+aria-hidden="true"
+>
+<defs>
+    <marker id="arrowhead" markerWidth="12" markerHeight="12" refX="0" refY="6" orient="auto">
+    <path d="M0,1 L0,11 L12,6 z" fill="black"/>
+    </marker>
+</defs>
+<g class="pannable" id="viewport"></g>
+</svg>
+`;
 
 class BaseSvg extends HTMLElement {
     #state = {
@@ -110,9 +107,8 @@ class BaseSvg extends HTMLElement {
     }
     connectedCallback() {
         if (!this.shadowRoot) {
-            const {width, height} = this.size;
             this.attachShadow({mode: 'open'});
-            this.shadowRoot.innerHTML = makeHTML(width, height);
+            this.shadowRoot.innerHTML = `${BASE_STYLE} ${HTML}`;
             this.#state.elements.svg = this.shadowRoot.querySelector("svg");
             makeDragHandlers(this.view, this.panBy);
         }

@@ -1,15 +1,4 @@
-function setAttributes(el, attribs = {}) {
-    for (const [k, v] of Object.entries(attribs)) el.setAttribute(k, v);
-    return el;
-}
-
-
-function makePolylinePoints(p1, p2) {
-    //include an intermediate point for the marker.
-    const mx = (p1.x + p2.x) / 2;
-    const my = (p1.y + p2.y) / 2;
-    return [p1.x, p1.y, mx, my, p2.x, p2.y].join(",");
-}
+import {makeLinkEls, makePolylinePoints, setAttributes, update} from "../_common/makeSvgLink";
 
 const BASE_HTML = `
 <style>
@@ -47,10 +36,11 @@ class ArgumentMap extends HTMLElement {
         shadow.innerHTML = BASE_HTML;
         this.svg = shadow.querySelector("svg");
         this.view = this.svg.querySelector("#theView");
-        this.nodes = new Map();
+        // this.nodes = new Map();
         this.connections = [
             {from: "a1", to: "a2"},
-            {from: "a1", to: "a3"}
+            {from: "a1", to: "a3"},
+            {from: "a1", to: "a4"}
         ];
 
         this.addEventListener("node-moved", () => this.updateLines());
@@ -63,11 +53,17 @@ class ArgumentMap extends HTMLElement {
         // Add a few example nodes
         if (!this.children.length) {
             this.innerHTML = `
-        <argument-node id="a1" text="Main Claim" x="300" y="200"></argument-node>
-        <argument-node id="a2" text="Supporting Reason" x="100" y="100"></argument-node>
-        <argument-node id="a3" text="Opposing Reason" x="500" y="100"></argument-node>
+        <argument-node id="a1" text="Main Claim" x="300" y="0"></argument-node>
+        <argument-node id="a2" text="Supporting Reason1" x="0" y="100"></argument-node>
+        <argument-node id="a3" text="Opposing Reason1" x="300" y="100"></argument-node>
+        <argument-node id="a4" text="Opposing Reason2" x="600" y="100"></argument-node>
       `;
         }
+        this.linkEls = makeLinkEls(this.connections);
+        this.linkEls.forEach(link => {
+            this.view.appendChild(link);
+        });
+
         requestAnimationFrame(() => this.updateLines());
     }
 
@@ -84,22 +80,13 @@ class ArgumentMap extends HTMLElement {
         if (this.connections.length === 0) {
             return
         }
-        this.view.innerHTML = "";
-        this.connections.forEach(conn => {
-            const fromNode = this.querySelector(`#${conn.from}`);
-            const toNode = this.querySelector(`#${conn.to}`);
-            if (!fromNode || !toNode) return;
-            const p1 = fromNode.position;
-            const p2 = toNode.position;
-            const points = makePolylinePoints(p1, p2);
-            const line = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-            // setAttributes(line, {x1: p1.x, y1: p1.y, x2:p2.x, y2:p2.y, stroke:"#888"})
-            setAttributes(line, {points, stroke:"#888"})
-            line.setAttribute("stroke-width", "2");
-            // line.setAttribute("class", "link");
-            line.setAttribute("marker-mid", "url(#arrowhead)");//marker-mid: url(#arrowhead);
-            this.view.appendChild(line);
-        });
+        const getNodes = link => {
+            return [
+                this.querySelector(`#${link.from}`),
+                this.querySelector(`#${link.to}`)
+            ];
+        }
+        update(this.linkEls, getNodes);
     }
 }
 
