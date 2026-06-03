@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title> Convert Data </title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    .btn-primary { color: silver; }
+    .btn-default { color: black; }
+    body {
+      font: 16pt Helvetica, sans-serif;
+    }
+
+    .container {
+      background-color: #ddd;
+    }
+
+    .view {
+      background-color: #eee;
+      padding: 1em 0.5em 0em 0.5em;
+    }
+
+    td {
+      min-width: 4em;
+      border: solid thin silver;
+      text-align: center;
+    }
+
+    th.byCol {
+      text-align: center;
+    }
+
+    th.byRow {
+      text-align: right;
+      padding-right: 0.4em;
+    }
+
+    @media screen and (max-width:760px) {
+      body {
+        font-size: 10pt;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+    <div class="control">
+        <button class="btn control-btn btn-primary">Input</button>
+        <button class="btn control-btn btn-default">Table</button>
+        <button class="btn control-btn btn-default">Stats</button>
+        <button class="btn control-btn btn-default">Sankey</button>
+        <button class="btn control-btn btn-default">Chart</button>
+    </div>
+    <div class="view"></div>
+    <div class="container" id="display"></div>
+    
+  <!-- <script src="https://cdn.jsdelivr.net/npm/d3@7"></script> -->
+  <!-- <script src="../../common/base.js"></script> -->
+  <!-- <script src="convertData.view.js"></script> -->
+  <!-- <script src="convertData.state.js"></script> -->
+  <script src="convertData.js" type="module"></script>
+  <a href="./svgEdit.html">SVG Editor</a>
+  <a href="../graphConvert/index.html">Graph Data Editor</a>
+
+</body>
+
+</html>

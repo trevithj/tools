@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>SVG Editor</title>
+  <style>
+    .the-grid {
+      display: grid;
+      grid-template-columns: auto 8rem 1fr;
+    }
+    .the-display {
+      border: solid thin silver;
+    }
+    svg {
+      background-color: green;
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>Simple SVG Editor</h2>
+  <div class="the-grid">
+
+    <div class="the-input">
+      <textarea rows="50" cols="80" spellcheck="false" autocomplete="off" autocorrect="off">
+<svg xmlns="http://www.w3.org/2000/svg" width="21" height="100%" viewBox="0 0 210 270">
+  <title>NZ Herald Logo</title>
+  <path fill="currentColor" fill-rule="evenodd"
+    d="M146 0c18 0 29 4 41 14l9-9 3 3-32 30c-6-11-18-25-33-27v85c29-21 37-28 37-28 2 1 29 18 38 23v0h0c-4 3-6 8-6 16v100c0 26-23 47-50 54l-3-2c12-11 22-24 22-45v-108l-22-16-16 12v109l1 0 11-11 4 3-33 32c-10-8-27-13-46-13-21 0-35 4-47 13l-2-4a78 78 90 0152-36 49 49 90 0013-34V60c0-18 4-29 24-45 12-9 24-15 35-15ZM130 12c-7 0-12 5-12 16v120c0 24-18 40-34 49 18 1 35 6 46 13V12ZM84 25l2 1c-5 6-9 15-9 27v93c0 26-18 43-39 56l-4-1c8-8 13-20 13-33v-12c-4-2-8-3-13-3-13 0-19 6-22 11l-2-2c1-18 10-35 25-35 4 0 10 2 13 2v-18c-4-2-8-3-13-3-9 0-16 2-22 11l-2-2c0-19 9-34 25-34 5 0 10 2 12 2V71c0-20 13-36 37-46ZM87 0l1 2C75 20 67 28 53 28c-11 0-25-7-35-7-8 0-11 2-16 6L0 25C8 11 21 1 32 1c12 0 30 7 34 7 7 0 14-3 20-8Z" />
+</svg>        
+      </textarea>
+    </div>
+
+    <div class="the-controls">
+      <button id="b0">Update</button>
+    </div>
+
+    <div class="the-display">
+    </div>
+  </div>
+  <script>
+    {
+      const input = document.querySelector("textarea");
+      const display = document.querySelector(".the-display");
+      document.querySelector("button#b0").addEventListener("click", evt => {
+        display.innerHTML = input.value;
+      })
+    }
+  </script>
+</body>
+
+</html>
