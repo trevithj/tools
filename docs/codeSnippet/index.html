@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>SVG Snippet Generator</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        :root {
+            .line {
+                line-height: 1.5rem;
+                font-family: monospace;
+            }
+            --const : green;
+            --name : blue;
+        }
+    </style>
+
+</head>
+
+<body>
+    <main>
+        <header>
+            <h2>Code Snippet Generator Tool</h2>
+            <p>Generate an HTML block representing a formatted block of text.</p>
+        </header>
+        <div class="grid grid-cols-2">
+
+            <section id="input" class="xgrid xgrid-cols-3">
+                <h4>Input panel</h4>
+                <textarea>
+const x = 123.45;
+const y = "a big value";
+function f() {
+    print "hello";
+};
+</textarea>
+            </section>
+            <section id="output" class="xgrid xgrid-cols-3">
+                <h4>Output</h4>
+                <div>
+                    <c-const name="x">123.45</c-const>
+                    <c-const name="y">"a big value"</c-const>
+                    <c-fn name="f">
+                        <c-cmd name="print">"hello"</c-cmd>
+                    </c-fn>
+                </div>
+            </section>
+        </div>
+    </main>
+    <script src="./main.js" type="module"></script>
+</body>
+
+</html>
