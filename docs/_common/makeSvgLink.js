@@ -26,7 +26,7 @@ export function makeLinkEls(links = []) {
 
 // linkEls should be polyline elements with the custom .__data property.
 // getNodes should return two node elements, each with the position attribute { x, y }.
-export function update(linkEls = [], getNodes) {
+export function updateLinkLines(linkEls = [], getNodes) {
     linkEls.forEach(el => {
         const link = el.__data || {};
         const [srcNode, tgtNode] = getNodes(link);

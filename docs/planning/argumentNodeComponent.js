@@ -9,6 +9,7 @@ const BASE_HTML = `
       border-radius: var(--node-radius, 0.5rem);
       padding: var(--node-padding, 0.5rem 0.75rem);
       min-width: var(--node-min-width, 5rem);
+      max-width: var(--node-max-width, 20rem);
       min-height: var(--node-min-height, 1rem);
       box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
       user-select: none;

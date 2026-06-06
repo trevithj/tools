@@ -1,4 +1,11 @@
-import {makeLinkEls, makePolylinePoints, setAttributes, update} from "../_common/makeSvgLink";
+import {makeLinkEls, setAttributes, updateLinkLines} from "../_common/makeSvgLink";
+
+function makeConnections(linksString) {
+    return linksString.split(",").map(substr => {
+        const [src, tgt] = substr.split("->");
+        return { src, tgt };
+    });
+}
 
 const BASE_HTML = `
 <style>
@@ -20,8 +27,8 @@ const BASE_HTML = `
 </style>
 <svg>
 <defs>
-    <marker id="arrowhead" markerWidth="12" markerHeight="12" refX="0" refY="6" orient="auto">
-    <path d="M0,1 L0,11 L12,6 z" fill="black"/>
+    <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="0" refY="4" orient="auto">
+    <path d="M0,1 L0,8 L8,4 z" fill="black"/>
     </marker>
 </defs>
 <g id="theView"></g>
@@ -38,9 +45,9 @@ class ArgumentMap extends HTMLElement {
         this.view = this.svg.querySelector("#theView");
         // this.nodes = new Map();
         this.connections = [
-            {from: "a1", to: "a2"},
-            {from: "a1", to: "a3"},
-            {from: "a1", to: "a4"}
+            {src: "a1", tgt: "a2"},
+            {src: "a1", tgt: "a3"},
+            {src: "a1", tgt: "a4"}
         ];
 
         this.addEventListener("node-moved", () => this.updateLines());
@@ -49,6 +56,9 @@ class ArgumentMap extends HTMLElement {
     connectedCallback() {
         this.svg.style.width = this.getAttribute("width") || "100%";
         this.svg.style.height = this.getAttribute("height") || "100vh";
+        const links = this.getAttribute("links") || "a1->a2,a1->a3,a1->a4";
+        console.log(links); //todo convert to connections structure
+        this.connections = makeConnections(links);
 
         // Add a few example nodes
         if (!this.children.length) {
@@ -67,11 +77,11 @@ class ArgumentMap extends HTMLElement {
         requestAnimationFrame(() => this.updateLines());
     }
 
-    addNode({text, x, y}) {
+    addNode({text, x, y, className }) {
         const id = `node${Date.now()}`;
         const node = document.createElement("argument-node");
         node.id = id;
-        setAttributes(node, {text, x, y });
+        setAttributes(node, {text, x, y, class:className });
         this.appendChild(node);
         // this.updateLines();
     }
@@ -82,11 +92,11 @@ class ArgumentMap extends HTMLElement {
         }
         const getNodes = link => {
             return [
-                this.querySelector(`#${link.from}`),
-                this.querySelector(`#${link.to}`)
+                this.querySelector(`argument-node#${link.src}`),
+                this.querySelector(`argument-node#${link.tgt}`)
             ];
         }
-        update(this.linkEls, getNodes);
+        updateLinkLines(this.linkEls, getNodes);
     }
 }
 

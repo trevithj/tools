@@ -7,15 +7,17 @@
     <style>
         :root {
             --node-bg: #fcc;
-            --node-min-width: 120px;
-            --node-min-height: 3rem;
+            --node-min-width: 100px;
+            --node-max-width: 300px;
+            --node-min-height: 2rem;
             .sub {
                 --node-bg: #ccf;
                 --node-border: 4px dotted red;
                 --node-padding: 0.4rem;
-                --node-radius: 3rem;
+                --node-radius: 1.2rem;
                 --node-min-height: 1rem;
                 --node-min-width: 1rem;
+                --node-max-width: 200px;
             }
         }
         argument-node#a1 {
@@ -27,13 +29,13 @@
 </head>
 
 <body>
-    <argument-map width="600px" height="400px">
-        <argument-node id="a1" text="Main Claim X" x="300" y="0"></argument-node>
-        <argument-node id="a2" text="Supporting Reason A" x="100" y="100"></argument-node>
-        <argument-node id="a3" text="Opposing Reason B" x="500" y="100"></argument-node>
-        <argument-node id="a4" text="Sub Claim" x="300" y="200" class="sub"></argument-node>
-        <argument-node id="a5" text="Sub Reason1" x="100" y="300" class="sub"></argument-node>
-        <argument-node id="a6" text="Sub Reason2" x="500" y="300" class="sub"></argument-node>
+    <argument-map width="600px" height="400px" links="a1->a3,a2->a3,a3->a4,a4->a5,a4->a6">
+        <argument-node id="a1" text="Socrates is a man" x="100" y="0"></argument-node>
+        <argument-node id="a2" text="All men are mortal" x="400" y="0"></argument-node>
+        <argument-node id="a3" text="therefore" x="310" y="120" class="sub"></argument-node>
+        <argument-node id="a4" text="Socrates is mortal" x="275" y="200"></argument-node>
+        <argument-node id="a7" text="Let's see how well sub-nodes handle really long lines of text." x="100" y="300" class="sub"></argument-node>
+        <argument-node id="a8" text="Let's see how well text nodes handle really long lines of text." x="400" y="300"></argument-node>
     </argument-map>
     <div style="bottom:0px; position:absolute;">
         <input-numbers></input-numbers>
@@ -61,7 +63,13 @@
     //     {id: "a5", text: "Sub Reason1", x: 100, y: 100},
     //     {id: "a6", text: "Sub Reason2", x: 500, y: 100},
     // ];
-
+    // const links = "a1->a2,a1->a3,a1->a4,a4->a5,a4->a6";
+    const theMap = document.querySelector("argument-map");
+    window.addEventListener("load", () => {
+        console.log(theMap);
+        theMap.addNode({id: "a9", text: "X", x: 0, y: 400, className: "sub"})
+        theMap.addNode({id: "a10", text: "Programmatically add nodes...", x: 50, y: 400})
+    });
 
 </script>
 
