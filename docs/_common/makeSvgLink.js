@@ -14,13 +14,15 @@ const attribs = {
 }
 
 // Each link should have properties that describe the ids of linked nodes.
+export function makeLinkEl(link) {
+    const line = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+    setAttributes(line, attribs);
+    line.__data = link;
+    return line;
+}
+// Each link should have properties that describe the ids of linked nodes.
 export function makeLinkEls(links = []) {
-    const els = links.map(link => {
-        const line = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-        setAttributes(line, attribs);
-        line.__data = link;
-        return line;
-    });
+    const els = links.map(makeLinkEl);
     return Array.from(els);
 }
 

@@ -4,6 +4,7 @@ import {digraph2Dot, digraph2DotBipartite} from "./formatters.js";
 const SAMPLE_INPUT = `Green\n  tick -> Yellow\nYellow\n  tick -> Red\nRed\n  tick -> Green`;
 const input = document.querySelector(".the-input > textarea");
 const display = document.querySelector(".the-display > textarea");
+const argMap = document.querySelector("argument-map");
 input.value = window.localStorage.getItem("INPUT_STATE") || SAMPLE_INPUT;
 
 let parsed = {};
@@ -29,7 +30,7 @@ document.querySelector("button#b2").addEventListener("click", () => {
 })
 
 // Bi-graph systems format
-document.querySelector("button#b3").addEventListener("click", evt => {
+document.querySelector("button#b3").addEventListener("click", () => {
     const {nodes, links} = parsed;
     if (!nodes) return;
     const output = {stateNodes: nodes};
@@ -47,13 +48,19 @@ document.querySelector("button#b3").addEventListener("click", evt => {
         return {src, tgt};
     });
     console.dir(output);
-    // const stringified = {
-    //     stateNodes: output.stateNodes.map(node => `${node.id}:${node.name}`),
-    //     transNodes: output.txnNodes.map(node => `${node.id}:${node.name}`),
-    //     links: output.links.map(link => `${link.src} --> ${link.tgt}`)
-    // }
-    // display.value = JSON.stringify(stringified, null, 3);
     display.value = stringify(output);
+    // display as an argument-map chart
+    output.stateNodes.forEach(({name, id}, index) => {
+        const row = index * 60;
+        const node = {text:name, id, x: 20, y: row, className:"state"};
+        argMap.addNode(node);
+    });
+    output.txnNodes.forEach(({name, id}, index) => {
+        const row = index * 60;
+        const node = {text:name, id, x: 220, y: row, className:"txn"};
+        argMap.addNode(node);
+    });
+    output.links.forEach(({src, tgt}) => argMap.addLink(src, tgt));
 })
 
 input.focus();

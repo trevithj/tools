@@ -24,12 +24,12 @@ const BASE_HTML = `
   <div contenteditable="true"></div>
 `;
 
-class ArgumentNode extends HTMLElement {
+export class ArgumentNode extends HTMLElement {
     #x = 0;
     #y = 0;
     #dragging = false;
-    #offsetX = 0;
-    #offsetY = 0;
+    #initX = 0;
+    #initY = 0;
 
     constructor() {
         super();
@@ -43,6 +43,13 @@ class ArgumentNode extends HTMLElement {
         window.addEventListener("pointerup", this.#onPointerUp.bind(this));
     }
 
+    setPosition(x, y) {
+        this.style.left = x + "px";
+        this.style.top = y + "px";
+        this.#x = x;
+        this.#y = y;
+    }
+
     get position() {
         const rect = this.getBoundingClientRect();
         const parentRect = this.parentElement.getBoundingClientRect();
@@ -53,32 +60,37 @@ class ArgumentNode extends HTMLElement {
     }
 
     connectedCallback() {
-        const x = this.getAttribute("x") || "0"
-        const y = this.getAttribute("y") || "0";
-        this.style.left = x + "px";
-        this.style.top = y + "px";
+        const x = Number(this.getAttribute("x") || "0");
+        const y = Number(this.getAttribute("y") || "0");
+        this.setPosition(x, y);
         this.box.textContent = this.getAttribute("text") || "Argument";
+        this.parentRect = this.parentElement.getBoundingClientRect();
+        this.rect = this.getBoundingClientRect();
     }
 
     #onPointerDown(e) {
         if (e.target !== this.box) {
             this.#dragging = true;
-            const rect = this.getBoundingClientRect();
-            this.#offsetX = e.clientX - rect.left;
-            this.#offsetY = e.clientY - rect.top;
+            this.#initX = e.clientX;
+            this.#initY = e.clientY;
             this.setPointerCapture(e.pointerId);
+            // this.parentRect = this.parentElement.getBoundingClientRect();
+            console.log(this.rect, this.parentRect, e.clientY);
         }
     }
 
     #onPointerMove(e) {
         if (!this.#dragging) return;
-        const newX = Math.round(e.clientX - this.#offsetX);
-        const newY = Math.round(e.clientY - this.#offsetY);
+        // const newX = Math.round(e.clientX - this.#initX);
+        // const newY = Math.round(e.clientY - this.#initY);
+        const newX = (e.clientX - this.#initX) + this.#x;
+        const newY = (e.clientY - this.#initY) + this.#y;
         if (newX === this.#x && newY === this.#y) return;
-        this.#x = newX;
-        this.#y = newY;
-        this.style.left = newX + "px";
-        this.style.top = newY + "px";
+        this.setPosition(newX, newY);
+
+        this.#initX = e.clientX;
+        this.#initY = e.clientY;
+
         this.dispatchEvent(new CustomEvent("node-moved", {
             bubbles: true,
             composed: true,
@@ -93,3 +105,5 @@ class ArgumentNode extends HTMLElement {
 }
 
 customElements.define("argument-node", ArgumentNode);
+
+export default "argument-node";
