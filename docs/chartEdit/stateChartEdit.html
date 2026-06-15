@@ -20,6 +20,23 @@
     button {
       width: 100%;
     }
+
+    :root {
+        .txn {
+            --node-min-width: 2rem;
+            --node-bg: #fdd;
+        }
+        .state {
+            --node-radius: 0.2rem;
+            --node-min-width: 5rem;
+            --node-bg: #dfd;
+        }
+    }
+    .map-container {
+        min-height: 50vh;
+        padding-top: 0.5rem;
+        background-color: #eee;
+    }
   </style>
 </head>
 
@@ -53,13 +70,13 @@
         <a href="https://edotor.net/">this site</a> or
         <a href="https://stamm-wilbrandt.de/GraphvizFiddle/">this one</a>.
 
-        <range-slider label="Zoom" show-value label-pos="n" range="0.1,5" step="0.01"></range-slider>
+        <!-- <range-slider label="Zoom" show-value label-pos="n" range="0.1,5" step="0.01"></range-slider> -->
         <div class="map-container">
             <argument-map></argument-map>
         </div>
     </main>
 </body>
-<script src="../_common/componentRangeSlider.js" type="module"></script>
+<!-- <script src="../_common/componentRangeSlider.js" type="module"></script> -->
 <script src="../_common/argumentMapComponent.js" type="module"></script>
 <script src="../_common/argumentNodeComponent.js" type="module"></script>
 <script src="./stateChartEdit.js" type="module" ></script>

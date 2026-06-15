@@ -75,7 +75,7 @@ export class ArgumentNode extends HTMLElement {
             this.#initY = e.clientY;
             this.setPointerCapture(e.pointerId);
             // this.parentRect = this.parentElement.getBoundingClientRect();
-            console.log(this.rect, this.parentRect, e.clientY);
+            // console.log(this.rect, this.parentRect, e.clientY);
         }
     }
 

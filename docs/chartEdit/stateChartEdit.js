@@ -15,7 +15,7 @@ input.addEventListener("blur", evt => {
 })
 
 // Raw format
-document.querySelector("button#b0").addEventListener("click", evt => {
+document.querySelector("button#b0").addEventListener("click", () => {
     display.value = stringify(parsed);
 })
 
