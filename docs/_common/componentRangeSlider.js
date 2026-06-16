@@ -14,7 +14,7 @@ events: input, change
 CSS vars:
 */
 
-import {strToNumberArray} from "./convert";
+import {strToNumberArray} from "./convert.js";
 
 const PosMap = {
     n: {row: 1, col: 2},

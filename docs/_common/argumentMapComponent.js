@@ -1,4 +1,4 @@
-import {makeLinkEl, makeLinkEls, setAttributes, updateLinkLines} from "../_common/makeSvgLink";
+import {makeLinkEl, makeLinkEls, setAttributes, updateLinkLines} from "./makeSvgLink.js";
 
 function makeConnections(linksString) {
     if(linksString.trim().length===0) return [];

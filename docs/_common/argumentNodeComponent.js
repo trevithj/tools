@@ -21,7 +21,7 @@ const BASE_HTML = `
       cursor: text;
     }
   </style>
-  <div contenteditable="true"></div>
+  <div></div>
 `;
 
 export class ArgumentNode extends HTMLElement {
