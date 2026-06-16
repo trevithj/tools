@@ -21,6 +21,7 @@ Shares Go Down
 `;
 const input = document.querySelector(".the-input > textarea");
 const display = document.querySelector(".the-display > textarea");
+const argMap = document.querySelector("argument-map");
 const chart = document.querySelector("base-svg");
 const linkGroup = svgEl("g", {class: "link-group"});
 const nodeGroup = svgEl("g", {class: "node-group"});
@@ -86,6 +87,26 @@ document.querySelector("button#b3").addEventListener("click", () => {
     //checkRows
 })
 
+function renderChart({nodes}) {
+    const nodeEls = makeNodes(nodes);
+    // display.value = stringify(nodes);
+    nodeGroup.innerHTML = "";
+    nodeEls.forEach(node => {
+        nodeGroup.append(node);
+    })
+}
+
+function renderArgMap({nodes, links}) {
+    nodes.forEach(node => {
+        const { lines, type, ...rest} = node;
+        argMap.addNode({...rest, text:lines.join(" "), className: type });
+    })
+    links.forEach(link => {
+        console.log(link);
+        argMap.addLink(link.src, link.tgt);
+    })
+}
+
 // Bi-graph and Render
 document.querySelector("button#b4").addEventListener("click", () => {
     const stateNodes = parsed.nodes.map(n => {
@@ -107,12 +128,8 @@ document.querySelector("button#b4").addEventListener("click", () => {
     const nodes = bipartiteAutoLayout(stateNodes, txtnNodes, links, opts);
     const net = {nodes, links};
     display.value = stringify(net);
-    const nodeEls = makeNodes(nodes);
-    // display.value = stringify(nodes);
-    nodeGroup.innerHTML = "";
-    nodeEls.forEach(node => {
-        nodeGroup.append(node);
-    })
+    renderChart(net);
+    renderArgMap(net);
 })
 
 input.focus();

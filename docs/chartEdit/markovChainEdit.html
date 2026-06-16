@@ -8,6 +8,11 @@
     <style>
         :root {
             --node-txtn-color-bg: white;
+            .txtn {
+                --node-bg: blue;
+                --node-colour: white;
+                --node-min-width: 2rem;
+            }
         }
         .the-grid {
             display: grid;
@@ -19,7 +24,10 @@
         .the-input {
             border: solid thin silver;
         }
-
+        .map-frame {
+            height: 400px;
+            width: 800px;
+        }            
         button {
             width: 100%;
         }
@@ -38,7 +46,7 @@
             <span class="label">Convert</span>
             <span class="label">Output</span>
             <div class="the-input">
-                <textarea rows="30" cols="60" spellcheck="false" autocomplete="off" autocorrect="off"></textarea>
+                <textarea rows="12" cols="60" spellcheck="false" autocomplete="off" autocorrect="off"></textarea>
             </div>
 
             <div class="the-controls">
@@ -50,8 +58,11 @@
             </div>
 
             <div class="the-display">
-                <textarea rows="30" cols="60" spellcheck="false" autocomplete="off" autocorrect="off"></textarea>
+                <textarea rows="12" cols="60" spellcheck="false" autocomplete="off" autocorrect="off"></textarea>
             </div>
+        </div>
+        <div class="map-frame">
+            <argument-map width="800px" height="400px"></argument-map>
         </div>
         <div id="chart">
             <base-svg id="the-chart" width="800" height="400"></base-svg>
@@ -59,6 +70,8 @@
         </div>
     </main>
 </body>
+<script src="../_common/argumentMapComponent.js" type="module"></script>
+<script src="../_common/argumentNodeComponent.js" type="module"></script>
 <script src="../_common/componentBaseSVG.js" type="module"></script>
 <script src="../_common/componentRangeSlider.js" type="module"></script>
 <script src="./markovChainEdit.js" type="module"></script>

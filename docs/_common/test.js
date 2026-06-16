@@ -101,5 +101,27 @@ function renderBaseSVG(graph) {
     })
 }
 
+function renderArgumentMap(graph) {
+    const view = document.querySelector("argument-map");
+    const frame = view.parentElement;
+    graph.nodes.forEach(node => {
+        const className = node.type;
+        const text = node.lines.join("\n");
+        view.addNode({...node, className, text});
+    });
+    graph.edges.forEach(link => {
+        view.addLink(link.from, link.to);
+    });
+    const zoomBtns = document.querySelectorAll("button.zoom");
+    zoomBtns[0].addEventListener("click", () => {
+        frame.style.transform = `scale(1)`;
+    })
+    zoomBtns[1].addEventListener("click", () => {
+        frame.style.transform = `scale(0.5)`;
+    })
+
+}
+
+renderArgumentMap(graph);
 renderBigraph(graph);
 renderBaseSVG(graph);
