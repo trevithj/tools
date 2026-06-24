@@ -10,38 +10,23 @@ export function makePolylinePoints(p1, p2) {
     return [p1.x, p1.y, mx, my, p2.x, p2.y].join(",");
 }
 
-export function makePathPoints(p1, p2, curvature = 0.2) {
+export function makePathPoints(p1, p2, curvature = 0.1) {
     const dx = p2.x - p1.x;
     const dy = p2.y - p1.y;
 
-    // Straight-line midpoint
     const mx = (p1.x + p2.x) / 2;
     const my = (p1.y + p2.y) / 2;
 
-    // Perpendicular offset (clockwise, per earlier convention)
-    const offsetX = -dy * curvature;
-    const offsetY = dx * curvature;
+    // Original single control point
+    const cx = mx - dy * curvature;
+    const cy = my + dx * curvature;
 
-    // Actual vertex at the midpoint of the curve
-    const mid = {
-        x: mx + offsetX,
-        y: my + offsetY,
-    };
+    // De Casteljau split at t=0.5
+    const c1 = { x: (p1.x + cx) / 2,  y: (p1.y + cy) / 2 };
+    const c2 = { x: (p2.x + cx) / 2,  y: (p2.y + cy) / 2 };
+    const mid = { x: (c1.x + c2.x) / 2, y: (c1.y + c2.y) / 2 };
 
-    // Control points for each half, placed along the chord direction
-    // from the midpoint, so the tangent is continuous at the joint.
-    const c1 = {
-        x: mid.x - dx * curvature,
-        y: mid.y - dy * curvature,
-    };
-    const c2 = {
-        x: mid.x + dx * curvature,
-        y: mid.y + dy * curvature,
-    };
-
-    const d = `M ${p1.x},${p1.y} Q ${c1.x},${c1.y} ${mid.x},${mid.y} Q ${c2.x},${c2.y} ${p2.x},${p2.y}`;
-
-    return d;
+    return `M ${p1.x},${p1.y} Q ${c1.x},${c1.y} ${mid.x},${mid.y} Q ${c2.x},${c2.y} ${p2.x},${p2.y}`;
 }
 
 const attribs = {
@@ -83,7 +68,7 @@ export function makeLinkEls(links = []) {
 //         el.setAttribute("points", points);
 //     });
 // }
-export function updateLinkLines(linkEls = [], getNodes) {
+export function updateLinkLines(linkEls = [], getNodes, curvature) {
     linkEls.forEach(el => {
         const link = el.__data || {};
         const [srcNode, tgtNode] = getNodes(link);
@@ -92,7 +77,7 @@ export function updateLinkLines(linkEls = [], getNodes) {
         const p1 = srcNode.position;
         const p2 = tgtNode.position;
         // const points = makePolylinePoints(p1, p2);
-        const d = makePathPoints(p1, p2);
+        const d = makePathPoints(p1, p2, curvature);
         el.setAttribute("d", d);
     });
 }

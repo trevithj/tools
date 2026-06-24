@@ -28,7 +28,7 @@ const BASE_HTML = `
 </style>
 <svg>
 <defs>
-    <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="0" refY="4" orient="auto">
+    <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
     <path d="M0,1 L0,8 L8,4 z" fill="black"/>
     </marker>
 </defs>
@@ -107,7 +107,7 @@ class ArgumentMap extends HTMLElement {
                     this.querySelector(`argument-node#${link.tgt}`)
                 ];
             }
-            updateLinkLines(this.linkEls, getNodes);
+            updateLinkLines(this.linkEls, getNodes);// TODO add curvature param
         });
     }
 

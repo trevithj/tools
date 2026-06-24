@@ -97,6 +97,7 @@ function renderChart({nodes}) {
 }
 
 function renderArgMap({nodes, links}) {
+    argMap.clear();
     nodes.forEach(node => {
         const { lines, type, ...rest} = node;
         argMap.addNode({...rest, text:lines.join(" "), className: type });

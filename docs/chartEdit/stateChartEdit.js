@@ -1,11 +1,25 @@
-import { stateParser as parser, stringify } from "./chartEdit.js";
+import {stateParser as parser, stringify} from "./chartEdit.js";
 import {digraph2Dot, digraph2DotBipartite} from "./formatters.js";
+import {bipartiteAutoLayout} from "../planning/graphLayout.js";
+
 // Initial view.
 const SAMPLE_INPUT = `Green\n  tick -> Yellow\nYellow\n  tick -> Red\nRed\n  tick -> Green`;
 const input = document.querySelector(".the-input > textarea");
 const display = document.querySelector(".the-display > textarea");
 const argMap = document.querySelector("argument-map");
 input.value = window.localStorage.getItem("INPUT_STATE") || SAMPLE_INPUT;
+
+function renderArgMap({nodes, links}) {
+    argMap.clear();
+    nodes.forEach(node => {
+        const {lines, type, ...rest} = node;
+        argMap.addNode({...rest, text: lines.join(" "), className: type});
+    })
+    links.forEach(link => {
+        console.log(link);
+        argMap.addLink(link.src, link.tgt);
+    })
+}
 
 let parsed = {};
 
@@ -31,36 +45,29 @@ document.querySelector("button#b2").addEventListener("click", () => {
 
 // Bi-graph systems format
 document.querySelector("button#b3").addEventListener("click", () => {
-    const {nodes, links} = parsed;
-    if (!nodes) return;
-    const output = {stateNodes: nodes};
-    const linkSet = new Set();
-    const txnNodes = Object.fromEntries(links.map(lnk => {
-        const {src, tgt, label: name} = lnk;
-        const id = `${name}_${tgt}`;
-        linkSet.add(`${src}:${id}`);
-        linkSet.add(`${id}:${tgt}`);
-        return [id, {id, name}];
-    }));
-    output.txnNodes = Object.values(txnNodes);
-    output.links = [...linkSet].map(line => {
-        const [src, tgt] = line.split(":");
-        return {src, tgt};
+    const stateNodes = parsed.nodes.map(n => {
+        const {name, id} = n;
+        return {lines: [name], id, type: "state", x: 0, y: 0};
     });
-    console.dir(output);
-    display.value = stringify(output);
-    // display as an argument-map chart
-    output.stateNodes.forEach(({name, id}, index) => {
-        const row = index * 60;
-        const node = {text:name, id, x: 20, y: row, className:"state"};
-        argMap.addNode(node);
-    });
-    output.txnNodes.forEach(({name, id}, index) => {
-        const row = index * 60;
-        const node = {text:name, id, x: 220, y: row, className:"txn"};
-        argMap.addNode(node);
-    });
-    output.links.forEach(({src, tgt}) => argMap.addLink(src, tgt));
+    if (!stateNodes) return;
+
+    const txtnNodes = [];
+    const links = [];
+    let index = 0;
+    parsed.links.forEach(link => {
+        const {src, tgt, label} = link;
+        const id = "t" + index++;
+        const tNode = {id, lines: [label], type: 'txtn', x: 0, y: 0};
+        txtnNodes.push(tNode);
+        links.push({src, tgt: id});
+        links.push({src: id, tgt});
+    })
+
+    const opts = {viewWidth: 600, viewHeight: 400, type1: "state", type2: "txtn"};
+    const nodes = bipartiteAutoLayout(stateNodes, txtnNodes, links, opts);
+    const net = {nodes, links};
+    display.value = stringify(net);
+    renderArgMap(net);
 })
 
 input.focus();
